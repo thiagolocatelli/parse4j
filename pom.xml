@@ -2,11 +2,49 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>parse4j</groupId>
+	<groupId>org.parse4j</groupId>
 	<artifactId>parse4j</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 	<name>parse4j</name>
+	<url>https://github.com/thiagolocatelli/parse4j</url>
+	
+	<parent>
+        <groupId>org.sonatype.oss</groupId>
+        <artifactId>oss-parent</artifactId>
+        <version>7</version>
+    </parent>	
+	
+	<licenses>
+        <license>
+            <name>The Apache Software License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+    
+	<developers>
+        <developer>
+            <id>parse4j</id>
+            <name>Thiago Locatelli</name>
+            <email>thiago.locatelli@gmail.com</email>
+        </developer>
+    </developers>
+    
+    <contributors>
+    	<!-- 
+        <contributor>
+            <name>Contributor's name</name>
+            <email>Contributor's email</email>
+        </contributor>
+         -->
+    </contributors>    
+    
+ 	<scm>
+        <connection>scm:git:git@github.com:thiagolocatelli/parse4j.git</connection>
+        <developerConnection>scm:git:git@github.com:thiagolocatelli/parse4j.git</developerConnection>
+        <url>git@github.com:thiagolocatelli/parse4j.git</url>
+    </scm>   
 
 	<properties>
 		<maven.test.skip>false</maven.test.skip>
@@ -50,18 +88,33 @@
 	</dependencies>
 
 	<build>
-		<finalName>${project.artifactId}</finalName>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.1</version>
-				<configuration>
-					<source>1.6</source>
-					<target>1.6</target>
-				</configuration>
-			</plugin>
-		</plugins>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-compiler-plugin</artifactId>
+					<version>3.1</version>
+					<configuration>
+						<encoding>UTF-8</encoding>
+						<source>1.6</source>
+						<target>1.6</target>
+					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-gpg-plugin</artifactId>
+					<executions>
+						<execution>
+							<id>sign-artifacts</id>
+							<phase>verify</phase>
+							<goals>
+								<goal>sign</goal>
+							</goals>
+						</execution>
+					</executions>
+				</plugin>
+			</plugins>
+		</pluginManagement>
 	</build>
 
 </project>
