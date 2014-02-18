@@ -114,11 +114,13 @@ GeoPoints
 Notes
 -----
 
+### License
+
 
 TODO
 -----
 
-Pending Functionalities
+### Pending Functionalities
 
  * Queries
  * Analytics
@@ -126,7 +128,7 @@ Pending Functionalities
  * Cloud Functions
  * Instalations
  
- Implemented Functionalities
+### Implemented Functionalities
 
  * Objects
  * Files
