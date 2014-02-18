@@ -48,13 +48,7 @@ Objects
 -------
 
 ```Java
-<ivy-module version="2.0">
-    ...
-    <dependencies>
-        <dependency org="org.parse4j" name="parse4j" rev="1.0"/>
-        ...
-    </dependencies>
-</ivy-module>
+
 ```
 
 Queries
@@ -76,8 +70,34 @@ Files
 byte[] data = "Working at Parse is great!".getBytes();
 ParseFile file = new ParseFile("resume.txt", data);
 file.save();
-testParseFile(file);
 ```
+
+
+```JAVA
+	byte[] data = getBytes("song.mp3");
+	ParseFile file = new ParseFile("song.mp3", data);
+	file.save(new ProgressCallback() {
+		
+		@Override
+		public void done(Integer percentDone) {
+			System.out.println("uploadPdf(): progress " + percentDone + "%");
+		}
+	});
+```
+
+
+```JAVA
+	byte[] data = getBytes("song.mp3");
+	ParseFile file = new ParseFile("song.mp3", data);
+	file.save(new SaveCallback() {
+		
+		@Override
+		public void done(ParseException parseException) {
+			System.out.println(parseException);
+		}
+	});
+```
+
 
 Analytics
 ---------
