@@ -113,3 +113,24 @@ GeoPoints
 
 Notes
 -----
+
+
+TODO
+-----
+
+Pending Functionalities
+
+ * Queries
+ * Analytics
+ * Push Notifications
+ * Cloud Functions
+ * Instalations
+ 
+ Implemented Functionalities
+
+ * Objects
+ * Files
+ * Geopoints
+  
+ 
+ 
