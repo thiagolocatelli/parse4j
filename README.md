@@ -344,10 +344,10 @@ TODO
 
 ### Pending Functionalities
 
- * Queries
- * Analytics
- * Push Notifications
- * Instalations
+ * [Queries](#Queries) 
+ * [Analytics](#Analytics) 
+ * [PushNotifications](#PushNotifications) 
+ * [Instalations](#Instalations) 
  
 
   
