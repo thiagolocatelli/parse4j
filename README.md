@@ -321,6 +321,14 @@ At the moment there are a couple of things to watch out for:
 * Each **ParseObject** class may only have one key with a **ParseGeoPoint** object. The last one added is the one that is gonna be saved to the backend.
 * Points should not equal or exceed the extreme ends of the ranges. Latitude should not be -90.0 or 90.0. Longitude should not be -180.0 or 180.0. Attempting to set latitude or longitude out of bounds will cause an error.
 
+<a name="PushNotifications"></a>
+Push Notifications
+---------
+
+<a name="Instalations"></a>
+Instalations
+---------
+
 Notes
 -----
 
@@ -348,7 +356,7 @@ TODO
  * [Users](#Users) 
  * [Roles](#Roles)   
  * [Analytics](#Analytics) 
- * [PushNotifications](#PushNotifications) 
+ * [Push Notifications](#PushNotifications) 
  * [Instalations](#Instalations) 
  
 
