@@ -34,7 +34,7 @@ Getting Started
 	    ...
 	    <dependencies>
 	        <dependency>
-	            <groupId>github.com.thiagolocatelli</groupId>
+	            <groupId>com.github.thiagolocatelli</groupId>
 	            <artifactId>parse4j</artifactId>
 	            <version>1.0</version>
 	        </dependency>
