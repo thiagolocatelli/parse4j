@@ -368,14 +368,14 @@ TODO
  
 ### In development
 
- * [Files](#Files)
+ * [Files](#Files) 
+ * [Roles](#Roles) 
  * [Queries](#Queries)  
 
 ### Pending Functionalities
 
  * [ACL](#Objects) 
- * [Users](#Users) 
- * [Roles](#Roles)   
+ * [Users](#Users)  
  * [Analytics](#Analytics) 
  * [Push Notifications](#PushNotifications) 
  * [Instalations](#Instalations) 
