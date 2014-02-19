@@ -78,7 +78,7 @@ You can also add a callback function to the save operation
 		});
 ```
 
-To delete an object, just call the method delete()
+To delete an object, just call the method delete().
 
 ```Java
 	gameScore.delete();
@@ -92,6 +92,24 @@ You can also attach a callback function on the delete/deleteInBackground methods
 				//do something
 			}
 		});
+```
+
+#### Counters
+
+You can also increment and decrement values from Number (int, long, double...) attributes.
+
+```Java
+	gameScore.increment("score");
+	gameScore.decrement("score");
+	gameScore.saveInBackground();
+```
+You can also increment by any amount using increment(key, amount) or decrement by any amount using decrement(key, amount).
+
+#### Arrays
+
+```Java
+gameScore.addAllUnique("skills", Arrays.asList("flying", "kungfu"));
+gameScore.saveInBackground();
 ```
 
 Queries
