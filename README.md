@@ -1,7 +1,7 @@
 Parse4J - Java Library for parse.com
 ====================================
 
-The non-official java library for [Parse](https://parse.com) 
+The non-official java library for <font color='red'>[Parse](https://parse.com)</font>
 
 ps.: most of the following code snippets and text have been extracted from the parse website, since the java library mimicks the android library. I am not a Parse/Facebook employee.
 
