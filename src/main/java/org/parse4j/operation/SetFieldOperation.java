@@ -1,13 +1,9 @@
 package org.parse4j.operation;
 
-import java.util.Date;
-
 import org.json.JSONException;
-import org.json.JSONObject;
-import org.parse4j.Parse;
-import org.parse4j.ParseFile;
-import org.parse4j.ParseGeoPoint;
 import org.parse4j.ParseObject;
+import org.parse4j.encode.ParseObjectEncodingStrategy;
+import org.parse4j.util.ParseEncoder;
 
 public class SetFieldOperation implements ParseFieldOperation {
 
@@ -23,22 +19,42 @@ public class SetFieldOperation implements ParseFieldOperation {
 	}
 
 	@Override
-	public Object encode() throws JSONException {
+	public Object encode(ParseObjectEncodingStrategy objectEncoder) throws JSONException {
+		
+		return ParseEncoder.encode(value, objectEncoder);
+		
+		/*
+		if(value instanceof byte[]) {
+			byte[] bytes = (byte[]) value;
+			JSONObject output = new JSONObject();
+			output.put("__type", "Bytes");
+			output.put("base64", Base64.encodeBase64String(bytes));
+			return output;				
+		}
 		
 		if(value instanceof Date) {
 			Date dt = (Date) value;
-			//return Parse.encodeDate(dt);
 			JSONObject output = new JSONObject();
 			output.put("__type", "Date");
 			output.put("iso", Parse.encodeDate(dt));
 			return output;			
 		}
 		
+		if(value instanceof Map) {
+	        Map<String, Object> map = (Map<String, Object>) value;
+	        JSONObject json = new JSONObject();
+	        for (String key : map.keySet()) {
+	          json.put(key, map.get(key));
+	        }
+	        return json;
+	      }		
+		
 		if(value instanceof ParseFile) {
 			ParseFile file = (ParseFile) value;
 			JSONObject output = new JSONObject();
 			output.put("__type", "File");
 			output.put("name", file.getName());
+			output.put("url", file.getUrl());
 			return output;	
 		}
 		
@@ -49,9 +65,20 @@ public class SetFieldOperation implements ParseFieldOperation {
 			output.put("latitude", gp.getLatitude());
 			output.put("longitude", gp.getLongitude());
 			return output;	
-		}		
+		}
+		
+		if(value instanceof ParseObject) {
+			ParseObject po = (ParseObject) value;
+			JSONObject output = new JSONObject();
+			output.put("__type", "Pointer");
+			output.put("className", po.getClassName());
+			output.put("objectId", po.getObjectId());
+			return output;	
+		}
 		
 		return value;
+		
+		*/
 	}
 
 }

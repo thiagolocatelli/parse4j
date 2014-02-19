@@ -1,9 +1,12 @@
 package org.parse4j;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -11,15 +14,21 @@ import java.util.Set;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.parse4j.callback.DeleteCallback;
+import org.parse4j.callback.GetCallback;
 import org.parse4j.callback.SaveCallback;
 import org.parse4j.command.ParseCommand;
 import org.parse4j.command.ParseDeleteCommand;
+import org.parse4j.command.ParseGetCommand;
 import org.parse4j.command.ParsePostCommand;
 import org.parse4j.command.ParsePutCommand;
 import org.parse4j.command.ParseResponse;
+import org.parse4j.encode.PointerEncodingStrategy;
 import org.parse4j.operation.DeleteFieldOperation;
 import org.parse4j.operation.IncrementFieldOperation;
+import org.parse4j.operation.ParseAddOperation;
+import org.parse4j.operation.ParseAddUniqueOperation;
 import org.parse4j.operation.ParseFieldOperation;
+import org.parse4j.operation.ParseRemoveOperation;
 import org.parse4j.operation.SetFieldOperation;
 
 public class ParseObject {
@@ -35,6 +44,8 @@ public class ParseObject {
 
 	private Date updatedAt;
 	private Date createdAt;
+	
+	final Object mutex = new Object();
 
 	protected ParseObject() {
 		
@@ -55,6 +66,7 @@ public class ParseObject {
 	public static ParseObject createWithoutData(String className, String objectId) {
 		ParseObject result = create(className);
 	    result.setObjectId(objectId);
+	    result.isDirty = false;
 	    return result;
 	}
 
@@ -77,7 +89,31 @@ public class ParseObject {
 	public Set<String> keySet() {
 		return Collections.unmodifiableSet(this.data.keySet());
 	}
+	
+	public ParseFile getParseFile(String key) {
 
+		if (!this.data.containsKey(key)) {
+			return null;
+		}
+		Object value = this.data.get(key);
+		if (!(value instanceof ParseFile)) {
+			return null;
+		}
+		return (ParseFile) value;
+	}
+	
+	public ParseGeoPoint getParseGeoPoint(String key) {
+
+		if (!this.data.containsKey(key)) {
+			return null;
+		}
+		Object value = this.data.get(key);
+		if (!(value instanceof ParseGeoPoint)) {
+			return null;
+		}
+		return (ParseGeoPoint) value;
+	}	
+	
 	public Date getDate(String key) {
 
 		// checkGetAccess(key);
@@ -181,6 +217,29 @@ public class ParseObject {
 				&& (getClassName().equals(other.getClassName()))
 				&& (getObjectId().equals(other.getObjectId()));
 	}
+	
+	public void add(String key, Object value) {
+		addAll(key, Arrays.asList(new Object[] { value }));
+	}
+
+	public void addAll(String key, Collection<?> values) {
+		ParseAddOperation operation = new ParseAddOperation(values);
+		performOperation(key, operation);
+	}
+
+	public void addUnique(String key, Object value) {
+		addAllUnique(key, Arrays.asList(new Object[] { value }));
+	}
+
+	public void addAllUnique(String key, Collection<?> values) {
+		ParseAddUniqueOperation operation = new ParseAddUniqueOperation(values);
+		performOperation(key, operation);
+	}
+
+	public void removeAll(String key, Collection<?> values) {
+		ParseRemoveOperation operation = new ParseRemoveOperation(values);
+		performOperation(key, operation);
+	}
 
 	public void put(String key, Object value) {
 		
@@ -190,6 +249,11 @@ public class ParseObject {
 
 		if (value == null) {
 			throw new IllegalArgumentException("value may not be null.");
+		}
+		
+		if(value instanceof ParseObject && ((ParseObject) value).isDirty) {
+			throw new IllegalArgumentException(
+					"ParseFile must be saved before being set on a ParseObject.");
 		}
 		
 		if (value instanceof ParseFile && !((ParseFile) value).isUploaded()) {
@@ -220,7 +284,12 @@ public class ParseObject {
 		}
 		
 		Object value = operation.apply(null, this, key);
-		data.put(key, value);
+		if(value != null) {
+			data.put(key, value);
+		}
+		else {
+			data.remove(key);
+		}
 		operations.put(key, operation);
 		dirtyKeys.add(key);
 		isDirty = true;
@@ -336,13 +405,13 @@ public class ParseObject {
 		for(String key : operations.keySet()) {
 			ParseFieldOperation operation = (ParseFieldOperation) operations.get(key);
 			if(operation instanceof SetFieldOperation) {
-				parseData.put(key, operation.encode());
+				parseData.put(key, operation.encode(PointerEncodingStrategy.get()));
 			}
 			else if(operation instanceof IncrementFieldOperation) {
-				parseData.put(key, operation.encode());
+				parseData.put(key, operation.encode(PointerEncodingStrategy.get()));
 			}
 			else if(operation instanceof DeleteFieldOperation) {
-				parseData.put(key, operation.encode());
+				parseData.put(key, operation.encode(PointerEncodingStrategy.get()));
 			}
 			else {
 				//here we deal will sub objects like ParseObject;
@@ -437,4 +506,91 @@ public class ParseObject {
 		}
 	}
 	
+	public <T extends ParseObject> T fetchIfNeeded() throws ParseException {
+	
+		ParseGetCommand command = new ParseGetCommand(getEndPoint(), getObjectId());
+		ParseResponse response = command.perform();
+		if(!response.isFailed()) {
+			JSONObject jsonResponse = response.getJsonObject();
+			if (jsonResponse == null) {
+				throw response.getException();
+			}
+			
+			T obj = parseData(jsonResponse);
+			return obj;
+			
+		}
+		else {
+			throw response.getException();
+		}
+		
+	}
+	
+	public final <T extends ParseObject> void fetchIfNeeded(GetCallback<T> callback) {
+	    
+		ParseException exception = null;
+		T object = null;
+		
+		try {
+			object = fetchIfNeeded();
+		} catch (ParseException e) {
+			exception = e;
+		}
+		
+		if (callback != null) {
+			callback.done(object, exception);
+		}
+		
+	}
+	
+	private <T extends ParseObject> T parseData(JSONObject jsonObject) {
+		
+		T po = (T) new ParseObject();
+		
+		Iterator<?> keys = jsonObject.keys();
+		while( keys.hasNext() ){
+            String key = (String) keys.next();
+            Object obj = jsonObject.get(key);
+            
+            if( obj instanceof JSONObject ){
+            	JSONObject o = (JSONObject) obj;
+            	String type = o.getString("__type");
+            	
+            	if("Date".equals(type)) {
+            		Date date = Parse.parseDate(o.getString("iso"));
+            		po.put(key, date);
+            	}
+            	
+            	if("Bytes".equals(type)) {
+            		String base64 = o.getString("base64");
+            		po.put(key, base64);
+            	}
+            	
+            	if("GeoPoint".equals(type)) {
+            		ParseGeoPoint gp = new ParseGeoPoint(o.getDouble("latitude"), 
+            				o.getDouble("longitude"));
+            		po.put(key, gp);
+            	}
+            	
+            	if("File".equals(type)) {
+					ParseFile file = new ParseFile(o.getString("name"),
+							o.getString("url"));
+            		po.put(key, file);
+            	}
+            	
+            	if("Pointer".equals(type)) {
+            		
+            	}
+            	
+            }
+            else {
+            	po.put(key, obj);
+            }
+            
+        }
+		
+		po.isDirty = false;
+		return po;
+		
+	}
 }

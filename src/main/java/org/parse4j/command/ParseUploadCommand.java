@@ -36,6 +36,7 @@ public class ParseUploadCommand extends ParseCommand {
 			httppost.addHeader(ParseConstants.HEADER_CONTENT_TYPE, contentType);
 		}
 
+		System.out.println("data size: " + data.length);
 		if (data != null) {
 			if(progressCallback != null) {
 				httppost.setEntity(new CountingHttpEntity(new ByteArrayEntity(data), progressCallback));

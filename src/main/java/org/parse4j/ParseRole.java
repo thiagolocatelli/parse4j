@@ -1,5 +1,5 @@
 package org.parse4j;
 
-public class ParseRole {
+public class ParseRole extends ParseObject {
 
 }

@@ -35,42 +35,38 @@ public class ParseObjectCRUDTestCase extends Parse4JTestCase {
 	
 	@Test
 	public void saveWithFile() {
-		System.out.println("save(): initializing...");
+		System.out.println("saveWithFile(): initializing...");
 		ParseObject parseObject = getParseObject(CLASS_NAME);
 		byte[] data = null;
 		ParseFile file = null;
 		
 		try {
-			/*
-			byte[] data = getBytes("/parse.png");
-			ParseFile file = new ParseFile("parse.png", data);
-			file.save();
-			parseObject.put("png", file);
-			*/
 			
-			/*
+			data = getBytes("/parse.png");
+			file = new ParseFile("parse.png", data);
+			file.save();
+			parseObject.put("pngFile", file);
+
 			data = getBytes("/parse.pdf");
 			file = new ParseFile("parse.pdf", data);
 			file.save();
-			parseObject.put("pdf", file);
-			*/
+			parseObject.put("pdfFile", file);
 			
 			data = getBytes("/parse.docx");
 			file = new ParseFile("parse.docx", data);
 			file.save();
-			parseObject.put("arquivo", file);
-			
+			parseObject.put("docxFile", file);
 			
 			parseObject.save();
-			System.out.println("save(): objectId: " + parseObject.getObjectId());
-			System.out.println("save(): createdAt: " + parseObject.getCreatedAt());
-			System.out.println("save(): updatedAt: " + parseObject.getUpdatedAt());
+			System.out.println("saveWithFile(): objectId: " + parseObject.getObjectId());
+			System.out.println("saveWithFile(): createdAt: " + parseObject.getCreatedAt());
+			System.out.println("saveWithFile(): updatedAt: " + parseObject.getUpdatedAt());
 			assertNotNull("objectId should not be null", parseObject.getObjectId());
 			assertNotNull("createdAt should not be null", parseObject.getCreatedAt());
 			assertNotNull("updatedAt should not be null", parseObject.getUpdatedAt());
 		}
 		catch(ParseException pe) {
-			assertNull("save(): should not have thrown ParseException", pe);
+			assertNull("saveWithFile(): should not have thrown ParseException", pe);
 		}
 	}
 	

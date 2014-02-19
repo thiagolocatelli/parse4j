@@ -5,7 +5,7 @@ import org.parse4j.ParseObject;
 
 public abstract class GetCallback<T extends ParseObject> extends ParseCallback<T> {
 
-    abstract void done(T t, ParseException parseException);
+    public abstract void done(T t, ParseException parseException);
 	
 	@Override
 	void internalDone(T t, ParseException parseException) {

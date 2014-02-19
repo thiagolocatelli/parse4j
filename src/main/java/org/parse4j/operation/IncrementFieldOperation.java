@@ -3,6 +3,7 @@ package org.parse4j.operation;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.parse4j.ParseObject;
+import org.parse4j.encode.ParseObjectEncodingStrategy;
 
 public class IncrementFieldOperation implements ParseFieldOperation {
 
@@ -29,7 +30,8 @@ public class IncrementFieldOperation implements ParseFieldOperation {
 	}
 
 	@Override
-	public Object encode() throws JSONException {
+	public Object encode(ParseObjectEncodingStrategy objectEncoder)
+			throws JSONException {
 		if(needIncrement) {
 			JSONObject output = new JSONObject();
 			output.put("__op", "Increment");

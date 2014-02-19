@@ -46,6 +46,11 @@ public class ParseFile {
 	public ParseFile(byte[] data, String contentType) {
 		this(null, data, contentType);
 	}
+	
+	public ParseFile(String name, String url) {
+		this.name = name;
+		this.url = url;
+	}
 
 	public boolean isDirty() {
 		return dirty;
@@ -110,7 +115,7 @@ public class ParseFile {
 		
 		ParseUploadCommand command = new ParseUploadCommand(getEndPoint());
 		command.setProgressCallback(progressCallback);
-		command.setData(getData());
+		command.setData(data);
 		if(getContentType() == null) {
 			String fileExtension = MimeType.getFileExtension(getName());
 			contentType = MimeType.getMimeType(fileExtension);
