@@ -174,7 +174,35 @@ Pending...
 Users
 -----
 
-Pending...
+At the core of many applications, there is a notion of user accounts that lets users access their information in a secure manner. Parse provides a specialized user class called ParseUser that automatically handles much of the functionality required for user account management.
+
+With this class, you'll be able to add user account functionality in your application.
+
+**ParseUser** is a subclass of the **ParseObject**, and has all the same features, such as flexible schema, automatic persistence, and a key value interface. All the methods that are on **ParseObject** also exist in ParseUser. The difference is that **ParseUser** has some special additions specific to user accounts.
+
+#### Properties
+
+**ParseUser** has several properties that set it apart from **ParseObject**:
+
+* username: The username for the user (required).
+* password: The password for the user (required on signup).
+* email: The email address for the user (optional).
+
+We'll go through each of these in detail as we run through the various use cases for users. Keep in mind that if you set username and email using the setters, you do not need to set it using the put method.
+
+#### Signing Up
+
+#### Logging In
+
+#### Verifying Emails
+
+#### Anonymous Users
+
+#### Security For User Objects
+
+#### Security for Other Objects
+
+#### Resetting Passwords
 
 <a name="Roles"></a>
 Roles
