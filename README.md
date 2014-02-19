@@ -326,12 +326,12 @@ TODO
 ### Implemented Functionalities
 
  * Objects
- * Files
+ * Geopoints
 
  
 ### In development
 
- * Geopoints
+ * Files
  * Cloud Functions 
  
 
