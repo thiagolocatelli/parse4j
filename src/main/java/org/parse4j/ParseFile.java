@@ -113,7 +113,8 @@ public class ParseFile {
 		command.setData(getData());
 		if(getContentType() == null) {
 			String fileExtension = MimeType.getFileExtension(getName());
-			command.setContentType(MimeType.getMimeType(fileExtension));
+			contentType = MimeType.getMimeType(fileExtension);
+			command.setContentType(contentType);
 		}
 		else {
 			command.setContentType(getContentType());
@@ -121,6 +122,7 @@ public class ParseFile {
 		ParseResponse response = command.perform();
 		if(!response.isFailed()) {
 			JSONObject jsonResponse = response.getJsonObject();
+			System.out.println(jsonResponse);
 			if (jsonResponse == null) {
 				throw response.getException();
 			}
@@ -212,7 +214,6 @@ public class ParseFile {
 		}
 
 		public void run() {
-			System.out.println("SaveInBackgroundThread.run()");
 			ParseException exception = null;
 			try {
 				getData(getDataCallback);

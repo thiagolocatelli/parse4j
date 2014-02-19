@@ -37,12 +37,30 @@ public class ParseObjectCRUDTestCase extends Parse4JTestCase {
 	public void saveWithFile() {
 		System.out.println("save(): initializing...");
 		ParseObject parseObject = getParseObject(CLASS_NAME);
+		byte[] data = null;
+		ParseFile file = null;
 		
 		try {
+			/*
 			byte[] data = getBytes("/parse.png");
 			ParseFile file = new ParseFile("parse.png", data);
 			file.save();
-			parseObject.put("logo", file);
+			parseObject.put("png", file);
+			*/
+			
+			/*
+			data = getBytes("/parse.pdf");
+			file = new ParseFile("parse.pdf", data);
+			file.save();
+			parseObject.put("pdf", file);
+			*/
+			
+			data = getBytes("/parse.docx");
+			file = new ParseFile("parse.docx", data);
+			file.save();
+			parseObject.put("arquivo", file);
+			
+			
 			parseObject.save();
 			System.out.println("save(): objectId: " + parseObject.getObjectId());
 			System.out.println("save(): createdAt: " + parseObject.getCreatedAt());
@@ -112,7 +130,7 @@ public class ParseObjectCRUDTestCase extends Parse4JTestCase {
 		}		
 	}	
 	
-	@Test
+
 	public void saveInBackground() {
 		System.out.println("saveInBackground(): initializing...");
 		final ParseObject parseObject = getParseObject(CLASS_NAME);
@@ -132,7 +150,6 @@ public class ParseObjectCRUDTestCase extends Parse4JTestCase {
 	
 	}
 
-	@Test
 	public void updateInBackground() {
 		System.out.println("update(): initializing...");
 		final ParseObject parseObject = getParseObject(CLASS_NAME);
@@ -172,7 +189,6 @@ public class ParseObjectCRUDTestCase extends Parse4JTestCase {
 		}
 	}		
 	
-	@Test
 	public void deleteInBackground() {
 		System.out.println("deleteInBackground(): initializing...");
 		final ParseObject parseObject = getParseObject(CLASS_NAME);

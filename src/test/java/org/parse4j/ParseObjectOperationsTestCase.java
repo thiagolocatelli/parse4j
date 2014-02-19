@@ -52,42 +52,47 @@ public class ParseObjectOperationsTestCase extends Parse4JTestCase {
 	
 	@Test(expected = IllegalArgumentException.class)
 	public void invalidPutKey1() {
+		System.out.println("invalidPutKey1(): initializing...");
 		ParseObject parseObject = getEmptyParseObject(CLASS_NAME);
 		parseObject.put("objectId", "value");
 	}
 	
 	@Test(expected = IllegalArgumentException.class)
 	public void invalidPutKey2() {
+		System.out.println("invalidPutKey2(): initializing...");
 		ParseObject parseObject = getEmptyParseObject(CLASS_NAME);
 		parseObject.put("createdAt", "value");
 	}
 	
 	@Test(expected = IllegalArgumentException.class)
 	public void invalidPutKey3() {
+		System.out.println("invalidPutKey3(): initializing...");
 		ParseObject parseObject = getEmptyParseObject(CLASS_NAME);
 		parseObject.put("updatedAt", "value");
 	}
 	
 	@Test
-	public void extension() {		
+	public void extension() {
+		System.out.println("extension(): initializing...");		
 		
 		for(String extension : MimeType.mimeTypes.keySet()) {
 			String fileName = "test." + extension;
-			System.out.println("File name:" + fileName);
+			//System.out.println("File name:" + fileName);
 			assertEquals("Expected " + MimeType.getFileExtension(fileName), MimeType.getFileExtension(fileName), extension);
 		}
 		
 		String fileName = "test";
-		System.out.println("File name:" + fileName);
+		//System.out.println("File name:" + fileName);
 		assertEquals("Expected " + MimeType.getFileExtension(fileName), MimeType.getFileExtension(fileName), "");
 	}
 	
 	@Test
-	public void extensionNotEqual() {		
+	public void extensionNotEqual() {	
+		System.out.println("extensionNotEqual(): initializing...");	
 		
 		for(String extension : MimeType.mimeTypes.keySet()) {
 			String fileName = "test." + extension;
-			System.out.println("File name:" + fileName + ", testing against: " + (extension+"x"));
+			//System.out.println("File name:" + fileName + ", testing against: " + (extension+"x"));
 			boolean result = (extension+"x").equals(MimeType.getFileExtension(fileName));
 			assertFalse(result);
 		}
@@ -95,26 +100,28 @@ public class ParseObjectOperationsTestCase extends Parse4JTestCase {
 	
 	@Test
 	public void mimeType() {
+		System.out.println("mimeType(): initializing...");
 		
 		for(String extension : MimeType.mimeTypes.keySet()) {
 			String fileName = "test." + extension;
-			System.out.print("File name:" + fileName);
+			//System.out.print("File name:" + fileName);
 			String mime = MimeType.getMimeType(MimeType.getFileExtension(fileName));
-			System.out.println(", content-type: " + mime);
+			//System.out.println(", content-type: " + mime);
 			assertEquals("Expected " + MimeType.getMimeType(extension), MimeType.getMimeType(extension), mime);
 		}
 		
 		String fileName = "test";
-		System.out.print("File name:" + fileName);
+		//System.out.print("File name:" + fileName);
 		String mime = MimeType.getMimeType(MimeType.getFileExtension(fileName));
 		String extension = MimeType.getFileExtension(fileName);
-		System.out.println(", content-type: " + mime);
+		//System.out.println(", content-type: " + mime);
 		assertEquals("Expected " + MimeType.getMimeType(extension), MimeType.getMimeType(extension), mime);
 
 	}
 	
 	@Test(expected = IllegalArgumentException.class)
 	public void testFileNotSave() {
+		System.out.println("testFileNotSave(): initializing...");
 		try {
 			byte[] data = getBytes("/parse.png");
 			ParseFile file = new ParseFile("parse.png", data);

@@ -28,6 +28,7 @@ public class ParseUploadCommand extends ParseCommand {
 	@Override
 	public HttpRequestBase getRequest() throws IOException {
 		String url = Parse.getParseAPIUrl(endPoint);
+		System.out.println(url);
 		HttpPost httppost = new HttpPost(url);
 		setupHeaders(httppost, false);
 		
