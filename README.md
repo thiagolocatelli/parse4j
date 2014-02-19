@@ -24,26 +24,6 @@ Getting Started
 	</project>
 ```
 
-### Graddle ###
-
-```XML
-	dependencies {
-	    compile group: 'org.parse4j', name: 'parse4j', version: '1.0'
-	    ...
-	}
-```
-
-### Ivy ###
-
-```XML
-	<ivy-module version="2.0">
-	    ...
-	    <dependencies>
-	        <dependency org="org.parse4j" name="parse4j" rev="1.0"/>
-	        ...
-	    </dependencies>
-	</ivy-module>
-```
 
 Objects
 -------
