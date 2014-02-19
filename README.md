@@ -194,6 +194,19 @@ Notice in this example that we give the file a name of resume.txt. There's two t
 Next you'll want to save the file up to the cloud. As with ParseObject, there are many variants of the save method you can use depending on what sort of callback and error handling suits you.
 
 ```JAVA
+	file.saveInBackground();
+```
+
+```JAVA
+	ParseObject jobApplication = new ParseObject("JobApplication");
+	jobApplication.put("applicantName", "Joe Smith");
+	jobApplication.put("applicantResumeFile", file);
+	jobApplication.save();
+```
+
+Finally, after the save completes, you can associate a ParseFile onto a ParseObject just like any other piece of data:
+
+```JAVA
 	byte[] data = getBytes("song.mp3");
 	ParseFile file = new ParseFile("song.mp3", data);
 	file.save(new ProgressCallback() {
