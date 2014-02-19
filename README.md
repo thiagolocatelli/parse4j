@@ -265,7 +265,21 @@ In development...
 GeoPoints
 ---------
 
+Parse allows you to associate real-world latitude and longitude coordinates with an object. Adding a ParseGeoPoint to a ParseObject allows queries to take into account the proximity of an object to a reference point. This allows you to easily do things like find out what user is closest to another user or which places are closest to a user.
 
+#### ParseGeoPoint
+
+To associate a point with an object you first need to create a ParseGeoPoint. For example, to create a point with latitude of 40.0 degrees and -30.0 degrees longitude:
+
+```JAVA
+	ParseGeoPoint point = new ParseGeoPoint(40.0, -30.0);
+```
+
+This point is then stored in the object as a regular field.
+
+```JAVA
+	placeObject.put("location", point);
+```
 
 Notes
 -----
