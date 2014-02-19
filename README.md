@@ -215,9 +215,23 @@ You are free to use an email addresses as the username. Simply ask your users to
 
 #### Logging In
 
+Of course, after you allow users to sign up, you need be able to let them log in to their account in the future. To do this, you can use the class methods logInInBackground or logIn.
+
+```Java
+	ParseUser.logInInBackground("Jerry", "showmethemoney", new LogInCallback() {
+	  public void done(ParseUser user, ParseException e) {
+	    if (user != null) {
+	      // Hooray! The user is logged in.
+	    } else {
+	      // Signup failed. Look at the ParseException to see what happened.
+	    }
+	  }
+	});
+```
+
 #### Verifying Emails
 
-#### Anonymous Users
+#### Anonymous User
 
 pending...
 
