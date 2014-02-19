@@ -373,6 +373,7 @@ TODO
 
 ### Pending Functionalities
 
+ * [ACL](#Objects) 
  * [Users](#Users) 
  * [Roles](#Roles)   
  * [Analytics](#Analytics) 
