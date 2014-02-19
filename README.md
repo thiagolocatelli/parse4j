@@ -196,6 +196,7 @@ Next you'll want to save the file up to the cloud. As with ParseObject, there ar
 ```JAVA
 	file.saveInBackground();
 ```
+Finally, after the save completes, you can associate a ParseFile onto a ParseObject just like any other piece of data:
 
 ```JAVA
 	ParseObject jobApplication = new ParseObject("JobApplication");
@@ -204,7 +205,24 @@ Next you'll want to save the file up to the cloud. As with ParseObject, there ar
 	jobApplication.save();
 ```
 
-Finally, after the save completes, you can associate a ParseFile onto a ParseObject just like any other piece of data:
+Retrieving it back involves calling one of the getData variants on the ParseObject. Here we retrieve the resume file off another JobApplication object:
+
+```JAVA
+	ParseFile applicantResume = (ParseFile)anotherApplication.get("applicantResumeFile");
+	applicantResume.getDataInBackground(new GetDataCallback() {
+	  public void done(byte[] data, ParseException e) {
+	    if (e == null) {
+	      // data has the bytes for the resume
+	    } else {
+	      // something went wrong
+	    }
+	  }
+	});
+```
+
+#### Progress
+
+You can also attach callback functions when saving ParseFile, to report the upload progress:
 
 ```JAVA
 	byte[] data = getBytes("song.mp3");
@@ -213,11 +231,12 @@ Finally, after the save completes, you can associate a ParseFile onto a ParseObj
 		
 		@Override
 		public void done(Integer percentDone) {
-			System.out.println("uploadPdf(): progress " + percentDone + "%");
+			//do something
 		}
 	});
 ```
 
+or:
 
 ```JAVA
 	byte[] data = getBytes("song.mp3");
@@ -226,11 +245,10 @@ Finally, after the save completes, you can associate a ParseFile onto a ParseObj
 		
 		@Override
 		public void done(ParseException parseException) {
-			System.out.println(parseException);
+			//do something
 		}
 	});
 ```
-
 
 Analytics
 ---------
