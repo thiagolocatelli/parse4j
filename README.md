@@ -371,11 +371,11 @@ TODO
  * [Files](#Files) 
  * [Roles](#Roles) 
  * [Queries](#Queries)  
+ * [Users](#Users) 
 
 ### Pending Functionalities
 
- * [ACL](#Objects) 
- * [Users](#Users)  
+ * [ACL](#Objects)  
  * [Analytics](#Analytics) 
  * [Push Notifications](#PushNotifications) 
  * [Instalations](#Instalations) 
