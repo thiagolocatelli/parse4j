@@ -54,6 +54,17 @@ public class Parse4JTestCase {
 		return parseObject;
 	}
 	
+	protected ParseUser getParseUser(String number) {
+		ParseUser parseUser = new ParseUser();
+		parseUser.setUsername("parse4j-user" + number);
+		parseUser.setPassword("parse4j-password");
+		parseUser.setEmail("thiago.locatelli@gmail.com");
+		parseUser.put("dob", new Date());
+		parseUser.put("city", "westbury");
+		parseUser.put("state", "ny");
+		return parseUser;
+	}
+	
 	protected void sleep(int millis) {
 		try {
 			Thread.sleep(millis);

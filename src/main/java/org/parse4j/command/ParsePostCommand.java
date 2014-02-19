@@ -26,10 +26,10 @@ public class ParsePostCommand extends ParseCommand {
 		String url = Parse.getParseAPIUrl(endPoint)
 				+ (objectId != null ? "/" + objectId : "");
 		HttpPost httppost = new HttpPost(url);
-		setupHeaders(httppost, true);
+		setupHeaders(httppost, addJson);
 
-		if (data != null) {
-			httppost.setEntity(new StringEntity(data.toString()));
+		if (data.has("data")) {
+			httppost.setEntity(new StringEntity(data.getJSONObject("data").toString()));
 		}
 		return httppost;
 	}

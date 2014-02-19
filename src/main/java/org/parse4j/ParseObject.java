@@ -30,13 +30,14 @@ import org.parse4j.operation.ParseAddUniqueOperation;
 import org.parse4j.operation.ParseFieldOperation;
 import org.parse4j.operation.ParseRemoveOperation;
 import org.parse4j.operation.SetFieldOperation;
+import org.parse4j.util.ParseDecoder;
 
 public class ParseObject {
 
 	private String objectId;
 	private String className;
 	private String endPoint;
-	private boolean isDirty = false;
+	boolean isDirty = false;
 	
 	private Map<String, Object> data;
 	private Map<String, ParseFieldOperation> operations;
@@ -52,6 +53,12 @@ public class ParseObject {
 	}
 	
 	public ParseObject(String className) {
+		
+		if (className == null) {
+			throw new IllegalArgumentException(
+					"You must specify a Parse class name when creating a new ParseObject.");
+		}	
+		
 		this.className = className;
 		this.data = new Hashtable<String, Object>();
 		this.operations = new Hashtable<String, ParseFieldOperation>();
@@ -69,6 +76,8 @@ public class ParseObject {
 	    result.isDirty = false;
 	    return result;
 	}
+	
+	void validateSave() { }
 
 	public String getObjectId() {
 		return this.objectId;
@@ -591,6 +600,17 @@ public class ParseObject {
 		
 		po.isDirty = false;
 		return po;
+		
+	}
+	
+	protected void setData(JSONObject jsonObject) {
+		
+		Iterator it = jsonObject.keys();
+		while (it.hasNext()) {
+			String key = (String) it.next();
+			Object value = jsonObject.opt(key);
+			put(key, ParseDecoder.decode(value));
+		}
 		
 	}
 }

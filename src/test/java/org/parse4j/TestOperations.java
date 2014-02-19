@@ -1,37 +1,17 @@
 package org.parse4j;
 
+import org.parse4j.util.ParseRegister;
+
 
 public class TestOperations {
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		
-		ParseObject po = new ParseObject("products");
-		System.out.println(po.getEndPoint());
+		System.out.println(ParseRegister.getClassName(ParseObject.class));
+		System.out.println(ParseRegister.getClassName(ParseUser.class));
+		System.out.println(ParseRegister.getClassName(ParseRole.class));
 		
-		po.put("amountInt", 1);
-		po.increment("amountInt", 10);
-		int amountInt = po.getInt("amountInt");
-		System.out.println("amountInt: " + amountInt);
-		
-		po.put("amountLong", 100l);
-		po.increment("amountLong", 10l);
-		long amountLong = po.getLong("amountLong");
-		System.out.println("amountLong: " + amountLong);
-		
-		po.put("amountDouble", 5.6);
-		po.increment("amountDouble", 3.7);
-		double amountDouble = po.getDouble("amountDouble");
-		System.out.println("amountDouble: " + amountDouble);
-		
-		po.remove("amountLong");
-		po.remove("amountInt");
-		po.remove("amountDouble");
-		
-		po.put("nome", "teste");
-		po.increment("nome");
-
-		System.out.println("end");
 		
 	}
 

@@ -9,6 +9,7 @@ import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.HttpClients;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.parse4j.Parse;
 import org.parse4j.ParseConstants;
@@ -17,7 +18,8 @@ import org.parse4j.ParseException;
 public abstract class ParseCommand {
 
 	private static RequestConfig config;
-	protected JSONObject data;
+	protected JSONObject data = new JSONObject();
+	protected boolean addJson = true;
 
 	static {
 		config = RequestConfig.custom().build();
@@ -55,10 +57,35 @@ public abstract class ParseCommand {
 		if(addJson) {
 			requestBase.addHeader(ParseConstants.HEADER_CONTENT_TYPE, ParseConstants.CONTENT_TYPE_JSON);
 		}
+		
+		if(data.has("sessionToken")) {
+			requestBase.addHeader(ParseConstants.HEADER_SESSION_TOKEN, data.getString("session_token"));
+		}
+		
 	}
 
 	public void setData(JSONObject data) {
-		this.data = data;
+		this.data.put("data", data);
 	}
+	
+	public void put(String key, String value) {
+		this.data.put(key, value);
+	}
+	
+	public void put(String key, int value) {
+		this.data.put(key, value);
+	}
+	
+	public void put(String key, long value) {
+		this.data.put(key, value);
+	}
+	
+	public void put(String key, JSONObject value) {
+		this.data.put(key, value);
+	}
+	
+	public void put(String key, JSONArray value) {
+		this.data.put(key, value);
+	}	
 	
 }
