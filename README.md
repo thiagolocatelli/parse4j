@@ -323,19 +323,26 @@ Notes
 TODO
 -----
 
+### Implemented Functionalities
+
+ * Objects
+ * Files
+
+ 
+### In development
+
+ * Geopoints
+ * Cloud Functions 
+ 
+
 ### Pending Functionalities
 
  * Queries
  * Analytics
  * Push Notifications
- * Cloud Functions
  * Instalations
  
-### Implemented Functionalities
 
- * Objects
- * Files
- * Geopoints
   
  
  
