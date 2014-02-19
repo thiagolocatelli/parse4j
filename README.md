@@ -29,7 +29,40 @@ Objects
 -------
 
 ```Java
+	ParseObject gameScore = new ParseObject("GameScore");
+	gameScore.put("score", 1337);
+	gameScore.put("playerName", "Sean Plott");
+	gameScore.put("cheatMode", false);
+	gameScore.saveInBackground();
+```
 
+```Java
+	int score = gameScore.getInt("score");
+	String playerName = gameScore.getString("playerName");
+	boolean cheatMode = gameScore.getBoolean("cheatMode");
+```
+
+```Java
+	String objectId = gameScore.getObjectId();
+	Date updatedAt = gameScore.getUpdatedAt();
+	Date createdAt = gameScore.getCreatedAt();
+```
+
+
+```Java
+	ParseObject gameScore = new ParseObject("GameScore");
+	gameScore.put("score", 1337);
+	gameScore.put("playerName", "Sean Plott");
+	gameScore.put("cheatMode", false);
+	gameScore.saveInBackground();
+```
+
+```Java
+	ParseObject gameScore = new ParseObject("GameScore");
+	gameScore.put("score", 1337);
+	gameScore.put("playerName", "Sean Plott");
+	gameScore.put("cheatMode", false);
+	gameScore.saveInBackground();
 ```
 
 Queries
