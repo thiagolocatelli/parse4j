@@ -36,8 +36,8 @@ Getting Started
 	</project>
 ```
 
-
-Objects <a name="Objects"></a>
+<a name="Objects"></a>
+Objects
 -------
 
 Storing data on Parse is built around the ParseObject. Each **ParseObject** contains key-value pairs of JSON-compatible data. This data is schemaless, which means that you don't need to specify ahead of time what keys exist on each **ParseObject**. You simply set whatever key-value pairs you want, and our backend will store it.
@@ -157,22 +157,26 @@ gameScore.addAllUnique("skills", Arrays.asList("flying", "kungfu"));
 gameScore.saveInBackground();
 ```
 
+<a name="Queries"></a>
 Queries
 -------
 
 Pending...
 
+<a name="User"></a>
 Users
 -----
 
 Pending...
 
+<a name="Roles"></a>
 Roles
 -----
 
 Pending...
 
 
+<a name="Files"></a>
 Files
 -----
 
@@ -252,16 +256,19 @@ or:
 
 There also another possibility to save the file and give both callbacks at one.
 
+<a name="Analytics"></a>
 Analytics
 ---------
 
 Pending ...
 
+<a name="CloudFunctions"></a>
 Cloud Functions
 ---------------
 
 In development...
 
+<a name="GeoPoints"></a>
 GeoPoints
 ---------
 
@@ -326,13 +333,13 @@ TODO
 ### Implemented Functionalities
 
  * [Objects](#Objects)
- * Geopoints
+ * [GeoPoints](#GeoPoints)
 
  
 ### In development
 
- * Files
- * Cloud Functions 
+ * [Files](#Files)
+ * [CloudFunctions](#CloudFunctions) 
  
 
 ### Pending Functionalities
