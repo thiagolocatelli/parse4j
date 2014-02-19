@@ -325,7 +325,7 @@ TODO
 
 ### Implemented Functionalities
 
- * Objects
+ * [Objects][]
  * Geopoints
 
  
