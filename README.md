@@ -35,13 +35,17 @@ Objects
 Queries
 -------
 
+Pending...
 
 Users
 -----
 
+In development...
 
 Roles
 -----
+
+Pending...
 
 
 Files
@@ -83,13 +87,17 @@ Files
 Analytics
 ---------
 
+Pending ...
 
 Cloud Functions
 ---------------
 
+In development...
 
 GeoPoints
 ---------
+
+
 
 Notes
 -----
