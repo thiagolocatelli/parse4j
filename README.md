@@ -20,7 +20,7 @@ On Parse, you create an App for each of your mobile applications. Each App has i
 Getting Started
 ---------------
 
-### Maven ###
+#### Maven
 
 ```XML
 	<project ...>
