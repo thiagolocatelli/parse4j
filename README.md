@@ -40,7 +40,7 @@ Getting Started
 Objects
 -------
 
-Storing data on Parse is built around the ParseObject. Each ParseObject contains key-value pairs of JSON-compatible data. This data is schemaless, which means that you don't need to specify ahead of time what keys exist on each ParseObject. You simply set whatever key-value pairs you want, and our backend will store it.
+Storing data on Parse is built around the ParseObject. Each **ParseObject** contains key-value pairs of JSON-compatible data. This data is schemaless, which means that you don't need to specify ahead of time what keys exist on each **ParseObject**. You simply set whatever key-value pairs you want, and our backend will store it.
 
 For example, let's say you're tracking high scores for a game. A single ParseObject could contain:
 
@@ -84,7 +84,7 @@ Use saveInBackground() if you want to delegate the operation to a background thr
 ```
 
 
-To get the values out of the ParseObject, there's a getX method for each data type:
+To get the values out of the **ParseObject**, there's a getX method for each data type:
 
 ```Java
 	int score = gameScore.getInt("score");
@@ -176,9 +176,9 @@ Pending...
 Files
 -----
 
-ParseFile lets you store application files in the cloud that would otherwise be too large or cumbersome to fit into a regular ParseObject. The most common use case is storing images but you can also use it for documents, videos, music, and any other binary data (up to 10 megabytes).
+**ParseFile** lets you store application files in the cloud that would otherwise be too large or cumbersome to fit into a regular **ParseObject**. The most common use case is storing images but you can also use it for documents, videos, music, and any other binary data (up to 10 megabytes).
 
-Getting started with ParseFile is easy. First, you'll need to have the data in byte[] form and then create a ParseFile with it. In this example, we'll just use a string:
+Getting started with **ParseFile** is easy. First, you'll need to have the data in byte[] form and then create a ParseFile with it. In this example, we'll just use a string:
 
 ```JAVA
 	byte[] data = "Working at Parse is great!".getBytes();
@@ -222,7 +222,7 @@ Retrieving it back involves calling one of the getData variants on the ParseObje
 
 #### Progress
 
-It's easy to get the progress of both uploads and downloads using ParseFile by passing a ProgressCallback to saveInBackground and getDataInBackground. For example:
+It's easy to get the progress of both uploads and downloads using **ParseFile** by passing a ProgressCallback to saveInBackground and getDataInBackground. For example:
 
 ```JAVA
 	byte[] data = getBytes("song.mp3");
@@ -265,11 +265,11 @@ In development...
 GeoPoints
 ---------
 
-Parse allows you to associate real-world latitude and longitude coordinates with an object. Adding a ParseGeoPoint to a ParseObject allows queries to take into account the proximity of an object to a reference point. This allows you to easily do things like find out what user is closest to another user or which places are closest to a user.
+Parse allows you to associate real-world latitude and longitude coordinates with an object. Adding a **ParseGeoPoint** to a ParseObject allows queries to take into account the proximity of an object to a reference point. This allows you to easily do things like find out what user is closest to another user or which places are closest to a user.
 
 #### ParseGeoPoint
 
-To associate a point with an object you first need to create a ParseGeoPoint. For example, to create a point with latitude of 40.0 degrees and -30.0 degrees longitude:
+To associate a point with an object you first need to create a **ParseGeoPoint**. For example, to create a point with latitude of 40.0 degrees and -30.0 degrees longitude:
 
 ```JAVA
 	ParseGeoPoint point = new ParseGeoPoint(40.0, -30.0);
@@ -283,7 +283,7 @@ This point is then stored in the object as a regular field.
 
 #### Geo Queries
 
-Now that you have a bunch of objects with spatial coordinates, it would be nice to find out which objects are closest to a point. This can be done by adding another restriction to ParseQuery using whereNear. Getting a list of ten places that are closest to a user may look something like:
+Now that you have a bunch of objects with spatial coordinates, it would be nice to find out which objects are closest to a point. This can be done by adding another restriction to **ParseQuery** using whereNear. Getting a list of ten places that are closest to a user may look something like:
 
 ```JAVA
 	ParseGeoPoint userLocation = (ParseGeoPoint) userObject.get("location");
@@ -297,7 +297,7 @@ At this point nearPlaces will be an array of objects ordered by distance (neares
 
 To limit the results using distance, check out whereWithinKilometers, whereWithinMiles, and whereWithinRadians.
 
-It's also possible to query for the set of objects that are contained within a particular area. To find the objects in a rectangular bounding box, add the whereWithinGeoBox restriction to your ParseQuery.
+It's also possible to query for the set of objects that are contained within a particular area. To find the objects in a rectangular bounding box, add the whereWithinGeoBox restriction to your **ParseQuery**.
 
 ```JAVA
 	ParseGeoPoint southwestOfSF = new ParseGeoPoint(37.708813, -122.526398);
@@ -311,7 +311,7 @@ It's also possible to query for the set of objects that are contained within a p
 
 At the moment there are a couple of things to watch out for:
 
-* Each ParseObject class may only have one key with a ParseGeoPoint object.
+* Each **ParseObject** class may only have one key with a **ParseGeoPoint** object. The last one added is the one that is gonna be saved to the backend.
 * Points should not equal or exceed the extreme ends of the ranges. Latitude should not be -90.0 or 90.0. Longitude should not be -180.0 or 180.0. Attempting to set latitude or longitude out of bounds will cause an error.
 
 Notes
