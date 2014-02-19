@@ -511,6 +511,7 @@ TODO
  * [Objects](#Objects)
  * [CloudFunctions](#CloudFunctions) 
  * [GeoPoints](#GeoPoints)
+ * [Analytics](#Analytics) 
 
  
 ### In development
@@ -523,7 +524,6 @@ TODO
 
  * [ACL](#Objects)  
  * [Roles](#Roles) 
- * [Analytics](#Analytics) 
  * [Push Notifications](#PushNotifications) 
  * [Instalations](#Instalations) 
  
