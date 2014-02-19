@@ -8,9 +8,8 @@ public abstract class LoginCallback extends ParseCallback<ParseUser> {
 	abstract void done(ParseUser parseUser, ParseException parseException);
 	
 	@Override
-	void internalDone(ParseUser paramT, ParseException parseException) {
-		// TODO Auto-generated method stub
-		
+	void internalDone(ParseUser parseUser, ParseException parseException) {
+		done(parseUser, parseException);
 	}
 	
 }

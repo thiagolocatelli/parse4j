@@ -2,6 +2,7 @@ package org.parse4j;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.parse4j.callback.LoginCallback;
 import org.parse4j.callback.RequestPasswordResetCallback;
 import org.parse4j.callback.SignUpCallback;
 import org.parse4j.command.ParseGetCommand;
@@ -186,10 +187,6 @@ public class ParseUser extends ParseObject {
 
 	}
 
-
-	public void signUpInBackground(SignUpCallback callback) {
-
-	}
 	
 	public void logout() throws ParseException {
 
@@ -201,6 +198,15 @@ public class ParseUser extends ParseObject {
 	
 	public static void requestPasswordResetInBackground(String email,
 			RequestPasswordResetCallback callback) {
+
+	}
+	
+	public void signUpInBackground(SignUpCallback callback) {
+
+	}
+	
+	public static void loginInBackground(String username, String password, 
+			LoginCallback callback) {
 
 	}
 	
