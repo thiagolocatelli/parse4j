@@ -376,13 +376,13 @@ TODO
 ### In development
 
  * [Files](#Files) 
- * [Roles](#Roles) 
  * [Queries](#Queries)  
  * [Users](#Users) 
 
 ### Pending Functionalities
 
  * [ACL](#Objects)  
+ * [Roles](#Roles) 
  * [Analytics](#Analytics) 
  * [Push Notifications](#PushNotifications) 
  * [Instalations](#Instalations) 
