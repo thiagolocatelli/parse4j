@@ -61,6 +61,8 @@ The three special values have their own accessors:
 	Date createdAt = gameScore.getCreatedAt();
 ```
 
+#### Callback functions
+
 You can also add a callback function to the save operation
 
 ```Java
@@ -77,6 +79,8 @@ You can also add a callback function to the save operation
 			}
 		});
 ```
+
+#### Delete
 
 To delete an object, just call the method delete().
 
