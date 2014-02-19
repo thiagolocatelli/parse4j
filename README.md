@@ -34,8 +34,14 @@ Objects
 	gameScore.put("playerName", "Sean Plott");
 	gameScore.put("cheatMode", false);
 	gameScore.save();
-	gameScore.saveInBackground(); // you saveInBackground if you want to delegate the operation to a background thread
 ```
+
+Use saveInBackground() if you want to delegate the operation to a background thread
+
+```Java
+	gameScore.saveInBackground();  
+```
+
 
 To get the values out of the ParseObject, there's a getX method for each data type:
 
