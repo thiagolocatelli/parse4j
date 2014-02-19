@@ -1,6 +1,8 @@
 Parse4J - Java Library for parse.com
 ====================================
 
+The non-official java library for parse.com
+
 Summary
 -------
 
