@@ -519,12 +519,12 @@ TODO
  * [Files](#Files) 
  * [Queries](#Queries)  
  * [Users](#Users) 
+ * [Push Notifications](#PushNotifications) 
 
 ### Pending Functionalities
 
  * [ACL](#Objects)  
  * [Roles](#Roles) 
- * [Push Notifications](#PushNotifications) 
  * [Instalations](#Instalations) 
  
 
