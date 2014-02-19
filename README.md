@@ -383,7 +383,7 @@ Graphs and breakdowns of your statistics are accessible from your app's Dashboar
 
 #### Custom Analytics
 
-ParseAnalytics also allows you to track free-form events, with a handful of String keys and values. These extra dimensions allow segmentation of your custom events via your app's Dashboard.
+**ParseAnalytics** also allows you to track free-form events, with a handful of String keys and values. These extra dimensions allow segmentation of your custom events via your app's Dashboard.
 
 Say your app offers search functionality for apartment listings, and you want to track how often the feature is used, with some additional metadata.
 
@@ -399,6 +399,15 @@ Say your app offers search functionality for apartment listings, and you want to
 	ParseAnalytics.trackEvent("search", dimensions);
 ```
 
+**ParseAnalytics** can even be used as a lightweight error tracker — simply invoke the following and you'll have access to an overview of the rate and frequency of errors, broken down by error code, in your application:
+
+```JAVA
+	Map<String, String> dimensions = new HashMap<String, String>();
+	dimensions.put('code', Integer.toString(error.getCode()));
+	ParseAnalytics.trackEvent('error', dimensions);
+```
+
+Note that Parse currently only stores the first eight dimension pairs per call to **ParseAnalytics.trackEvent()**.
 
 <a name="CloudFunctions"></a>
 Cloud Functions
