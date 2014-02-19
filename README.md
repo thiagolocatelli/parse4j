@@ -86,7 +86,7 @@ To delete an object, just call the method delete()
 You can also attach a callback function on the delete/deleteInBackground methods.
 
 ```Java
-	parseObject.deleteInBackground(new DeleteCallback() {
+	gameScore.deleteInBackground(new DeleteCallback() {
 			@Override
 			public void done(ParseException parseException) {
 				//do something
