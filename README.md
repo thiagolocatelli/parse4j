@@ -208,7 +208,7 @@ Finally, after the save completes, you can associate a ParseFile onto a ParseObj
 Retrieving it back involves calling one of the getData variants on the ParseObject. Here we retrieve the resume file off another JobApplication object:
 
 ```JAVA
-	ParseFile applicantResume = (ParseFile)anotherApplication.get("applicantResumeFile");
+	ParseFile applicantResume = (ParseFile) anotherApplication.get("applicantResumeFile");
 	applicantResume.getDataInBackground(new GetDataCallback() {
 	  public void done(byte[] data, ParseException e) {
 	    if (e == null) {
