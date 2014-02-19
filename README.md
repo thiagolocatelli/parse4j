@@ -78,12 +78,20 @@ You can also add a callback function to the save operation
 		});
 ```
 
+To delete an object, just call the method delete()
+
 ```Java
-	ParseObject gameScore = new ParseObject("GameScore");
-	gameScore.put("score", 1337);
-	gameScore.put("playerName", "Sean Plott");
-	gameScore.put("cheatMode", false);
-	gameScore.saveInBackground();
+	gameScore.delete();
+```
+You can also attach a callback function on the delete/deleteInBackground methods.
+
+```Java
+	parseObject.deleteInBackground(new DeleteCallback() {
+			@Override
+			public void done(ParseException parseException) {
+				//do something
+			}
+		});
 ```
 
 Queries
