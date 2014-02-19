@@ -266,7 +266,24 @@ Pending ...
 Cloud Functions
 ---------------
 
-In development...
+Cloud Functions can be called from Android using **ParseCloud**. For example, to call the Cloud Function named "Multiply", defined below:
+
+```JAVASCRIPT
+	Parse.Cloud.define("Multiply", function(request, response) {
+	  response.success(request.params.A * request.params.B);
+	});
+```
+
+and to run the code in the cloud:
+
+```JAVA
+	HashMap<String, Integer> params = new HashMap<String, Integer>();
+	params.put("A", 12);
+	params.put("B", 4);
+	Integer result = ParseCloud.callFunction("Multiply", params);
+```
+
+Take a look at the [Cloud Code Guide](https://parse.com/docs/rest#cloudfunctions) to learn more about Cloud Functions.
 
 <a name="GeoPoints"></a>
 GeoPoints
