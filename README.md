@@ -345,6 +345,8 @@ TODO
 ### Pending Functionalities
 
  * [Queries](#Queries) 
+ * [Users](#Users) 
+ * [Roles](#Roles)   
  * [Analytics](#Analytics) 
  * [PushNotifications](#PushNotifications) 
  * [Instalations](#Instalations) 
