@@ -3,7 +3,7 @@ Parse4J - Java Library for parse.com
 
 The non-official java library for [on Parse](https://parse.com) 
 
-ps.: most of the following code snippets and text have been extracted from the parse website, since the java library mimicks the android library.
+ps.: most of the following code snippets and text have been extracted from the parse website, since the java library mimicks the android library. I am not a Parse/Facebook employee.
 
 Summary
 -------
