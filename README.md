@@ -14,8 +14,11 @@ If you're familiar with web frameworks like Ruby on Rails, we've taken many of t
 
 #### Apps
 
-On Parse, you create an App for each of your mobile applications. Each App has its own application id and client key that you apply to your SDK install. Your account on Parse can accommodate multiple Apps. This is useful even if you have one application, since you can deploy different versions for test and production.
+On Parse, you create an App for each of your applications. Each App has its own application id and client key that you apply to your application, like the code below. Your account on Parse can accommodate multiple Apps. This is useful even if you have one application, since you can deploy different versions for test and production.
 
+```Java
+	Parse.initialize(APP_ID, APP_REST_API_ID);
+```
 
 Getting Started
 ---------------
