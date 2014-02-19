@@ -20,6 +20,10 @@ On Parse, you create an App for each of your mobile applications. Each App has i
 Getting Started
 ---------------
 
+#### Download the library manually
+
+
+
 #### Maven (pending sonatype request)
 
 ```XML
@@ -27,7 +31,7 @@ Getting Started
 	    ...
 	    <dependencies>
 	        <dependency>
-	            <groupId>org.parse4j</groupId>
+	            <groupId>github.com.thiagolocatelli</groupId>
 	            <artifactId>parse4j</artifactId>
 	            <version>1.0</version>
 	        </dependency>
