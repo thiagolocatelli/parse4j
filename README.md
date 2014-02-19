@@ -342,9 +342,13 @@ At the moment there are a couple of things to watch out for:
 Push Notifications
 ---------
 
+Pending...
+
 <a name="Instalations"></a>
 Instalations
 ---------
+
+Pending...
 
 Notes
 -----
