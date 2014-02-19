@@ -222,7 +222,7 @@ Retrieving it back involves calling one of the getData variants on the ParseObje
 
 #### Progress
 
-You can also attach callback functions when saving ParseFile, to report the upload progress:
+It's easy to get the progress of both uploads and downloads using ParseFile by passing a ProgressCallback to saveInBackground and getDataInBackground. For example:
 
 ```JAVA
 	byte[] data = getBytes("song.mp3");
@@ -249,6 +249,8 @@ or:
 		}
 	});
 ```
+
+There also another possibility to save the file and give both callbacks at one.
 
 Analytics
 ---------
