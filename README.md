@@ -56,6 +56,21 @@ Use saveInBackground() if you want to delegate the operation to a background thr
 	gameScore.saveInBackground();  
 ```
 
+#### Retrieving Objects
+
+```Java
+	ParseQuery<ParseObject> query = ParseQuery.getQuery("GameScore");
+	query.getInBackground("xWMyZ4YEGZ", new GetCallback<ParseObject>() {
+	  public void done(ParseObject object, ParseException e) {
+	    if (e == null) {
+	      // object will be your game score
+	    } else {
+	      // something went wrong
+	    }
+	  }
+	}); 
+```
+
 
 To get the values out of the ParseObject, there's a getX method for each data type:
 
