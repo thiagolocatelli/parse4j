@@ -28,6 +28,20 @@ Getting Started
 Objects
 -------
 
+Storing data on Parse is built around the ParseObject. Each ParseObject contains key-value pairs of JSON-compatible data. This data is schemaless, which means that you don't need to specify ahead of time what keys exist on each ParseObject. You simply set whatever key-value pairs you want, and our backend will store it.
+
+For example, let's say you're tracking high scores for a game. A single ParseObject could contain:
+
+```Java
+	score: 1337, playerName: "Sean Plott", cheatMode: false 
+```
+
+Keys must be alphanumeric strings. Values can be strings, numbers, booleans, or even arrays and objects - anything that can be JSON-encoded.
+
+Each ParseObject has a class name that you can use to distinguish different sorts of data. For example, we could call the high score object a GameScore. Parse recommend that you NameYourClassesLikeThis and nameYourKeysLikeThis, just to keep your code looking pretty.
+
+#### Saving Objects
+
 ```Java
 	ParseObject gameScore = new ParseObject("GameScore");
 	gameScore.put("score", 1337);
