@@ -341,18 +341,17 @@ TODO
 ### Implemented Functionalities
 
  * [Objects](#Objects)
+ * [CloudFunctions](#CloudFunctions) 
  * [GeoPoints](#GeoPoints)
 
  
 ### In development
 
  * [Files](#Files)
- * [CloudFunctions](#CloudFunctions) 
- 
+ * [Queries](#Queries)  
 
 ### Pending Functionalities
 
- * [Queries](#Queries) 
  * [Users](#Users) 
  * [Roles](#Roles)   
  * [Analytics](#Analytics) 

@@ -51,6 +51,12 @@ public class ParseObject {
 	public static ParseObject create(String className) {
 		return new ParseObject(className);
 	}
+	
+	public static ParseObject createWithoutData(String className, String objectId) {
+		ParseObject result = create(className);
+	    result.setObjectId(objectId);
+	    return result;
+	}
 
 	public String getObjectId() {
 		return this.objectId;

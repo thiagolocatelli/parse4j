@@ -4,47 +4,43 @@
 
 	<groupId>org.parse4j</groupId>
 	<artifactId>parse4j</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>1.0-SNAPSHOT</version>
 	<packaging>jar</packaging>
 	<name>parse4j</name>
 	<url>https://github.com/thiagolocatelli/parse4j</url>
-	
+
 	<parent>
-        <groupId>org.sonatype.oss</groupId>
-        <artifactId>oss-parent</artifactId>
-        <version>7</version>
-    </parent>	
-	
+		<groupId>org.sonatype.oss</groupId>
+		<artifactId>oss-parent</artifactId>
+		<version>7</version>
+	</parent>
+
 	<licenses>
-        <license>
-            <name>The Apache Software License, Version 2.0</name>
-            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
-            <distribution>repo</distribution>
-        </license>
-    </licenses>
-    
+		<license>
+			<name>The Apache Software License, Version 2.0</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+
 	<developers>
-        <developer>
-            <id>parse4j</id>
-            <name>Thiago Locatelli</name>
-            <email>thiago.locatelli@gmail.com</email>
-        </developer>
-    </developers>
-    
-    <contributors>
-    	<!-- 
-        <contributor>
-            <name>Contributor's name</name>
-            <email>Contributor's email</email>
-        </contributor>
-         -->
-    </contributors>    
-    
- 	<scm>
-        <connection>scm:git:git@github.com:thiagolocatelli/parse4j.git</connection>
-        <developerConnection>scm:git:git@github.com:thiagolocatelli/parse4j.git</developerConnection>
-        <url>git@github.com:thiagolocatelli/parse4j.git</url>
-    </scm>   
+		<developer>
+			<id>parse4j</id>
+			<name>Thiago Locatelli</name>
+			<email>thiago.locatelli@gmail.com</email>
+		</developer>
+	</developers>
+
+	<contributors>
+		<!-- <contributor> <name>Contributor's name</name> <email>Contributor's 
+			email</email> </contributor> -->
+	</contributors>
+
+	<scm>
+		<connection>scm:git:git@github.com:thiagolocatelli/parse4j.git</connection>
+		<developerConnection>scm:git:git@github.com:thiagolocatelli/parse4j.git</developerConnection>
+		<url>git@github.com:thiagolocatelli/parse4j.git</url>
+	</scm>
 
 	<properties>
 		<maven.test.skip>false</maven.test.skip>
@@ -75,7 +71,7 @@
 			<artifactId>httpcore</artifactId>
 			<version>4.3.1</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.json</groupId>
 			<artifactId>json</artifactId>

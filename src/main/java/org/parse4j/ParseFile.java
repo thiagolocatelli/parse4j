@@ -1,6 +1,7 @@
 package org.parse4j;
 
 import org.json.JSONObject;
+import org.parse4j.callback.GetDataCallback;
 import org.parse4j.callback.ProgressCallback;
 import org.parse4j.callback.SaveCallback;
 import org.parse4j.command.ParseResponse;
@@ -78,10 +79,6 @@ public class ParseFile {
 		this.contentType = contentType;
 	}
 
-	public byte[] getData() {
-		return data;
-	}
-
 	public void setData(byte[] data) {
 		this.data = data;
 	}
@@ -132,6 +129,7 @@ public class ParseFile {
 			this.url = jsonResponse.getString("url");
 			this.dirty = false;
 			this.uplodated = true;
+			
 		}
 		else {
 			throw response.getException();
@@ -159,6 +157,26 @@ public class ParseFile {
 		ParseExecutor.runInBackground(task);
 
 	}
+	
+	public byte[] getData() throws ParseException {
+		return getData(null);
+	}
+	
+	public byte[] getData(GetDataCallback dataCallback) throws ParseException {
+		
+		
+		
+		return null;
+	}	
+
+	public void getDataInBackground() {
+		getDataInBackground(null);
+	}	
+
+	public void getDataInBackground(GetDataCallback dataCallback) {
+		GetDataInBackgroundThread task = new GetDataInBackgroundThread(this.data, dataCallback);
+		ParseExecutor.runInBackground(task);
+	}
 
 	class SaveInBackgroundThread extends Thread {
 		SaveCallback saveCallback;
@@ -184,6 +202,27 @@ public class ParseFile {
 		}
 	}
 	
+	class GetDataInBackgroundThread extends Thread {
+		GetDataCallback getDataCallback;
+		byte[] data;
 
+		public GetDataInBackgroundThread(byte[] data, GetDataCallback getDataCallback) {
+			this.getDataCallback = getDataCallback;
+			this.data = data;
+		}
+
+		public void run() {
+			System.out.println("SaveInBackgroundThread.run()");
+			ParseException exception = null;
+			try {
+				getData(getDataCallback);
+			} catch (ParseException e) {
+				exception = e;
+			}
+			if (getDataCallback != null) {
+				getDataCallback.done(data, exception);
+			}			
+		}
+	}	
 
 }
