@@ -192,15 +192,42 @@ We'll go through each of these in detail as we run through the various use cases
 
 #### Signing Up
 
+The first thing your app will do is probably ask the user to sign up. The following code illustrates a typical sign up:
+
+```Java
+	ParseUser user = new ParseUser();
+	user.setUsername("my name");
+	user.setPassword("my pass");
+	user.setEmail("email@example.com");
+	 
+	// other fields can be set just like with ParseObject
+	user.put("phone", "650-253-0000");
+	user.signUp();
+```
+
+This call will synchronously create a new user in your Parse application. Before it does this, it checks to make sure that both the username and email are unique. Also, it securely hashes the password in the cloud. Parse never stores passwords in plaintext, nor will Parse ever transmit passwords back to the client in plaintext.
+
+You can also use signUpInBackground method, but never saveInBackground method. New ParseUsers should always be created using the signUpInBackground (or signUp) method. Subsequent updates to a user can be done by calling save.
+
+If a signup isn't successful, you should read the error object that is returned. The most likely case is that the username or email has already been taken by another user. You should clearly communicate this to your users, and ask them try a different username.
+
+You are free to use an email addresses as the username. Simply ask your users to enter their email, but fill it in the username property — ParseUser will work as normal. We'll go over how this is handled in the reset password section.
+
 #### Logging In
 
 #### Verifying Emails
 
 #### Anonymous Users
 
+pending...
+
 #### Security For User Objects
 
+pending...
+
 #### Security for Other Objects
+
+pending...
 
 #### Resetting Passwords
 
