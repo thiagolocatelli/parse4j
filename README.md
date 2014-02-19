@@ -33,7 +33,8 @@ Objects
 	gameScore.put("score", 1337);
 	gameScore.put("playerName", "Sean Plott");
 	gameScore.put("cheatMode", false);
-	gameScore.saveInBackground();
+	gameScore.save();
+	gameScore.saveInBackground(); // you saveInBackground if you want to delegate the operation to a background thread
 ```
 
 To get the values out of the ParseObject, there's a getX method for each data type:
@@ -54,13 +55,21 @@ The three special values have their own accessors:
 	Date createdAt = gameScore.getCreatedAt();
 ```
 
+You can also add a callback function to the save operation
 
 ```Java
-	ParseObject gameScore = new ParseObject("GameScore");
+	final ParseObject gameScore = new ParseObject("GameScore");
 	gameScore.put("score", 1337);
 	gameScore.put("playerName", "Sean Plott");
 	gameScore.put("cheatMode", false);
-	gameScore.saveInBackground();
+	gameScore.saveInBackground(new SaveCallback() {			
+			@Override
+			public void done(ParseException parseException) {
+				System.out.println("saveInBackground(): objectId: " + parseObject.getObjectId());
+				System.out.println("saveInBackground(): createdAt: " + parseObject.getCreatedAt());
+				System.out.println("saveInBackground(): updatedAt: " + parseObject.getUpdatedAt());
+			}
+		});
 ```
 
 ```Java
