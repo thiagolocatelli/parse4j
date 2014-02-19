@@ -283,7 +283,7 @@ and to run the code in the cloud:
 	Integer result = ParseCloud.callFunction("Multiply", params);
 ```
 
-Take a look at the [Cloud Code Guide](https://parse.com/docs/rest#cloudfunctions) to learn more about Cloud Functions.
+Take a look at the [Cloud Code Guide](https://parse.com/docs/rest#cloudfunctions){:target="_blank"} to learn more about Cloud Functions.
 
 <a name="GeoPoints"></a>
 GeoPoints
