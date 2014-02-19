@@ -231,6 +231,14 @@ Of course, after you allow users to sign up, you need be able to let them log in
 
 #### Verifying Emails
 
+Enabling email verification in an application's settings allows the application to reserve part of its experience for users with confirmed email addresses. Email verification adds the emailVerified key to the **ParseUser** object. When a **ParseUser**'s email is set or modified, emailVerified is set to false. Parse then emails the user a link which will set emailVerified to true.
+
+There are three emailVerified states to consider:
+
+* true - the user confirmed his or her email address by clicking on the link Parse emailed them. **ParseUsers** can never have a true value when the user account is first created.
+* false - at the time the **ParseUser** object was last fetched, the user had not confirmed his or her email address. If emailVerified is false, consider calling fetch() on the **ParseUser**.
+* missing - the **ParseUser** was created when email verification was off or the ParseUser does not have an email.
+
 #### Anonymous User
 
 pending...
