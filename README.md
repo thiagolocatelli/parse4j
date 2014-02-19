@@ -36,11 +36,17 @@ Objects
 	gameScore.saveInBackground();
 ```
 
+To get the values out of the ParseObject, there's a getX method for each data type:
+
 ```Java
 	int score = gameScore.getInt("score");
 	String playerName = gameScore.getString("playerName");
 	boolean cheatMode = gameScore.getBoolean("cheatMode");
 ```
+
+If you don't know what type of data you're getting out, you can call get(key), but then you probably have to cast it right away anyways. In most situations you should use the typed accessors like getString.
+
+The three special values have their own accessors:
 
 ```Java
 	String objectId = gameScore.getObjectId();
