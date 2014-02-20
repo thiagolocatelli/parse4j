@@ -421,8 +421,8 @@ Say your app offers search functionality for apartment listings, and you want to
 
 ```JAVA
 	Map<String, String> dimensions = new HashMap<String, String>();
-	dimensions.put('code', Integer.toString(error.getCode()));
-	ParseAnalytics.trackEvent('error', dimensions);
+	dimensions.put("code", Integer.toString(error.getCode()));
+	ParseAnalytics.trackEvent("error", dimensions);
 ```
 
 Note that Parse currently only stores the first eight dimension pairs per call to **ParseAnalytics.trackEvent()**.
