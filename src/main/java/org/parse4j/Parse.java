@@ -3,7 +3,9 @@ package org.parse4j;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Collection;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.SimpleTimeZone;
@@ -72,6 +74,20 @@ public class Parse {
 				|| ((value instanceof ParseGeoPoint))
 				|| ((value instanceof Date)) || ((value instanceof byte[]))
 				|| ((value instanceof List)) || ((value instanceof Map));
+	}
+	
+	@SuppressWarnings("rawtypes")
+	public static String join(Collection<String> items, String delimiter) {
+		StringBuffer buffer = new StringBuffer();
+		Iterator iter = items.iterator();
+		if (iter.hasNext()) {
+			buffer.append((String) iter.next());
+			while (iter.hasNext()) {
+				buffer.append(delimiter);
+				buffer.append((String) iter.next());
+			}
+		}
+		return buffer.toString();
 	}
 
 

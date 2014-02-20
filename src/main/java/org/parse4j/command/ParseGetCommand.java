@@ -2,6 +2,7 @@ package org.parse4j.command;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.Iterator;
 
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpRequestBase;
@@ -21,6 +22,7 @@ public class ParseGetCommand extends ParseCommand {
 		this.className = className;
 	}
 
+	@SuppressWarnings("rawtypes")
 	@Override
 	public HttpRequestBase getRequest() {
 		
@@ -32,6 +34,20 @@ public class ParseGetCommand extends ParseCommand {
 				String passPart = "password=" + URLEncoder.encode(data.getString("password"), "UTF-8");
 				url += "?" + userPart + "&" + passPart;
 				System.out.println(url);
+			}
+			catch(UnsupportedEncodingException e) {
+				
+			}
+		}
+		
+		if(data.length() > 0) {
+			try {
+				url += "?";
+				Iterator it = data.keySet().iterator();
+				while(it.hasNext()) {
+					String key = (String) it.next();
+					url += key + "=" + URLEncoder.encode(data.getString(key), "UTF-8") + "&";
+				}
 			}
 			catch(UnsupportedEncodingException e) {
 				
