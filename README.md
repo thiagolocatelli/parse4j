@@ -168,6 +168,24 @@ gameScore.saveInBackground();
 Queries
 -------
 
+#### Basic Queries
+
+#### Query Constraints
+
+#### Queries on Array Values
+
+#### Queries on String Values
+
+#### Relational Queries
+
+Pending...
+
+#### Counting Objects
+
+#### Compound Queries
+
+
+
 Pending...
 
 <a name="Users"></a>

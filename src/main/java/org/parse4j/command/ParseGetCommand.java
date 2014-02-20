@@ -6,9 +6,15 @@ import java.util.Iterator;
 
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpRequestBase;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.parse4j.Parse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ParseGetCommand extends ParseCommand {
+	
+	private static Logger LOGGER = LoggerFactory.getLogger(ParseGetCommand.class);
 
 	private String className;
 	private String objectId;
@@ -36,22 +42,33 @@ public class ParseGetCommand extends ParseCommand {
 				System.out.println(url);
 			}
 			catch(UnsupportedEncodingException e) {
-				
+				LOGGER.error("Error while building request url", e);
 			}
 		}
 		
-		if(data.length() > 0) {
-			try {
-				url += "?";
-				Iterator it = data.keySet().iterator();
-				while(it.hasNext()) {
-					String key = (String) it.next();
-					url += key + "=" + URLEncoder.encode(data.getString(key), "UTF-8") + "&";
+		try {
+			if(data.get("data") != null) {
+				JSONObject query = (JSONObject) data.get("data");
+				try {
+					url += "?";
+					Iterator it = query.keySet().iterator();
+					while(it.hasNext()) {
+						String key = (String) it.next();
+						Object obj = query.get(key);
+						url += key + "=" + URLEncoder.encode(obj.toString(), "UTF-8") + "&";
+					}
+				}
+				catch(UnsupportedEncodingException e) {
+					LOGGER.error("Encoding error while building request url", e);
 				}
 			}
-			catch(UnsupportedEncodingException e) {
-				
-			}
+		}
+		catch(JSONException e) {
+			LOGGER.error("Data not found, empty request?", e);
+		}
+		
+		if(LOGGER.isDebugEnabled()) {
+			LOGGER.debug("Request URL: {}", url);
 		}
 		
 		HttpGet httpget = new HttpGet(url);

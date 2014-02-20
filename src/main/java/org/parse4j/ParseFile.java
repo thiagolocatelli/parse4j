@@ -7,8 +7,12 @@ import org.parse4j.callback.SaveCallback;
 import org.parse4j.command.ParseResponse;
 import org.parse4j.command.ParseUploadCommand;
 import org.parse4j.util.MimeType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public class ParseFile {
+public class ParseFile {	
+	
+	private static Logger LOGGER = LoggerFactory.getLogger(ParseFile.class);
 
 	private String endPoint;
 	private boolean uplodated = false;
@@ -20,6 +24,11 @@ public class ParseFile {
 
 	public ParseFile(String name, byte[] data, String contentType) {
 		if (data.length > ParseConstants.MAX_PARSE_FILE_SIZE) {
+			LOGGER.error(String.format(
+							"ParseFile must be less than %i bytes, current %i",
+							new Object[] {
+									Integer.valueOf(ParseConstants.MAX_PARSE_FILE_SIZE),
+									data.length }));
 			throw new IllegalArgumentException(
 					String.format(
 							"ParseFile must be less than %i bytes, current %i",
@@ -129,6 +138,7 @@ public class ParseFile {
 			JSONObject jsonResponse = response.getJsonObject();
 			System.out.println(jsonResponse);
 			if (jsonResponse == null) {
+				LOGGER.error("Empty response.");
 				throw response.getException();
 			}
 			
@@ -139,6 +149,7 @@ public class ParseFile {
 			
 		}
 		else {
+			LOGGER.error("Request failed.");
 			throw response.getException();
 		}
 
@@ -196,11 +207,11 @@ public class ParseFile {
 		}
 
 		public void run() {
-			System.out.println("SaveInBackgroundThread.run()");
 			ParseException exception = null;
 			try {
 				save(saveCallback, progressCallback);
 			} catch (ParseException e) {
+				LOGGER.debug("Request failed {}", e.getMessage());
 				exception = e;
 			}
 			if (saveCallback != null) {
@@ -223,6 +234,7 @@ public class ParseFile {
 			try {
 				getData(getDataCallback);
 			} catch (ParseException e) {
+				LOGGER.debug("Request failed {}", e.getMessage());
 				exception = e;
 			}
 			if (getDataCallback != null) {

@@ -7,16 +7,23 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.parse4j.callback.CountCallback;
 import org.parse4j.callback.FindCallback;
 import org.parse4j.callback.GetCallback;
+import org.parse4j.command.ParseGetCommand;
+import org.parse4j.command.ParseResponse;
 import org.parse4j.encode.PointerEncodingStrategy;
 import org.parse4j.util.ParseEncoder;
 import org.parse4j.util.ParseRegister;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ParseQuery<T extends ParseObject> {
+	
+	private static Logger LOGGER = LoggerFactory.getLogger(ParseQuery.class);
 
 	private String className;
 	private QueryConstraints where;
@@ -28,10 +35,6 @@ public class ParseQuery<T extends ParseObject> {
 	private String order;
 	
 	private boolean trace;
-	private long queryStart;
-	private long querySent;
-	private long queryReceived;
-	private long objectsParsed;
 
 	public ParseQuery(Class<T> subclass) {
 		this(ParseRegister.getClassName(subclass));
@@ -307,7 +310,7 @@ public class ParseQuery<T extends ParseObject> {
 
 	public void selectKeys(Collection<String> keys) {
 		if (this.selectedKeys == null) {
-			this.selectedKeys = new ArrayList();
+			this.selectedKeys = new ArrayList<String>();
 		}
 		this.selectedKeys.addAll(keys);
 	}
@@ -350,6 +353,7 @@ public class ParseQuery<T extends ParseObject> {
 				params.put(key, ParseEncoder.encode(this.extraOptions.get(key), PointerEncodingStrategy.get()));
 		
 		} catch (JSONException e) {
+			LOGGER.error("Error parsing json", e);
 			throw new RuntimeException(e);
 		}
 
@@ -358,28 +362,243 @@ public class ParseQuery<T extends ParseObject> {
 	
 	
 	
-	public T get(String theObjectId) throws ParseException {
+	public T get(String objectId) throws ParseException {
+		
+		whereEqualTo("objectId", objectId);
+		
+		List<T> results = find();
+		if(results != null && results.size() > 0 ) {
+			return results.get(0);
+		}
+		
 		return null;
+		
+		/*
+		String endPoint;
+		if(!"users".equals(getClassName()) && !"roles".equals(getClassName())) {
+			endPoint = "classes/" + getClassName();
+		}
+		else {
+			endPoint = getClassName();
+		}
+		
+
+		ParseGetCommand command = new ParseGetCommand(endPoint);
+		JSONObject query = whereEqualTo("objectId", objectId).toREST();
+		query.remove("className");
+		command.setData(query);
+		ParseResponse response = command.perform();
+		if(!response.isFailed()) {
+			if(response.getJsonObject() == null) {
+				LOGGER.debug("Empty response.");
+				throw response.getException();
+			}
+			try {
+				JSONObject json = response.getJsonObject();
+				JSONArray objs = json.getJSONArray("results");
+				if(objs.length() == 0) {
+					return null;
+				}
+				
+				ParseObject po = new ParseObject(getClassName());
+				JSONObject obj = (JSONObject) objs.get(0);
+				po.setData(obj);
+				return (T) po;
+			}
+			catch (JSONException e) {
+				LOGGER.error(
+						"Although Parse reports object successfully saved, the response was invalid.",
+						e);
+				throw new ParseException(
+						ParseException.INVALID_JSON,
+						"Although Parse reports object successfully saved, the response was invalid.",
+						e);
+			}
+		}
+		else {
+			LOGGER.debug("Request failed.");
+			throw response.getException();
+		}
+		*/
+
 	}
 
 	public void getInBackground(String objectId, GetCallback<T> callback) {
+		GetInBackgroundThread task = new GetInBackgroundThread(objectId, callback);
+		ParseExecutor.runInBackground(task);
+	}
+	
+	class GetInBackgroundThread extends Thread {
+		GetCallback<T> callback;
+		String objectId;
 
+		public GetInBackgroundThread(String objectId, GetCallback<T> callback) {
+			this.callback = callback;
+			this.objectId = objectId;
+		}
+
+		public void run() {
+			ParseException exception = null;
+			T object = null;
+			try {
+				object = get(objectId);
+			} catch (ParseException e) {
+				exception = e;
+			}
+			if (callback != null) {
+				callback.done(object, exception);
+			}
+		}
 	}
 
 	public List<T> find() throws ParseException {
-		return null;
+		
+		String endPoint;
+		if(!"users".equals(getClassName()) && !"roles".equals(getClassName())) {
+			endPoint = "classes/" + getClassName();
+		}
+		else {
+			endPoint = getClassName();
+		}
+
+		ParseGetCommand command = new ParseGetCommand(endPoint);
+		JSONObject query = toREST();
+		query.remove("className");
+		command.setData(query);
+		ParseResponse response = command.perform();
+		List<T> results = null;
+		if(!response.isFailed()) {
+			if(response.getJsonObject() == null) {
+				LOGGER.debug("Empty response.");
+				throw response.getException();
+			}
+			try {
+				JSONObject json = response.getJsonObject();
+				JSONArray objs = json.getJSONArray("results");
+				if(objs.length() == 0) {
+					return null;
+				}
+				
+				results = new ArrayList<T>();
+				for(int i = 0; i < objs.length(); i++) {
+					ParseObject po = new ParseObject(getClassName());
+					JSONObject obj = (JSONObject) objs.get(0);
+					po.setData(obj);
+					results.add((T) po);
+				}
+
+				return results;
+			}
+			catch (JSONException e) {
+				LOGGER.error(
+						"Although Parse reports object successfully saved, the response was invalid.",
+						e);
+				throw new ParseException(
+						ParseException.INVALID_JSON,
+						"Although Parse reports object successfully saved, the response was invalid.",
+						e);
+			}
+		}
+		else {
+			LOGGER.debug("Request failed.");
+			throw response.getException();
+		}
 	}
 
 	public void findInBackground(FindCallback<T> callback) {
+		FindInBackgroundThread task = new FindInBackgroundThread(callback);
+		ParseExecutor.runInBackground(task);
+	}
+	
+	class FindInBackgroundThread extends Thread {
+		FindCallback<T> callback;
 
+		public FindInBackgroundThread(FindCallback<T> callback) {
+			this.callback = callback;
+		}
+
+		public void run() {
+			ParseException exception = null;
+			List<T> object = null;
+			try {
+				object = find();
+			} catch (ParseException e) {
+				exception = e;
+			}
+			if (callback != null) {
+				callback.done(object, exception);
+			}
+		}
 	}
 
 	public int count() throws ParseException {
-		return 0;
+		
+		String endPoint;
+		if(!"users".equals(getClassName()) && !"roles".equals(getClassName())) {
+			endPoint = "classes/" + getClassName();
+		}
+		else {
+			endPoint = getClassName();
+		}
+
+		ParseGetCommand command = new ParseGetCommand(endPoint);
+		JSONObject query = toREST();
+		query.put("count", 1);
+		query.put("limit", 0);
+		query.remove("className");
+		command.setData(query);
+		ParseResponse response = command.perform();
+		if(!response.isFailed()) {
+			if(response.getJsonObject() == null) {
+				LOGGER.debug("Empty response.");
+				throw response.getException();
+			}
+			try {
+				JSONObject json = response.getJsonObject();
+				int count = json.getInt("count");
+				return count;
+			}
+			catch (JSONException e) {
+				LOGGER.error(
+						"Although Parse reports object successfully saved, the response was invalid.",
+						e);
+				throw new ParseException(
+						ParseException.INVALID_JSON,
+						"Although Parse reports object successfully saved, the response was invalid.",
+						e);
+			}
+		}
+		else {
+			LOGGER.debug("Request failed.");
+			throw response.getException();
+		}
+		
 	}
 
 	public void countInBackground(CountCallback countCallback) {
+		CountInBackgroundThread task = new CountInBackgroundThread(countCallback);
+		ParseExecutor.runInBackground(task);
+	}
+	
+	class CountInBackgroundThread extends Thread {
+		CountCallback callback;
 
+		public CountInBackgroundThread(CountCallback callback) {
+			this.callback = callback;
+		}
+
+		public void run() {
+			ParseException exception = null;
+			int count = -1;
+			try {
+				count = count();
+			} catch (ParseException e) {
+				exception = e;
+			}
+			if (callback != null) {
+				callback.done(count, exception);
+			}
+		}
 	}
 
 	static class KeyConstraints extends HashMap<String, Object> {

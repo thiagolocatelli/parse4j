@@ -8,7 +8,7 @@ public class ParseExecutor {
 	private static ExecutorService executor;
 	
 	static {
-		executor = Executors.newSingleThreadExecutor();
+		executor = Executors.newFixedThreadPool(10);
 	}
 	
 	public static void runInBackground(Runnable runnable) {

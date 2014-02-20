@@ -2,15 +2,11 @@ package org.parse4j.command;
 
 import java.io.IOException;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.entity.ByteArrayEntity;
 import org.parse4j.Parse;
 import org.parse4j.ParseConstants;
-import org.parse4j.ParseException;
 import org.parse4j.callback.ProgressCallback;
 import org.parse4j.http.CountingHttpEntity;
 
@@ -60,6 +56,7 @@ public class ParseUploadCommand extends ParseCommand {
 		this.progressCallback = progressCallback;
 	}
 	
+	/*
 	@Override
 	public ParseResponse perform() throws ParseException {
 		
@@ -77,5 +74,6 @@ public class ParseUploadCommand extends ParseCommand {
 			throw ParseResponse.getConnectionFailedException(e.getMessage());
 		}
 	}
+	*/
 
 }

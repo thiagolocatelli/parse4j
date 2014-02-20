@@ -13,8 +13,12 @@ import org.parse4j.ParseFile;
 import org.parse4j.ParseGeoPoint;
 import org.parse4j.ParseObject;
 import org.parse4j.encode.ParseObjectEncodingStrategy;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ParseEncoder {
+	
+	private static Logger LOGGER = LoggerFactory.getLogger(ParseEncoder.class);
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public static Object encode(Object value, ParseObjectEncodingStrategy objectEncoder) {
@@ -109,6 +113,7 @@ public class ParseEncoder {
 			return value;	
 		}
 		
+		LOGGER.error("Object type not decoded: " + value.getClass().getCanonicalName());
 		throw new IllegalArgumentException("Invalid type for ParseObject: " + value.getClass().toString());		
 		
 	}

@@ -7,11 +7,11 @@ import org.parse4j.ParseObject;
 
 public abstract class FindCallback<T extends ParseObject> extends ParseCallback<List<T>> {
 
-	public abstract void done(List<T> paramList, ParseException parseException);
+	public abstract void done(List<T> list, ParseException parseException);
 	
 	@Override
-	void internalDone(List<T> paramList, ParseException parseException) {
-		done(paramList, parseException);
+	void internalDone(List<T> list, ParseException parseException) {
+		done(list, parseException);
 	}
 	
 }

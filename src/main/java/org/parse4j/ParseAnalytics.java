@@ -7,8 +7,12 @@ import org.json.JSONObject;
 import org.parse4j.command.ParsePostCommand;
 import org.parse4j.command.ParseResponse;
 import org.parse4j.util.ParseEncoder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ParseAnalytics {
+	
+	private static Logger LOGGER = LoggerFactory.getLogger(ParseAnalytics.class);
 
 	public static void trackAppOpened() {
 		trackEvent("AppOpened");

@@ -9,9 +9,13 @@ import org.parse4j.command.ParseGetCommand;
 import org.parse4j.command.ParsePostCommand;
 import org.parse4j.command.ParseResponse;
 import org.parse4j.util.ParseRegister;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @ParseClassName("users")
 public class ParseUser extends ParseObject {
+	
+	private static Logger LOGGER = LoggerFactory.getLogger(ParseUser.class);
 
 	private String password;
 	private String sessionToken;
@@ -23,6 +27,7 @@ public class ParseUser extends ParseObject {
 
 	public void remove(String key) {
 		if ("username".equals(key)) {
+			LOGGER.error("Can't remove the username key.");
 			throw new IllegalArgumentException("Can't remove the username key.");
 		}
 
@@ -60,7 +65,10 @@ public class ParseUser extends ParseObject {
 	}
 
 	public static ParseUser logIn(String username, String password) throws ParseException {
-		return null;
+		ParseUser pu = new ParseUser();
+		pu.setUsername(username);
+		pu.setPassword(password);
+		return pu;
 	}
 	
 	public boolean isAuthenticated() {
@@ -70,11 +78,13 @@ public class ParseUser extends ParseObject {
 	void validateSave() {
 
 		if (getObjectId() == null) {
+			LOGGER.error("Cannot save a ParseUser until it has been signed up. Call signUp first.");
 			throw new IllegalArgumentException(
 					"Cannot save a ParseUser until it has been signed up. Call signUp first.");
 		}
 
 		if ((!isAuthenticated()) && isDirty && getObjectId() != null) {
+			LOGGER.error("Cannot save a ParseUser that is not authenticated.");
 			throw new IllegalArgumentException(
 					"Cannot save a ParseUser that is not authenticated.");
 		}
@@ -86,16 +96,19 @@ public class ParseUser extends ParseObject {
 	public void signUp() throws ParseException {
 
 		if ((getUsername() == null) || (getUsername().length() == 0)) {
+			LOGGER.error("Username cannot be missing or blank");
 			throw new IllegalArgumentException(
 					"Username cannot be missing or blank");
 		}
 
 		if (password == null) {
+			LOGGER.error("Password cannot be missing or blank");
 			throw new IllegalArgumentException(
 					"Password cannot be missing or blank");
 		}
 		
 		if (getObjectId() != null) {
+			LOGGER.error("Cannot sign up a user that has already signed up.");
 			throw new IllegalArgumentException(
 					"Cannot sign up a user that has already signed up.");
 		}
@@ -108,6 +121,7 @@ public class ParseUser extends ParseObject {
 		if(!response.isFailed()) {
 			JSONObject jsonResponse = response.getJsonObject();
 			if (jsonResponse == null) {
+				LOGGER.error("Empty response");
 				throw response.getException();
 			}
 			try {
@@ -117,6 +131,7 @@ public class ParseUser extends ParseObject {
 				setCreatedAt(Parse.parseDate(createdAt));
 				setUpdatedAt(Parse.parseDate(createdAt));
 			}catch (JSONException e) {
+				LOGGER.error("Although Parse reports object successfully saved, the response was invalid.");
 				throw new ParseException(
 						ParseException.INVALID_JSON,
 						"Although Parse reports object successfully saved, the response was invalid.",
@@ -124,6 +139,7 @@ public class ParseUser extends ParseObject {
 			}
 		}
 		else {
+			LOGGER.error("Request failed.");
 			throw response.getException();
 		}
 		
@@ -139,6 +155,7 @@ public class ParseUser extends ParseObject {
 		if(!response.isFailed()) {
 			JSONObject jsonResponse = response.getJsonObject();
 			if (jsonResponse == null) {
+				LOGGER.error("Empty response.");
 				throw response.getException();
 			}
 			try {
@@ -157,6 +174,7 @@ public class ParseUser extends ParseObject {
 				return parseUser;
 				
 			}catch (JSONException e) {
+				LOGGER.error("Although Parse reports object successfully saved, the response was invalid.");
 				throw new ParseException(
 						ParseException.INVALID_JSON,
 						"Although Parse reports object successfully saved, the response was invalid.",
@@ -164,6 +182,7 @@ public class ParseUser extends ParseObject {
 			}
 		}
 		else {
+			LOGGER.error("Request failed.");
 			throw response.getException();
 		}
 		
@@ -179,9 +198,11 @@ public class ParseUser extends ParseObject {
 		if (!response.isFailed()) {
 			JSONObject jsonResponse = response.getJsonObject();
 			if (jsonResponse == null) {
+				LOGGER.error("Empty response.");
 				throw response.getException();
 			}
 		} else {
+			LOGGER.error("Request failed.");
 			throw response.getException();
 		}
 

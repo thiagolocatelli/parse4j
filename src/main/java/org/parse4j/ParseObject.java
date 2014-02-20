@@ -31,8 +31,12 @@ import org.parse4j.operation.ParseFieldOperation;
 import org.parse4j.operation.ParseRemoveOperation;
 import org.parse4j.operation.SetFieldOperation;
 import org.parse4j.util.ParseDecoder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public class ParseObject {
+public class ParseObject {	
+	
+	private static Logger LOGGER = LoggerFactory.getLogger(ParseObject.class);
 
 	private String objectId;
 	private String className;
@@ -609,8 +613,25 @@ public class ParseObject {
 		while (it.hasNext()) {
 			String key = (String) it.next();
 			Object value = jsonObject.opt(key);
-			put(key, ParseDecoder.decode(value));
+			if(Parse.isInvalidKey(key)) {
+				setReservedKey(key, value);
+			}
+			else {
+				put(key, ParseDecoder.decode(value));
+			}
 		}
-		
+	}
+	
+	protected void setReservedKey(String key, Object value) {
+		if("objectId".equals(key)) {
+			setObjectId(value.toString());
+		}
+		else if("createdAt".equals(key)) {
+			setCreatedAt(Parse.parseDate(value.toString()));
+		}
+		else if("updatedAt".equals(key)) {
+			setUpdatedAt(Parse.parseDate(value.toString()));
+		}
+			
 	}
 }

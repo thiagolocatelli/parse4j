@@ -6,8 +6,12 @@ import org.json.JSONObject;
 import org.parse4j.callback.FunctionCallback;
 import org.parse4j.command.ParsePostCommand;
 import org.parse4j.command.ParseResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ParseCloud {
+	
+	private static Logger LOGGER = LoggerFactory.getLogger(ParseCloud.class);
 
 	@SuppressWarnings("unchecked")
 	public static <T> T callFunction(String name, Map<String, ?> params)
@@ -24,6 +28,7 @@ public class ParseCloud {
 			return result;
 		}
 		else {
+			LOGGER.debug("Request failed.");
 			throw response.getException();
 		}
 		
@@ -53,6 +58,7 @@ public class ParseCloud {
 			try {
 				result = callFunction(name, params);
 			} catch (ParseException e) {
+				LOGGER.debug("Request failed {}", e.getMessage());
 				exception = e;
 			}
 			if (functionCallback != null) {

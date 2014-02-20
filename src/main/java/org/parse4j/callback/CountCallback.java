@@ -4,12 +4,12 @@ import org.parse4j.ParseException;
 
 public abstract class CountCallback extends ParseCallback<Integer> {
 
-	abstract void done(int paramInt, ParseException parseException);
+	public abstract void done(Integer count, ParseException parseException);
 
 	@Override
-	void internalDone(Integer paramInt, ParseException parseException) {
+	void internalDone(Integer count, ParseException parseException) {
 		if (parseException == null)
-			done(paramInt.intValue(), null);
+			done(count, null);
 		else
 			done(-1, parseException);
 	}

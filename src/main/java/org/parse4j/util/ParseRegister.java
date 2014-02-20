@@ -77,6 +77,10 @@ public class ParseRegister {
 		}
 		return name;
 	}
-		
+	
+	public static Class<? extends ParseObject> getParseClass(String className) {
+		Class<? extends ParseObject> value = (Class<? extends ParseObject>) objectTypes.get(className);
+		return value;
+	}
 	
 }

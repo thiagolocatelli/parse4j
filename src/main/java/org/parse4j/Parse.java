@@ -72,8 +72,10 @@ public class Parse {
 				|| ((value instanceof ParseFile))
 				// || ((value instanceof ParseRelation)
 				|| ((value instanceof ParseGeoPoint))
-				|| ((value instanceof Date)) || ((value instanceof byte[]))
-				|| ((value instanceof List)) || ((value instanceof Map));
+				|| ((value instanceof Date)) 
+				|| ((value instanceof byte[]))
+				|| ((value instanceof List)) 
+				|| ((value instanceof Map));
 	}
 	
 	@SuppressWarnings("rawtypes")

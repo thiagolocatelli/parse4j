@@ -14,8 +14,12 @@ import org.json.JSONObject;
 import org.parse4j.Parse;
 import org.parse4j.ParseConstants;
 import org.parse4j.ParseException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public abstract class ParseCommand {
+	
+	private static Logger LOGGER = LoggerFactory.getLogger(ParseCommand.class);
 
 	private static RequestConfig config;
 	protected JSONObject data = new JSONObject();
@@ -30,10 +34,17 @@ public abstract class ParseCommand {
 	public ParseResponse perform() throws ParseException {
 
 		try {
+			long commandStart = System.currentTimeMillis();
 			HttpClient httpclient = createSingleClient();
+			//ResponseHandler<String> responseHandler=new BasicResponseHandler();
 			HttpResponse httpResponse = httpclient.execute(getRequest());
+			//String resp = httpclient.execute(getRequest(), responseHandler);
 			ParseResponse response = new ParseResponse(httpResponse);
 			
+			long commandReceived = System.currentTimeMillis();
+			if(LOGGER.isDebugEnabled()) {
+				LOGGER.debug("ParseCommand took " + (commandReceived - commandStart) + " milliseconds\n");
+			}
 			return response;
 		}
 		catch (ClientProtocolException e) {
