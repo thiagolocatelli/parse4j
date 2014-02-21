@@ -177,6 +177,7 @@ shield.put("fireproof", false);
 shield.put("rupees", 50);
 ```
 Into this:
+
 ```Java
 Armor shield = new Armor();
 shield.setDisplayName("Wooden Shield");
@@ -223,7 +224,7 @@ public class App extends Application {
 
 Adding methods to your **ParseObject** subclass helps encapsulate logic about the class. You can keep all your logic about a subject in one place rather than using separate classes for business logic and storage/transmission logic.
 
-You can add accessors and mutators for the fields of your **ParseObject** easily. Declare the getter and setter for the field as you normally would, but implement them in terms of get() and put(). The following example creates a displayName field in the Armor class:
+You can add accessors and mutators for the fields of your **ParseObject** easily. Declare the getter and setter for the field as you normally would, but implement them in terms of **get()** and **put()**. The following example creates a displayName field in the Armor class:
 
 ```Java
 // Armor.java
@@ -239,9 +240,9 @@ public class Armor extends ParseObject {
 }
 ```
 
-You can now access the displayName field using armor.getDisplayName() and assign to it using armor.setDisplayName("Wooden Sword"). This allows your IDE to provide autocompletion as you develop your app and allows typos to be caught at compile-time.
+You can now access the displayName field using **armor.getDisplayName()** and assign to it using **armor.setDisplayName("Wooden Sword")**. This allows your IDE to provide autocompletion as you develop your app and allows typos to be caught at compile-time.
 
-Accessors and mutators of various types can be easily defined in this manner using the various forms of get() such as getInt(), getParseFile(), or getMap().
+Accessors and mutators of various types can be easily defined in this manner using the various forms of **get()** such as **getInt()**, **getParseFile()**, or **getMap()**.
 
 If you need more complicated logic than simple field access, you can declare your own methods as well:
 
@@ -259,7 +260,7 @@ public void takeDamage(int amount) {
 
 You should create new instances of your subclasses using the constructors you have defined. Your subclass must define a public default constructor that does not modify fields of the **ParseObject**, which will be used throughout the Parse SDK to create strongly-typed instances of your subclass.
 
-To create a reference to an existing object, use ParseObject.createWithoutData():
+To create a reference to an existing object, use **ParseObject.createWithoutData()**:
 
 ```Java
 Armor armorReference = ParseObject.createWithoutData(Armor.class, armor.getObjectId());
@@ -288,9 +289,9 @@ Queries
 
 #### Basic Queries
 
-In many cases, getInBackground isn't powerful enough to specify which objects you want to retrieve. The **ParseQuery** offers different ways to retrieve a list of objects rather than just a single object.
+In many cases, **getInBackground** isn't powerful enough to specify which objects you want to retrieve. The **ParseQuery** offers different ways to retrieve a list of objects rather than just a single object.
 
-The general pattern is to create a **ParseQuery**, put conditions on it, and then retrieve a List of matching ParseObjects using the findInBackground method with a **FindCallback**. For example, to retrieve scores with a particular playerName, use the whereEqualTo method to constrain the value for a key:
+The general pattern is to create a **ParseQuery**, put conditions on it, and then retrieve a List of matching **ParseObjects** using the **findInBackground** method with a **FindCallback**. For example, to retrieve scores with a particular playerName, use the whereEqualTo method to constrain the value for a key:
 
 ```Java
 ParseQuery<ParseObject> query = ParseQuery.getQuery("GameScore");
@@ -310,7 +311,7 @@ query.findInBackground(new FindCallback<ParseObject>() {
 
 #### Query Constraints
 
-There are several ways to put constraints on the objects found by a ParseQuery. You can filter out objects with a particular key-value pair with whereNotEqualTo:
+There are several ways to put constraints on the objects found by a **ParseQuery**. You can filter out objects with a particular key-value pair with **whereNotEqualTo**:
 
 ```Java
 query.whereNotEqualTo("playerName", "Michael Yabuti");
@@ -329,7 +330,7 @@ You can limit the number of results with setLimit. By default, results are limit
 query.setLimit(10); // limit to at most 10 results
 ```
 
-If you want exactly one result, a more convenient alternative may be to use getFirst or getFirstBackground instead of using find.
+If you want exactly one result, a more convenient alternative may be to use getFirst or **getFirstBackground** instead of using find.
 
 ```Java
 ParseQuery<ParseObject> query = ParseQuery.getQuery("GameScore");
@@ -387,7 +388,7 @@ query.whereGreaterThan("wins", 50);
 query.whereGreaterThanOrEqualTo("wins", 50);
 ```
 
-If you want to retrieve objects matching several different values, you can use whereContainedIn, providing a collection of acceptable values. This is often useful to replace multiple queries with a single query. For example, if you want to retrieve scores made by any player in a particular list:
+If you want to retrieve objects matching several different values, you can use **whereContainedIn**, providing a collection of acceptable values. This is often useful to replace multiple queries with a single query. For example, if you want to retrieve scores made by any player in a particular list:
 
 ```Java
 String[] names = {"Jonathan Walsh", "Dario Wunsch", "Shawn Simon"};
@@ -411,7 +412,7 @@ query.whereExists("score");
 query.whereDoesNotExist("score");
 ```
 
-You can use the whereMatchesKeyInQuery method to get objects where a key matches the value of a key in a set of objects resulting from another query. For example, if you have a class containing sports teams and you store a user's hometown in the user class, you can issue one query to find the list of users whose hometown teams have winning records. The query would look like:
+You can use the **whereMatchesKeyInQuery** method to get objects where a key matches the value of a key in a set of objects resulting from another query. For example, if you have a class containing sports teams and you store a user's hometown in the user class, you can issue one query to find the list of users whose hometown teams have winning records. The query would look like:
 
 ```Java
 ParseQuery<ParseObject> teamQuery = ParseQuery.getQuery("Team");
@@ -425,7 +426,7 @@ userQuery.findInBackground(new FindCallback<ParseUser>() {
 });
 ```
 
-Conversely, to get objects where a key does not match the value of a key in a set of objects resulting from another query, use whereDoesNotMatchKeyInQuery. For example, to find users whose hometown teams have losing records:
+Conversely, to get objects where a key does not match the value of a key in a set of objects resulting from another query, use **whereDoesNotMatchKeyInQuery**. For example, to find users whose hometown teams have losing records:
 
 ```Java
 ParseQuery<ParseUser> losingUserQuery = ParseUser.getQuery();
@@ -445,7 +446,7 @@ query.selectKeys(Arrays.asList("playerName", "score"));;
 List<ParseObject> results = query.find();
 ```
 
-The remaining fields can be fetched later by calling one of the fetchIfNeeded variants on the returned objects:
+The remaining fields can be fetched later by calling one of the **fetchIfNeeded** variants on the returned objects:
 
 ```Java
 ParseObject object = results.get(0);
