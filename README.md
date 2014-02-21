@@ -164,6 +164,45 @@ gameScore.addAllUnique("skills", Arrays.asList("flying", "kungfu"));
 gameScore.saveInBackground();
 ```
 
+#### Relational data
+
+Objects can have relationships with other objects. To model this behavior, any **ParseObject** can be used as a value in other **ParseObjects**. Internally, the Parse framework will store the referred-to object in just one place, to maintain consistency.
+
+For example, each Comment in a blogging app might correspond to one Post. To create a new Post with a single Comment, you could write:
+
+```Java
+// Create the post
+ParseObject myPost = new ParseObject("Post");
+myPost.put("title", "I'm Hungry");
+myPost.put("content", "Where should we go for lunch?");
+myPost.save();
+
+// Create the comment
+ParseObject myComment = new ParseObject("Comment");
+myComment.put("content", "Let's do Sushirrito.");
+myComment.put("parent", myPost); // Add a relation between the Post and Comment
+myComment.saveInBackground(); // This will save both myPost and myComment
+
+
+You can also link objects using just their objectIds like so:
+```Java
+
+// Add a relation between the Post with objectId "1zEcyElZ80" and the comment
+myComment.put("parent", ParseObject.createWithoutData("Post", "1zEcyElZ80"));
+```
+
+By default, when fetching an object, related **ParseObjects** are not fetched. These objects' values cannot be retrieved until they have been fetched like so:
+
+```Java
+fetchedComment.getParseObject("parent")
+    .fetchIfNeededInBackground(new GetCallback<ParseObject>() {
+        public void done(ParseObject post, ParseException e) {
+          String title = post.getString("title");
+        }
+    });
+```
+
+
 <a name="Subclasses"></a>
 Subclasses
 -------
