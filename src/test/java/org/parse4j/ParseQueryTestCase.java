@@ -112,6 +112,46 @@ public class ParseQueryTestCase extends Parse4JTestCase {
 	}
 	
 	@Test
+	public void test22() {
+		System.out.println("test21(): initializing...");
+		
+		ParseQuery<ParseObject> query = ParseQuery.getQuery("games");
+		query.whereGreaterThan("losingScore", 140);
+		query.setSkip(4);
+		query.findInBackground(new FindCallback<ParseObject>() {
+			
+			@Override
+			public void done(List<ParseObject> list, ParseException parseException) {
+				assertFalse("test21(): There should be 15 items on the list", list.size() != 11);
+				assertNull("test21(): should not have thrown ParseException", parseException);
+				
+			}
+		});
+		
+		sleep(1000);	
+	}
+	
+	@Test
+	public void test23() {
+		System.out.println("test21(): initializing...");
+		
+		ParseQuery<ParseObject> query = ParseQuery.getQuery("games");
+		query.whereGreaterThan("losingScore", 140);
+		query.setLimit(7);
+		query.findInBackground(new FindCallback<ParseObject>() {
+			
+			@Override
+			public void done(List<ParseObject> list, ParseException parseException) {
+				assertFalse("test21(): There should be 15 items on the list", list.size() != 7);
+				assertNull("test21(): should not have thrown ParseException", parseException);
+				
+			}
+		});
+		
+		sleep(1000);	
+	}	
+	
+	@Test
 	public void test3() {
 		System.out.println("test3(): initializing...");
 		

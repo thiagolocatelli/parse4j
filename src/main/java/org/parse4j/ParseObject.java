@@ -31,6 +31,7 @@ import org.parse4j.operation.ParseFieldOperation;
 import org.parse4j.operation.ParseRemoveOperation;
 import org.parse4j.operation.SetFieldOperation;
 import org.parse4j.util.ParseDecoder;
+import org.parse4j.util.ParseRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -53,15 +54,20 @@ public class ParseObject {
 	final Object mutex = new Object();
 
 	protected ParseObject() {
-		
+		this("_Parse4J");
 	}
 	
 	public ParseObject(String className) {
 		
 		if (className == null) {
+			LOGGER.error("You must specify a Parse class name when creating a new ParseObject.");
 			throw new IllegalArgumentException(
 					"You must specify a Parse class name when creating a new ParseObject.");
 		}	
+		
+		if ("_Parse4J".equals(className)) {
+			className = ParseRegistry.getClassName(getClass());
+	      }		
 		
 		this.className = className;
 		this.data = new Hashtable<String, Object>();
@@ -72,6 +78,11 @@ public class ParseObject {
 
 	public static ParseObject create(String className) {
 		return new ParseObject(className);
+	}
+	
+	@SuppressWarnings("unchecked")
+	public static <T extends ParseObject> T create(Class<T> subclass) {
+		return (T) create(ParseRegistry.getClassName(subclass));
 	}
 	
 	public static ParseObject createWithoutData(String className, String objectId) {
@@ -257,29 +268,35 @@ public class ParseObject {
 	public void put(String key, Object value) {
 		
 		if (key == null) {
+			LOGGER.error("key may not be null.");
 			throw new IllegalArgumentException("key may not be null.");
 		}
 
 		if (value == null) {
+			LOGGER.error("value may not be null.");
 			throw new IllegalArgumentException("value may not be null.");
 		}
 		
 		if(value instanceof ParseObject && ((ParseObject) value).isDirty) {
+			LOGGER.error("ParseFile must be saved before being set on a ParseObject.");
 			throw new IllegalArgumentException(
 					"ParseFile must be saved before being set on a ParseObject.");
 		}
 		
 		if (value instanceof ParseFile && !((ParseFile) value).isUploaded()) {
+			LOGGER.error("ParseFile must be saved before being set on a ParseObject.");
 			throw new IllegalArgumentException(
 					"ParseFile must be saved before being set on a ParseObject.");
 		}
 		
 		if(Parse.isInvalidKey(key)) {
+			LOGGER.error("reserved value for key: " + key);
 			throw new IllegalArgumentException("reserved value for key: "
 					+ key);			
 		}
 		
 		if (!Parse.isValidType(value)) {
+			LOGGER.error("invalid type for value: " + value.getClass().toString());
 			throw new IllegalArgumentException("invalid type for value: "
 					+ value.getClass().toString());
 		}
@@ -357,13 +374,16 @@ public class ParseObject {
 		else {
 			command =  new ParsePutCommand(getEndPoint(), getObjectId());
 		}
-
-		System.out.println("parseData-> " + getParseData());
+		
+		if(LOGGER.isDebugEnabled()) {
+			LOGGER.debug("parseData-> " + getParseData());
+		}
 		command.setData(getParseData());
 		ParseResponse response = command.perform();
 		if(!response.isFailed()) {
 			JSONObject jsonResponse = response.getJsonObject();
 			if (jsonResponse == null) {
+				LOGGER.error("Empty response");
 				throw response.getException();
 			}
 			try {
@@ -383,6 +403,7 @@ public class ParseObject {
 				this.dirtyKeys.clear();
 			} 
 			catch (JSONException e) {
+				LOGGER.error("Request failed.");
 				throw new ParseException(
 						ParseException.INVALID_JSON,
 						"Although Parse reports object successfully saved, the response was invalid.",
@@ -390,6 +411,7 @@ public class ParseObject {
 			}			
 		}
 		else {
+			LOGGER.error("Request failed.");
 			throw response.getException();
 		}
 	}
@@ -506,7 +528,6 @@ public class ParseObject {
 		}
 
 		public void run() {
-			System.out.println("SaveInBackgroundThread.run()");
 			ParseException exception = null;
 			try {
 				save();
@@ -558,6 +579,7 @@ public class ParseObject {
 	
 	private <T extends ParseObject> T parseData(JSONObject jsonObject) {
 		
+		@SuppressWarnings("unchecked")
 		T po = (T) new ParseObject();
 		
 		Iterator<?> keys = jsonObject.keys();
@@ -609,7 +631,7 @@ public class ParseObject {
 	
 	protected void setData(JSONObject jsonObject) {
 		
-		Iterator it = jsonObject.keys();
+		Iterator<?> it = jsonObject.keys();
 		while (it.hasNext()) {
 			String key = (String) it.next();
 			Object value = jsonObject.opt(key);
@@ -631,7 +653,6 @@ public class ParseObject {
 		}
 		else if("updatedAt".equals(key)) {
 			setUpdatedAt(Parse.parseDate(value.toString()));
-		}
-			
+		}		
 	}
 }

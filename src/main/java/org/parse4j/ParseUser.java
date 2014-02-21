@@ -8,7 +8,7 @@ import org.parse4j.callback.SignUpCallback;
 import org.parse4j.command.ParseGetCommand;
 import org.parse4j.command.ParsePostCommand;
 import org.parse4j.command.ParseResponse;
-import org.parse4j.util.ParseRegister;
+import org.parse4j.util.ParseRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,7 +21,7 @@ public class ParseUser extends ParseObject {
 	private String sessionToken;
 
 	public ParseUser() {
-		super(ParseRegister.getClassName(ParseUser.class));
+		super(ParseRegistry.getClassName(ParseUser.class));
 		setEndPoint("users");
 	}
 

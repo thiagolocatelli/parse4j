@@ -17,7 +17,7 @@ import org.parse4j.command.ParseGetCommand;
 import org.parse4j.command.ParseResponse;
 import org.parse4j.encode.PointerEncodingStrategy;
 import org.parse4j.util.ParseEncoder;
-import org.parse4j.util.ParseRegister;
+import org.parse4j.util.ParseRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,7 +37,7 @@ public class ParseQuery<T extends ParseObject> {
 	private boolean trace;
 
 	public ParseQuery(Class<T> subclass) {
-		this(ParseRegister.getClassName(subclass));
+		this(ParseRegistry.getClassName(subclass));
 	}
 
 	public ParseQuery(String theClassName) {
@@ -108,11 +108,13 @@ public class ParseQuery<T extends ParseObject> {
 		return this;
 	}
 
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public ParseQuery<T> whereContainedIn(String key, Collection<? extends Object> values) {
 		addCondition(key, "$in", new ArrayList(values));
 		return this;
 	}
 	
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public ParseQuery<T> whereContainsAll(String key, Collection<?> values) {
 		addCondition(key, "$all", new ArrayList(values));
 		return this;
@@ -152,6 +154,7 @@ public class ParseQuery<T extends ParseObject> {
 		return this;
 	}
 	
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public ParseQuery<T> whereNotContainedIn(String key, Collection<? extends Object> values) {
 		addCondition(key, "$nin", new ArrayList(values));
 		return this;
@@ -451,6 +454,7 @@ public class ParseQuery<T extends ParseObject> {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	public List<T> find() throws ParseException {
 		
 		String endPoint;
@@ -481,10 +485,20 @@ public class ParseQuery<T extends ParseObject> {
 				
 				results = new ArrayList<T>();
 				for(int i = 0; i < objs.length(); i++) {
-					ParseObject po = new ParseObject(getClassName());
-					JSONObject obj = (JSONObject) objs.get(0);
-					po.setData(obj);
-					results.add((T) po);
+					Class<?> clazz = ParseRegistry.getParseClass(getClassName());
+					if(clazz != null) {
+						T po = (T) clazz.newInstance();
+						JSONObject obj = (JSONObject) objs.get(0);
+						po.setData(obj);
+						results.add((T) po);
+					}
+					else {
+						ParseObject po = new ParseObject(getClassName());
+						JSONObject obj = (JSONObject) objs.get(0);
+						po.setData(obj);
+						results.add((T) po);
+					}
+					
 				}
 
 				return results;
@@ -497,6 +511,18 @@ public class ParseQuery<T extends ParseObject> {
 						ParseException.INVALID_JSON,
 						"Although Parse reports object successfully saved, the response was invalid.",
 						e);
+			} catch (InstantiationException e) {
+				LOGGER.error("Error while instantiating class. Did you register your subclass?", e);
+				throw new ParseException(
+					ParseException.INVALID_JSON,
+					"Although Parse reports object successfully saved, the response was invalid.",
+					e);
+			} catch (IllegalAccessException e) {
+				LOGGER.error("Error while instantiating class. Did you register your subclass?",e);
+				throw new ParseException(
+					ParseException.INVALID_JSON,
+					"Although Parse reports object successfully saved, the response was invalid.",
+					e);
 			}
 		}
 		else {
@@ -601,9 +627,11 @@ public class ParseQuery<T extends ParseObject> {
 		}
 	}
 
+	@SuppressWarnings("serial")
 	static class KeyConstraints extends HashMap<String, Object> {
 	}
 
+	@SuppressWarnings("serial")
 	static class QueryConstraints extends HashMap<String, Object> {
 	}
 	

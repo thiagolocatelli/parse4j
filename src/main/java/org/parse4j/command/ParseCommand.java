@@ -33,6 +33,10 @@ public abstract class ParseCommand {
 
 	public ParseResponse perform() throws ParseException {
 
+		if(LOGGER.isDebugEnabled()) {
+			LOGGER.debug("Data to be sent: {}", data);
+		}		
+		
 		try {
 			long commandStart = System.currentTimeMillis();
 			HttpClient httpclient = createSingleClient();

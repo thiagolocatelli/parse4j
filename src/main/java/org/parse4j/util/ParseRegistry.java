@@ -10,7 +10,7 @@ import org.parse4j.ParseObject;
 import org.parse4j.ParseRole;
 import org.parse4j.ParseUser;
 
-public class ParseRegister {
+public class ParseRegistry {
 
 	private static final Map<Class<? extends ParseObject>, String> classNames = 
 			new ConcurrentHashMap<Class<? extends ParseObject>, String>();
@@ -21,7 +21,6 @@ public class ParseRegister {
 	static {
 		registerSubclass(ParseUser.class);
 		registerSubclass(ParseRole.class);
-		// registerSubclass(ParseInstallation.class);
 	}
 	
 	public static void unregisterSubclass(String className) {
