@@ -182,11 +182,11 @@ ParseObject myComment = new ParseObject("Comment");
 myComment.put("content", "Let's do Sushirrito.");
 myComment.put("parent", myPost); // Add a relation between the Post and Comment
 myComment.saveInBackground(); // This will save both myPost and myComment
-
+```
 
 You can also link objects using just their objectIds like so:
-```Java
 
+```Java
 // Add a relation between the Post with objectId "1zEcyElZ80" and the comment
 myComment.put("parent", ParseObject.createWithoutData("Post", "1zEcyElZ80"));
 ```
