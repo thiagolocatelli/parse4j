@@ -324,10 +324,10 @@ query.whereNotEqualTo("playerName", "Michael Yabuti");
 query.whereGreaterThan("playerAge", 18);
 ```
 
-You can limit the number of results with setLimit. By default, results are limited to 100, but anything from 1 to 1000 is a valid limit:
+You can limit the number of results with **limit**. By default, results are limited to 100, but anything from 1 to 1000 is a valid limit:
 
 ```Java
-query.setLimit(10); // limit to at most 10 results
+query.limit(10); // limit to at most 10 results
 ```
 
 If you want exactly one result, a more convenient alternative may be to use getFirst or **getFirstBackground** instead of using find.
@@ -346,10 +346,10 @@ query.getFirstInBackground(new GetCallback<ParseObject>() {
 });
 ```
 
-You can skip the first results with setSkip. This can be useful for pagination:
+You can skip the first results with **skip**. This can be useful for pagination:
 
 ```Java
-query.setSkip(10); // skip the first 10 results
+query.skip(10); // skip the first 10 results
 ```
 
 For sortable types like numbers and strings, you can control the order in which results are returned:
@@ -810,7 +810,7 @@ Now that you have a bunch of objects with spatial coordinates, it would be nice 
 ParseGeoPoint userLocation = (ParseGeoPoint) userObject.get("location");
 ParseQuery<ParseObject> query = ParseQuery.getQuery("PlaceObject");
 query.whereNear("location", userLocation);
-query.setLimit(10);
+query.limit(10);
 query.findInBackground(new FindCallback<ParseObject>() { ... });
 ```
 
