@@ -24,8 +24,8 @@ public class ParseQueryTestCase extends Parse4JTestCase {
 			.whereGreaterThan("score1", 6)
 			.whereLessThanOrEqualTo("score2", 2)
 			.whereContainedIn("playerName", Arrays.asList(names));;
-		query.setLimit(10);
-		query.setSkip(10);
+		query.limit(10);
+		query.skip(10);
 		System.out.println(query.toREST());
 	}
 	
@@ -117,7 +117,7 @@ public class ParseQueryTestCase extends Parse4JTestCase {
 		
 		ParseQuery<ParseObject> query = ParseQuery.getQuery("games");
 		query.whereGreaterThan("losingScore", 140);
-		query.setSkip(4);
+		query.skip(4);
 		query.findInBackground(new FindCallback<ParseObject>() {
 			
 			@Override
@@ -137,7 +137,7 @@ public class ParseQueryTestCase extends Parse4JTestCase {
 		
 		ParseQuery<ParseObject> query = ParseQuery.getQuery("games");
 		query.whereGreaterThan("losingScore", 140);
-		query.setLimit(7);
+		query.limit(7);
 		query.findInBackground(new FindCallback<ParseObject>() {
 			
 			@Override
@@ -223,6 +223,23 @@ public class ParseQueryTestCase extends Parse4JTestCase {
 		});
 		
 		sleep(1000);	
-	}	
+	}
+	
+	@Test
+	public void test5() {
+		//selectKeys
+		System.out.println("test1(): initializing...");
+		
+		try {
+			ParseQuery<ParseObject> query = ParseQuery.getQuery("games");
+			query.selectKeys(Arrays.asList("losingTeam", "losingScore"));
+			query.setTrace(true);
+			ParseObject po = query.get("GLVPuc2X8H");
+			assertNotNull("ObjectId should not be null", po.getObjectId());
+		}
+		catch(ParseException e) {
+			assertNull("test1(): should not have thrown ParseException", e);
+		}
+	}
 	
 }

@@ -438,7 +438,7 @@ losingUserQuery.findInBackground(new FindCallback<ParseUser>() {
 });
 ```
 
-You can restrict the fields returned by calling selectKeys with a collection of keys. To retrieve documents that contain only the score and playerName fields (and also special built-in fields such as objectId, createdAt, and updatedAt):
+You can restrict the fields returned by calling **selectKeys** with a collection of keys. To retrieve documents that contain only the score and playerName fields (and also special built-in fields such as objectId, createdAt, and updatedAt):
 
 ```Java
 ParseQuery<ParseObject> query = ParseQuery.getQuery("GameScore");

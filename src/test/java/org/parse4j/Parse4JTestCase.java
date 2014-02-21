@@ -25,7 +25,7 @@ public class Parse4JTestCase {
 	public static void tearDown() {
 		System.out.println("tearDown(): finalizing...");
 		ParseExecutor.getExecutor().shutdown();
-		while(!ParseExecutor.getExecutor().isTerminated()) { }
+		//while(!ParseExecutor.getExecutor().isTerminated()) { }
 	}
 	
 	protected ParseObject getEmptyParseObject(String className) {

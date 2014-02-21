@@ -35,6 +35,7 @@ public class ParseQuery<T extends ParseObject> {
 	private String order;
 	
 	private boolean trace;
+	private String strTrace;
 
 	public ParseQuery(Class<T> subclass) {
 		this(ParseRegistry.getClassName(subclass));
@@ -276,7 +277,7 @@ public class ParseQuery<T extends ParseObject> {
 		return this;
 	}
 	
-	public void setLimit(int newLimit) {
+	public void limit(int newLimit) {
 		this.limit = newLimit;
 	}
 
@@ -288,7 +289,7 @@ public class ParseQuery<T extends ParseObject> {
 		return this.limit;
 	}
 
-	public void setSkip(int newSkip) {
+	public void skip(int newSkip) {
 		this.skip = newSkip;
 	}
 
@@ -345,7 +346,7 @@ public class ParseQuery<T extends ParseObject> {
 			}
 			
 			if (this.selectedKeys != null) {
-				params.put("fields", Parse.join(this.selectedKeys, ","));
+				params.put("keys", Parse.join(this.selectedKeys, ","));
 			}
 			
 			if (this.trace) {
@@ -483,6 +484,13 @@ public class ParseQuery<T extends ParseObject> {
 					return null;
 				}
 				
+				if(trace) {
+					strTrace = json.getString("trace");
+					if(LOGGER.isDebugEnabled()) {
+						LOGGER.debug(strTrace);
+					}
+				}
+				
 				results = new ArrayList<T>();
 				for(int i = 0; i < objs.length(); i++) {
 					Class<?> clazz = ParseRegistry.getParseClass(getClassName());
@@ -498,7 +506,6 @@ public class ParseQuery<T extends ParseObject> {
 						po.setData(obj);
 						results.add((T) po);
 					}
-					
 				}
 
 				return results;

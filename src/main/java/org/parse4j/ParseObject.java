@@ -50,8 +50,6 @@ public class ParseObject {
 
 	private Date updatedAt;
 	private Date createdAt;
-	
-	final Object mutex = new Object();
 
 	protected ParseObject() {
 		this("_Parse4J");
@@ -139,9 +137,7 @@ public class ParseObject {
 	}	
 	
 	public Date getDate(String key) {
-
-		// checkGetAccess(key);
-
+		
 		if (!this.data.containsKey(key)) {
 			return null;
 		}
@@ -153,9 +149,7 @@ public class ParseObject {
 	}
 
 	public boolean getBoolean(String key) {
-
-		// checkGetAccess(key);
-
+		
 		if (!this.data.containsKey(key)) {
 			return false;
 		}
@@ -167,8 +161,6 @@ public class ParseObject {
 	}
 
 	public Number getNumber(String key) {
-
-		// checkGetAccess(key);
 
 		if (!this.data.containsKey(key)) {
 			return null;
@@ -206,8 +198,6 @@ public class ParseObject {
 
 	public String getString(String key) {
 
-		// checkGetAccess(key);
-
 		if (!this.data.containsKey(key)) {
 			return null;
 		}
@@ -216,6 +206,16 @@ public class ParseObject {
 			return null;
 		}
 		return (String) value;
+	}
+	
+	private <T extends ParseObject> ParseRelation<T> getRelation(String key) {
+		ParseRelation<T> relation = new ParseRelation<T>(this, key);
+		Object value = this.data.get(key);
+		if (value instanceof ParseRelation) {
+			relation.setTargetClass(((ParseRelation<?>) value).getTargetClass());
+		}
+		return relation;
+
 	}
 
 	public void clearData() {
@@ -305,7 +305,7 @@ public class ParseObject {
 		
 	}
 	
-	private void performOperation(String key, ParseFieldOperation operation) {
+	public void performOperation(String key, ParseFieldOperation operation) {
 		
 		//if field already exist, remove field and any pending operation for that field
 		if(has(key)) {
@@ -642,6 +642,10 @@ public class ParseObject {
 				put(key, ParseDecoder.decode(value));
 			}
 		}
+		
+		this.isDirty = false;
+		this.operations.clear();
+		this.dirtyKeys.clear();
 	}
 	
 	protected void setReservedKey(String key, Object value) {
