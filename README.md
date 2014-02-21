@@ -812,6 +812,7 @@ TODO
 ### Implemented Functionalities
 
  * [Objects](#Objects)
+ * [Subclasses](#Subclasses) 
  * [Queries](#Queries) 
  * [CloudFunctions](#CloudFunctions) 
  * [GeoPoints](#GeoPoints)
