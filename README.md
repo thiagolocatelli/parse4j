@@ -30,17 +30,17 @@ Getting Started
 #### Maven (pending sonatype request)
 
 ```XML
-	<project ...>
-	    ...
-	    <dependencies>
-	        <dependency>
-	            <groupId>com.github.thiagolocatelli</groupId>
-	            <artifactId>parse4j</artifactId>
-	            <version>1.0</version>
-	        </dependency>
-	    </dependencies>
-	    ...
-	</project>
+<project ...>
+    ...
+    <dependencies>
+        <dependency>
+            <groupId>com.github.thiagolocatelli</groupId>
+            <artifactId>parse4j</artifactId>
+            <version>1.0</version>
+        </dependency>
+    </dependencies>
+    ...
+</project>
 ```
 
 <a name="Objects"></a>
@@ -52,7 +52,7 @@ Storing data on Parse is built around the ParseObject. Each **ParseObject** cont
 For example, let's say you're tracking high scores for a game. A single ParseObject could contain:
 
 ```Java
-	score: 1337, playerName: "Sean Plott", cheatMode: false 
+score: 1337, playerName: "Sean Plott", cheatMode: false 
 ```
 
 Keys must be alphanumeric strings. Values can be strings, numbers, booleans, or even arrays and objects - anything that can be JSON-encoded.
@@ -62,24 +62,24 @@ Each ParseObject has a class name that you can use to distinguish different sort
 #### Saving Objects
 
 ```Java
-	ParseObject gameScore = new ParseObject("GameScore");
-	gameScore.put("score", 1337);
-	gameScore.put("playerName", "Sean Plott");
-	gameScore.put("cheatMode", false);
-	gameScore.save();
+ParseObject gameScore = new ParseObject("GameScore");
+gameScore.put("score", 1337);
+gameScore.put("playerName", "Sean Plott");
+gameScore.put("cheatMode", false);
+gameScore.save();
 ```
 
 Use saveInBackground() if you want to delegate the operation to a background thread
 
 ```Java
-	gameScore.saveInBackground();  
+gameScore.saveInBackground();  
 ```
 
 #### Retrieving Objects
 
 ```Java
-	ParseQuery<ParseObject> query = ParseQuery.getQuery("GameScore");
-	query.getInBackground("xWMyZ4YEGZ", new GetCallback<ParseObject>() {
+ParseQuery<ParseObject> query = ParseQuery.getQuery("GameScore");
+query.getInBackground("xWMyZ4YEGZ", new GetCallback<ParseObject>() {
 	  public void done(ParseObject object, ParseException e) {
 	    if (e == null) {
 	      // object will be your game score
@@ -87,16 +87,16 @@ Use saveInBackground() if you want to delegate the operation to a background thr
 	      // something went wrong
 	    }
 	  }
-	}); 
+}); 
 ```
 
 
 To get the values out of the **ParseObject**, there's a getX method for each data type:
 
 ```Java
-	int score = gameScore.getInt("score");
-	String playerName = gameScore.getString("playerName");
-	boolean cheatMode = gameScore.getBoolean("cheatMode");
+int score = gameScore.getInt("score");
+String playerName = gameScore.getString("playerName");
+boolean cheatMode = gameScore.getBoolean("cheatMode");
 ```
 
 If you don't know what type of data you're getting out, you can call get(key), but then you probably have to cast it right away anyways. In most situations you should use the typed accessors like getString.
@@ -104,9 +104,9 @@ If you don't know what type of data you're getting out, you can call get(key), b
 The three special values have their own accessors:
 
 ```Java
-	String objectId = gameScore.getObjectId();
-	Date updatedAt = gameScore.getUpdatedAt();
-	Date createdAt = gameScore.getCreatedAt();
+String objectId = gameScore.getObjectId();
+Date updatedAt = gameScore.getUpdatedAt();
+Date createdAt = gameScore.getCreatedAt();
 ```
 
 #### Callback functions
@@ -114,18 +114,18 @@ The three special values have their own accessors:
 You can also add a callback function to the save operation
 
 ```Java
-	final ParseObject gameScore = new ParseObject("GameScore");
-	gameScore.put("score", 1337);
-	gameScore.put("playerName", "Sean Plott");
-	gameScore.put("cheatMode", false);
-	gameScore.saveInBackground(new SaveCallback() {			
-			@Override
-			public void done(ParseException parseException) {
-				System.out.println("saveInBackground(): objectId: " + parseObject.getObjectId());
-				System.out.println("saveInBackground(): createdAt: " + parseObject.getCreatedAt());
-				System.out.println("saveInBackground(): updatedAt: " + parseObject.getUpdatedAt());
-			}
-		});
+final ParseObject gameScore = new ParseObject("GameScore");
+gameScore.put("score", 1337);
+gameScore.put("playerName", "Sean Plott");
+gameScore.put("cheatMode", false);
+gameScore.saveInBackground(new SaveCallback() {			
+		@Override
+		public void done(ParseException parseException) {
+			System.out.println("saveInBackground(): objectId: " + parseObject.getObjectId());
+			System.out.println("saveInBackground(): createdAt: " + parseObject.getCreatedAt());
+			System.out.println("saveInBackground(): updatedAt: " + parseObject.getUpdatedAt());
+		}
+	});
 ```
 
 #### Delete
@@ -133,17 +133,17 @@ You can also add a callback function to the save operation
 To delete an object, just call the method delete().
 
 ```Java
-	gameScore.delete();
+gameScore.delete();
 ```
 You can also attach a callback function on the delete/deleteInBackground methods.
 
 ```Java
-	gameScore.deleteInBackground(new DeleteCallback() {
-			@Override
-			public void done(ParseException parseException) {
-				//do something
-			}
-		});
+gameScore.deleteInBackground(new DeleteCallback() {
+		@Override
+		public void done(ParseException parseException) {
+			//do something
+		}
+	});
 ```
 
 #### Counters
@@ -151,9 +151,9 @@ You can also attach a callback function on the delete/deleteInBackground methods
 You can also increment and decrement values from Number (int, long, double...) attributes.
 
 ```Java
-	gameScore.increment("score");
-	gameScore.decrement("score");
-	gameScore.saveInBackground();
+gameScore.increment("score");
+gameScore.decrement("score");
+gameScore.saveInBackground();
 ```
 You can also increment by any amount using increment(key, amount) or decrement by any amount using decrement(key, amount).
 
@@ -196,27 +196,27 @@ To create a ParseObject subclass:
 The following code sucessfully implements and registers the Armor subclass of **ParseObject**:
 
 ```Java
-	// Armor.java
-	import com.parse.ParseObject;
-	import com.parse.ParseClassName;
-	 
-	@ParseClassName("Armor")
+// Armor.java
+import com.parse.ParseObject;
+import com.parse.ParseClassName;
+ 
+@ParseClassName("Armor")
 	public class Armor extends ParseObject {
-	}
-	 
-	// App.java
-	import com.parse.Parse;
-	import android.app.Application;
-	 
-	public class App extends Application {
-	  @Override
-	  public void onCreate() {
-	    super.onCreate();
-	 
-	    ParseObject.registerSubclass(Armor.class);
-	    Parse.initialize(this, PARSE_APPLICATION_ID, PARSE_CLIENT_KEY);
-	  }
-	}
+}
+ 
+// App.java
+import com.parse.Parse;
+import android.app.Application;
+ 
+public class App extends Application {
+	@Override
+	public void onCreate() {
+    	super.onCreate();
+ 
+    	ParseObject.registerSubclass(Armor.class);
+    	Parse.initialize(this, PARSE_APPLICATION_ID, PARSE_CLIENT_KEY);
+  }
+}
 ```
 
 #### Accessors, Mutators, and Methods
@@ -227,15 +227,16 @@ You can add accessors and mutators for the fields of your **ParseObject** easily
 
 ```Java
 // Armor.java
-	@ParseClassName("Armor")
-	public class Armor extends ParseObject {
-	  public String getDisplayName() {
-	    return getString("displayName");
-	  }
-	  public void setDisplayName(String value) {
-	    put("displayName", value);
-	  }
+@ParseClassName("Armor")
+public class Armor extends ParseObject {
+	public String getDisplayName() {
+		return getString("displayName");
 	}
+	
+	public void setDisplayName(String value) {
+		put("displayName", value);
+  	}
+}
 ```
 
 You can now access the displayName field using armor.getDisplayName() and assign to it using armor.setDisplayName("Wooden Sword"). This allows your IDE to provide autocompletion as you develop your app and allows typos to be caught at compile-time.
@@ -323,14 +324,14 @@ We'll go through each of these in detail as we run through the various use cases
 The first thing your app will do is probably ask the user to sign up. The following code illustrates a typical sign up:
 
 ```Java
-	ParseUser user = new ParseUser();
-	user.setUsername("my name");
-	user.setPassword("my pass");
-	user.setEmail("email@example.com");
-	 
-	// other fields can be set just like with ParseObject
-	user.put("phone", "650-253-0000");
-	user.signUp();
+ParseUser user = new ParseUser();
+user.setUsername("my name");
+user.setPassword("my pass");
+user.setEmail("email@example.com");
+ 
+// other fields can be set just like with ParseObject
+user.put("phone", "650-253-0000");
+user.signUp();
 ```
 
 This call will synchronously create a new user in your Parse application. Before it does this, it checks to make sure that both the username and email are unique. Also, it securely hashes the password in the cloud. Parse never stores passwords in plaintext, nor will Parse ever transmit passwords back to the client in plaintext.
@@ -346,15 +347,15 @@ You are free to use an email addresses as the username. Simply ask your users to
 Of course, after you allow users to sign up, you need be able to let them log in to their account in the future. To do this, you can use the class methods logInInBackground or logIn.
 
 ```Java
-	ParseUser.logInInBackground("Jerry", "showmethemoney", new LogInCallback() {
-	  public void done(ParseUser user, ParseException e) {
-	    if (user != null) {
-	      // Hooray! The user is logged in.
-	    } else {
-	      // Signup failed. Look at the ParseException to see what happened.
-	    }
-	  }
-	});
+ParseUser.logInInBackground("Jerry", "showmethemoney", new LogInCallback() {
+  public void done(ParseUser user, ParseException e) {
+    if (user != null) {
+      // Hooray! The user is logged in.
+    } else {
+      // Signup failed. Look at the ParseException to see what happened.
+    }
+  }
+});
 ```
 
 #### Verifying Emails
@@ -386,7 +387,7 @@ It's a fact that as soon as you introduce passwords into a system, users will fo
 To kick off the password reset flow, ask the user for their email address, and call:
 
 ```Java
-	ParseUser.requestPasswordReset("some@email.com");
+ParseUser.requestPasswordReset("some@email.com");
 ```
 
 This will attempt to match the given email with the user's email or username field, and will send them a password reset email. By doing this, you can opt to have users use their email as their username, or you can collect it separately and store it in the email field.
@@ -417,9 +418,9 @@ Files
 Getting started with **ParseFile** is easy. First, you'll need to have the data in byte[] form and then create a ParseFile with it. In this example, we'll just use a string:
 
 ```JAVA
-	byte[] data = "Working at Parse is great!".getBytes();
-	ParseFile file = new ParseFile("resume.txt", data);
-	file.save();
+byte[] data = "Working at Parse is great!".getBytes();
+ParseFile file = new ParseFile("resume.txt", data);
+file.save();
 ```
 
 Notice in this example that we give the file a name of resume.txt. There's two things to note here:
@@ -430,30 +431,30 @@ Notice in this example that we give the file a name of resume.txt. There's two t
 Next you'll want to save the file up to the cloud. As with ParseObject, there are many variants of the save method you can use depending on what sort of callback and error handling suits you.
 
 ```JAVA
-	file.saveInBackground();
+file.saveInBackground();
 ```
 Finally, after the save completes, you can associate a ParseFile onto a ParseObject just like any other piece of data:
 
 ```JAVA
-	ParseObject jobApplication = new ParseObject("JobApplication");
-	jobApplication.put("applicantName", "Joe Smith");
-	jobApplication.put("applicantResumeFile", file);
-	jobApplication.save();
+ParseObject jobApplication = new ParseObject("JobApplication");
+jobApplication.put("applicantName", "Joe Smith");
+jobApplication.put("applicantResumeFile", file);
+jobApplication.save();
 ```
 
 Retrieving it back involves calling one of the getData variants on the ParseObject. Here we retrieve the resume file off another JobApplication object:
 
 ```JAVA
-	ParseFile applicantResume = (ParseFile) anotherApplication.get("applicantResumeFile");
-	applicantResume.getDataInBackground(new GetDataCallback() {
-	  public void done(byte[] data, ParseException e) {
-	    if (e == null) {
-	      // data has the bytes for the resume
-	    } else {
-	      // something went wrong
-	    }
-	  }
-	});
+ParseFile applicantResume = (ParseFile) anotherApplication.get("applicantResumeFile");
+applicantResume.getDataInBackground(new GetDataCallback() {
+  public void done(byte[] data, ParseException e) {
+    if (e == null) {
+      // data has the bytes for the resume
+    } else {
+      // something went wrong
+    }
+  }
+});
 ```
 
 #### Progress
@@ -461,29 +462,29 @@ Retrieving it back involves calling one of the getData variants on the ParseObje
 It's easy to get the progress of both uploads and downloads using **ParseFile** by passing a ProgressCallback to saveInBackground and getDataInBackground. For example:
 
 ```JAVA
-	byte[] data = getBytes("song.mp3");
-	ParseFile file = new ParseFile("song.mp3", data);
-	file.save(new ProgressCallback() {
-		
-		@Override
-		public void done(Integer percentDone) {
-			//do something
-		}
-	});
+byte[] data = getBytes("song.mp3");
+ParseFile file = new ParseFile("song.mp3", data);
+file.save(new ProgressCallback() {
+	
+	@Override
+	public void done(Integer percentDone) {
+		//do something
+	}
+});
 ```
 
 or:
 
 ```JAVA
-	byte[] data = getBytes("song.mp3");
-	ParseFile file = new ParseFile("song.mp3", data);
-	file.save(new SaveCallback() {
-		
-		@Override
-		public void done(ParseException parseException) {
-			//do something
-		}
-	});
+byte[] data = getBytes("song.mp3");
+ParseFile file = new ParseFile("song.mp3", data);
+file.save(new SaveCallback() {
+	
+	@Override
+	public void done(ParseException parseException) {
+		//do something
+	}
+});
 ```
 
 There also another possibility to save the file and give both callbacks at one.
@@ -504,7 +505,7 @@ Without having to implement any client-side logic, you can view real-time graphs
 Our initial analytics hook allows you to track your application being launched. By adding the following line to the onCreate method of your main Activity, you'll begin to collect data on when and how often your application is opened.
 
 ```JAVA
-	ParseAnalytics.trackAppOpened();
+ParseAnalytics.trackAppOpened();
 ```
 
 Graphs and breakdowns of your statistics are accessible from your app's Dashboard.
@@ -516,23 +517,23 @@ Graphs and breakdowns of your statistics are accessible from your app's Dashboar
 Say your app offers search functionality for apartment listings, and you want to track how often the feature is used, with some additional metadata.
 
 ```JAVA
-	Map<String, String> dimensions = new HashMap<String, String>();
-	// Define ranges to bucket data points into meaningful segments
-	dimensions.put("priceRange", "1000-1500");
-	// Did the user filter the query?
-	dimensions.put("source", "craigslist");
-	// Do searches happen more often on weekdays or weekends?
-	dimensions.put("dayType", "weekday");
-	// Send the dimensions to Parse along with the 'search' event
-	ParseAnalytics.trackEvent("search", dimensions);
+Map<String, String> dimensions = new HashMap<String, String>();
+// Define ranges to bucket data points into meaningful segments
+dimensions.put("priceRange", "1000-1500");
+// Did the user filter the query?
+dimensions.put("source", "craigslist");
+// Do searches happen more often on weekdays or weekends?
+dimensions.put("dayType", "weekday");
+// Send the dimensions to Parse along with the 'search' event
+ParseAnalytics.trackEvent("search", dimensions);
 ```
 
 **ParseAnalytics** can even be used as a lightweight error tracker — simply invoke the following and you'll have access to an overview of the rate and frequency of errors, broken down by error code, in your application:
 
 ```JAVA
-	Map<String, String> dimensions = new HashMap<String, String>();
-	dimensions.put("code", Integer.toString(error.getCode()));
-	ParseAnalytics.trackEvent("error", dimensions);
+Map<String, String> dimensions = new HashMap<String, String>();
+dimensions.put("code", Integer.toString(error.getCode()));
+ParseAnalytics.trackEvent("error", dimensions);
 ```
 
 Note that Parse currently only stores the first eight dimension pairs per call to **ParseAnalytics.trackEvent()**.
@@ -544,18 +545,18 @@ Cloud Functions
 Cloud Functions can be called from Android using **ParseCloud**. For example, to call the Cloud Function named "Multiply", defined below:
 
 ```JAVASCRIPT
-	Parse.Cloud.define("Multiply", function(request, response) {
-	  response.success(request.params.A * request.params.B);
-	});
+Parse.Cloud.define("Multiply", function(request, response) {
+  response.success(request.params.A * request.params.B);
+});
 ```
 
 and to run the code in the cloud:
 
 ```JAVA
-	HashMap<String, Integer> params = new HashMap<String, Integer>();
-	params.put("A", 12);
-	params.put("B", 4);
-	Integer result = ParseCloud.callFunction("Multiply", params);
+HashMap<String, Integer> params = new HashMap<String, Integer>();
+params.put("A", 12);
+params.put("B", 4);
+Integer result = ParseCloud.callFunction("Multiply", params);
 ```
 
 Take a look at the [Cloud Code Guide](https://parse.com/docs/rest#cloudfunctions) to learn more about Cloud Functions.
@@ -571,13 +572,13 @@ Parse allows you to associate real-world latitude and longitude coordinates with
 To associate a point with an object you first need to create a **ParseGeoPoint**. For example, to create a point with latitude of 40.0 degrees and -30.0 degrees longitude:
 
 ```JAVA
-	ParseGeoPoint point = new ParseGeoPoint(40.0, -30.0);
+ParseGeoPoint point = new ParseGeoPoint(40.0, -30.0);
 ```
 
 This point is then stored in the object as a regular field.
 
 ```JAVA
-	placeObject.put("location", point);
+placeObject.put("location", point);
 ```
 
 #### Geo Queries
@@ -585,11 +586,11 @@ This point is then stored in the object as a regular field.
 Now that you have a bunch of objects with spatial coordinates, it would be nice to find out which objects are closest to a point. This can be done by adding another restriction to **ParseQuery** using whereNear. Getting a list of ten places that are closest to a user may look something like:
 
 ```JAVA
-	ParseGeoPoint userLocation = (ParseGeoPoint) userObject.get("location");
-	ParseQuery<ParseObject> query = ParseQuery.getQuery("PlaceObject");
-	query.whereNear("location", userLocation);
-	query.setLimit(10);
-	query.findInBackground(new FindCallback<ParseObject>() { ... });
+ParseGeoPoint userLocation = (ParseGeoPoint) userObject.get("location");
+ParseQuery<ParseObject> query = ParseQuery.getQuery("PlaceObject");
+query.whereNear("location", userLocation);
+query.setLimit(10);
+query.findInBackground(new FindCallback<ParseObject>() { ... });
 ```
 
 At this point nearPlaces will be an array of objects ordered by distance (nearest to farthest) from userLocation. Note that if an additional orderByAscending()/orderByDescending() constraint is applied, it will take precedence over the distance ordering.
@@ -599,11 +600,11 @@ To limit the results using distance, check out whereWithinKilometers, whereWithi
 It's also possible to query for the set of objects that are contained within a particular area. To find the objects in a rectangular bounding box, add the whereWithinGeoBox restriction to your **ParseQuery**.
 
 ```JAVA
-	ParseGeoPoint southwestOfSF = new ParseGeoPoint(37.708813, -122.526398);
-	ParseGeoPoint northeastOfSF = new ParseGeoPoint(37.822802, -122.373962);
-	ParseQuery<ParseObject> query = ParseQuery.getQuery("PizzaPlaceObject");
-	query.whereWithinGeoBox("location", southwestOfSF, northeastOfSF);
-	query.findInBackground(new FindCallback<ParseObject>() { ... });
+ParseGeoPoint southwestOfSF = new ParseGeoPoint(37.708813, -122.526398);
+ParseGeoPoint northeastOfSF = new ParseGeoPoint(37.822802, -122.373962);
+ParseQuery<ParseObject> query = ParseQuery.getQuery("PizzaPlaceObject");
+query.whereWithinGeoBox("location", southwestOfSF, northeastOfSF);
+query.findInBackground(new FindCallback<ParseObject>() { ... });
 ```
 
 #### Caveats
