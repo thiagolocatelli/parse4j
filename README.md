@@ -202,7 +202,7 @@ import com.parse.ParseObject;
 import com.parse.ParseClassName;
  
 @ParseClassName("Armor")
-	public class Armor extends ParseObject {
+public class Armor extends ParseObject {
 }
  
 // App.java
