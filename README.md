@@ -257,13 +257,30 @@ public void takeDamage(int amount) {
 
 #### Initializing Subclasses
 
-You should create new instances of your subclasses using the constructors you have defined. Your subclass must define a public default constructor that does not modify fields of the ParseObject, which will be used throughout the Parse SDK to create strongly-typed instances of your subclass.
+You should create new instances of your subclasses using the constructors you have defined. Your subclass must define a public default constructor that does not modify fields of the **ParseObject**, which will be used throughout the Parse SDK to create strongly-typed instances of your subclass.
 
 To create a reference to an existing object, use ParseObject.createWithoutData():
 
+```Java
 Armor armorReference = ParseObject.createWithoutData(Armor.class, armor.getObjectId());
+```
 
+#### Queries
 
+You can get a query for objects of a particular subclass using the static method **ParseQuery.getQuery()**. The following example queries for armors that the user can afford:
+
+```Java
+ParseQuery<Armor> query = ParseQuery.getQuery(Armor.class);
+query.whereLessThanOrEqualTo("rupees", ParseUser.getCurrentUser().get("rupees"));
+query.findInBackground(new FindCallback<Armor>() {
+  @Override
+  public void done(List<Armor> results, ParseException e) {
+    for (Armor a : results) {
+      // ...
+    }
+  }
+});
+```
 
 
 
