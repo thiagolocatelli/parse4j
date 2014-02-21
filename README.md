@@ -527,6 +527,7 @@ TODO
 ### Implemented Functionalities
 
  * [Objects](#Objects)
+ * [Queries](#Queries) 
  * [CloudFunctions](#CloudFunctions) 
  * [GeoPoints](#GeoPoints)
  * [Analytics](#Analytics) 
@@ -534,8 +535,7 @@ TODO
  
 ### In development
 
- * [Files](#Files) 
- * [Queries](#Queries)  
+ * [Files](#Files)  
  * [Users](#Users) 
  * [Push Notifications](#PushNotifications) 
 
