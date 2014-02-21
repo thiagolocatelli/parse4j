@@ -442,7 +442,7 @@ You can restrict the fields returned by calling selectKeys with a collection of 
 
 ```Java
 ParseQuery<ParseObject> query = ParseQuery.getQuery("GameScore");
-query.selectKeys(Arrays.asList("playerName", "score"));;
+query.selectKeys(Arrays.asList("playerName", "score"));
 List<ParseObject> results = query.find();
 ```
 
