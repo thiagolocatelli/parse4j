@@ -457,20 +457,66 @@ object.fetchIfNeededInBackground(new GetCallback<ParseObject>() {
 });
 ```
 
-
 #### Queries on Array Values
+
+If a key contains an array value, you can search for objects where the key's array value contains 2 by:
+
+```Java
+// Find objects where the array in arrayKey contains the number 2.
+query.whereEqualTo("arrayKey", 2);
+```
+
+You can also search for objects where the key's array value contains each of the values 2, 3, and 4 with the following:
+
+```Java
+// Find objects where the array in arrayKey contains all of the numbers 2, 3, and 4.
+ArrayList<Integer> numbers = new ArrayList<Integer>();
+numbers.add(2);
+numbers.add(3);
+numbers.add(4);
+query.whereContainsAll("arrayKey", numbers);
+```
 
 #### Queries on String Values
 
+Use **whereStartsWith** to restrict to string values that start with a particular string. Similar to a MySQL LIKE operator, this is indexed so it is efficient for large datasets:
+
+```Java
+// Finds barbecue sauces that start with "Big Daddy's".
+ParseQuery<ParseObject> query = ParseQuery.getQuery("BarbecueSauce");
+query.whereStartsWith("name", "Big Daddy's");
+```
+
 #### Relational Queries
+
 
 Pending...
 
 #### Counting Objects
 
+If you just need to count how many objects match a query, but you do not need to retrieve all the objects that match, you can use count instead of find. For example, to count how many games have been played by a particular player:
+
+```Java
+ParseQuery<ParseObject> query = ParseQuery.getQuery("GameScore");
+query.whereEqualTo("playerName", "Sean Plott");
+query.countInBackground(new CountCallback() {
+  public void done(int count, ParseException e) {
+    if (e == null) {
+      // The count request succeeded. Log the count
+      Log.d("score", "Sean has played " + count + " games");
+    } else {
+      // The request failed
+    }
+  }
+});
+```
+
+If you want to block the calling thread, you can also use the synchronous **query.count()** method.
+
+For classes with over 1000 objects, count operations are limited by timeouts. They may routinely yield timeout errors or return results that are only approximately correct. Thus, it is preferable to architect your application to avoid this sort of count operation.
+
+
 #### Compound Queries
-
-
 
 Pending...
 
