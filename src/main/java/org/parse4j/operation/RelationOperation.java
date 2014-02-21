@@ -11,13 +11,13 @@ import org.parse4j.ParseRelation;
 import org.parse4j.encode.ParseObjectEncodingStrategy;
 import org.parse4j.util.ParseEncoder;
 
-public class ParseRelationOperation<T extends ParseObject> implements ParseFieldOperation {
+public class RelationOperation<T extends ParseObject> implements ParseFieldOperation {
 
 	private String targetClass;
 	private Set<ParseObject> relationsToAdd;
 	private Set<ParseObject> relationsToRemove;
 	
-	public ParseRelationOperation(Set<T> newRelationsToAdd, Set<T> newRelationsToRemove) {
+	public RelationOperation(Set<T> newRelationsToAdd, Set<T> newRelationsToRemove) {
 		this.targetClass = null;
 		this.relationsToAdd = new HashSet<ParseObject>();
 		this.relationsToRemove = new HashSet<ParseObject>();
@@ -121,8 +121,7 @@ public class ParseRelationOperation<T extends ParseObject> implements ParseField
 		if (this.relationsToAdd.size() > 0) {
 			adds = new JSONObject();
 			adds.put("__op", "AddRelation");
-			adds.put("objects",
-					convertSetToArray(this.relationsToAdd, objectEncoder));
+			adds.put("objects", convertSetToArray(this.relationsToAdd, objectEncoder));
 		}
 
 		if (this.relationsToRemove.size() > 0) {

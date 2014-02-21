@@ -6,8 +6,12 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.entity.StringEntity;
 import org.parse4j.Parse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ParsePostCommand extends ParseCommand {
+	
+	private static Logger LOGGER = LoggerFactory.getLogger(ParsePostCommand.class);
 
 	private String endPoint;
 	private String objectId;
@@ -23,15 +27,27 @@ public class ParsePostCommand extends ParseCommand {
 
 	@Override
 	public HttpRequestBase getRequest() throws IOException {
-		String url = Parse.getParseAPIUrl(endPoint)
-				+ (objectId != null ? "/" + objectId : "");
-		HttpPost httppost = new HttpPost(url);
+		
+		HttpPost httppost = new HttpPost(getUrl());
 		setupHeaders(httppost, addJson);
 
 		if (data.has("data")) {
+			if(LOGGER.isDebugEnabled()) {
+				LOGGER.debug("Sending data: {}", data.getJSONObject("data"));
+			}
 			httppost.setEntity(new StringEntity(data.getJSONObject("data").toString()));
 		}
 		return httppost;
+	}
+	
+	protected String getUrl() {
+		String url = Parse.getParseAPIUrl(endPoint) + (objectId != null ? "/" + objectId : "");
+		
+		if(LOGGER.isDebugEnabled()) {
+			LOGGER.debug("Request URL: {}", url);
+		}
+		
+		return url;
 	}
 
 }

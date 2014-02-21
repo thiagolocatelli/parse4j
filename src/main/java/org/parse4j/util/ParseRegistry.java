@@ -9,8 +9,12 @@ import org.parse4j.ParseClassName;
 import org.parse4j.ParseObject;
 import org.parse4j.ParseRole;
 import org.parse4j.ParseUser;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ParseRegistry {
+	
+	private static Logger LOGGER = LoggerFactory.getLogger(ParseRegistry.class);
 
 	private static final Map<Class<? extends ParseObject>, String> classNames = 
 			new ConcurrentHashMap<Class<? extends ParseObject>, String>();
@@ -18,7 +22,7 @@ public class ParseRegistry {
 	private static final Map<String, Class<? extends ParseObject>> objectTypes = 
 			new ConcurrentHashMap<String, Class<? extends ParseObject>>();
 
-	static {
+	public static void registerDefaultSubClasses() {
 		registerSubclass(ParseUser.class);
 		registerSubclass(ParseRole.class);
 	}
@@ -30,6 +34,9 @@ public class ParseRegistry {
 	public static void registerSubclass(Class<? extends ParseObject> subclass) {
 
 		String className = getClassName(subclass);
+		if(LOGGER.isDebugEnabled()) {
+			LOGGER.debug("Registering sub class {}", className);
+		}
 		if (className == null) {
 			throw new IllegalArgumentException(
 					"No ParseClassName annoation provided on " + subclass);

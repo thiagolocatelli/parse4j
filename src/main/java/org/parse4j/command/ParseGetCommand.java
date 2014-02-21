@@ -16,25 +16,25 @@ public class ParseGetCommand extends ParseCommand {
 	
 	private static Logger LOGGER = LoggerFactory.getLogger(ParseGetCommand.class);
 
-	private String className;
+	private String endPoint;
 	private String objectId;
 
 	public ParseGetCommand(String className, String objectId) {
-		this.className = className;
+		this.endPoint = className;
 		this.objectId = objectId;
 	}
 
-	public ParseGetCommand(String className) {
-		this.className = className;
+	public ParseGetCommand(String endPoint) {
+		this.endPoint = endPoint;
 	}
 
 	@SuppressWarnings("rawtypes")
 	@Override
 	public HttpRequestBase getRequest() {
 		
-		String url = Parse.getParseAPIUrl(className) + (objectId != null ? "/" + objectId : "");
+		String url = getUrl();
 		
-		if("login".endsWith(className)) {
+		if("login".endsWith(endPoint)) {
 			try {
 				String userPart = "username=" + URLEncoder.encode(data.getString("username"), "UTF-8");
 				String passPart = "password=" + URLEncoder.encode(data.getString("password"), "UTF-8");
@@ -47,28 +47,33 @@ public class ParseGetCommand extends ParseCommand {
 		}
 		
 		try {
-			if(data.get("data") != null) {
+			if(data.opt("data") != null) {
 				JSONObject query = (JSONObject) data.get("data");
 				try {
-					url += "?";
+					
 					Iterator it = query.keySet().iterator();
+					if(it.hasNext()) {
+						url += "?";
+					}
 					while(it.hasNext()) {
 						String key = (String) it.next();
 						Object obj = query.get(key);
 						url += key + "=" + URLEncoder.encode(obj.toString(), "UTF-8") + "&";
+					}
+					
+					if(LOGGER.isDebugEnabled()) {
+						LOGGER.debug("Final Request URL: {}", url);
 					}
 				}
 				catch(UnsupportedEncodingException e) {
 					LOGGER.error("Encoding error while building request url", e);
 				}
 			}
+			
+			
 		}
 		catch(JSONException e) {
 			LOGGER.error("Data not found, empty request?", e);
-		}
-		
-		if(LOGGER.isDebugEnabled()) {
-			LOGGER.debug("Request URL: {}", url);
 		}
 		
 		HttpGet httpget = new HttpGet(url);
@@ -78,6 +83,16 @@ public class ParseGetCommand extends ParseCommand {
 	
 	public void addJson(boolean addJson) {
 		this.addJson = false;
+	}
+	
+	protected String getUrl() {
+		String url = Parse.getParseAPIUrl(endPoint) + (objectId != null ? "/" + objectId : "");
+		
+		if(LOGGER.isDebugEnabled()) {
+			LOGGER.debug("Request URL: {}", url);
+		}
+		
+		return url;
 	}
 
 }

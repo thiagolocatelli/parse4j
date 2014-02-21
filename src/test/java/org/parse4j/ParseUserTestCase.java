@@ -59,7 +59,7 @@ public class ParseUserTestCase extends Parse4JTestCase {
 		System.out.println("signup(): initializing...");
 			
 		try {
-			ParseUser parseUser = getParseUser("");
+			ParseUser parseUser = getParseUser("1");
 			parseUser.signUp();
 			assertNotNull("objectId should not be null", parseUser.getObjectId());
 			assertNotNull("createdAt should not be null", parseUser.getCreatedAt());
@@ -121,8 +121,8 @@ public class ParseUserTestCase extends Parse4JTestCase {
 		System.out.println("verifyEmail(): initializing...");
 			
 		try {
-			
-			ParseUser pu = getParseUser("3");
+			ParseUser pu = getParseUser("4");
+			pu.signUp();
 			ParseUser.requestPasswordReset(pu.getEmail());
 		}
 		catch(ParseException e) {

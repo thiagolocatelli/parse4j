@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.parse4j.callback.DeleteCallback;
@@ -25,10 +26,11 @@ import org.parse4j.command.ParseResponse;
 import org.parse4j.encode.PointerEncodingStrategy;
 import org.parse4j.operation.DeleteFieldOperation;
 import org.parse4j.operation.IncrementFieldOperation;
-import org.parse4j.operation.ParseAddOperation;
-import org.parse4j.operation.ParseAddUniqueOperation;
+import org.parse4j.operation.AddOperation;
+import org.parse4j.operation.AddUniqueOperation;
 import org.parse4j.operation.ParseFieldOperation;
-import org.parse4j.operation.ParseRemoveOperation;
+import org.parse4j.operation.RelationOperation;
+import org.parse4j.operation.RemoveFieldOperation;
 import org.parse4j.operation.SetFieldOperation;
 import org.parse4j.util.ParseDecoder;
 import org.parse4j.util.ParseRegistry;
@@ -119,6 +121,7 @@ public class ParseObject {
 		}
 		Object value = this.data.get(key);
 		if (!(value instanceof ParseFile)) {
+			LOGGER.error("Called getParseFile(\"{}\") but the value is a {}", key, value.getClass());
 			return null;
 		}
 		return (ParseFile) value;
@@ -131,6 +134,7 @@ public class ParseObject {
 		}
 		Object value = this.data.get(key);
 		if (!(value instanceof ParseGeoPoint)) {
+			LOGGER.error("Called getParseFile(\"{}\") but the value is a {}", key, value.getClass());
 			return null;
 		}
 		return (ParseGeoPoint) value;
@@ -143,6 +147,7 @@ public class ParseObject {
 		}
 		Object value = this.data.get(key);
 		if (!(value instanceof Date)) {
+			LOGGER.error("Called getParseFile(\"{}\") but the value is a {}", key, value.getClass());
 			return null;
 		}
 		return (Date) value;
@@ -167,6 +172,7 @@ public class ParseObject {
 		}
 		Object value = this.data.get(key);
 		if (!(value instanceof Number)) {
+			LOGGER.error("Called getParseFile(\"{}\") but the value is a {}", key, value.getClass());
 			return null;
 		}
 		return (Number) value;
@@ -203,19 +209,84 @@ public class ParseObject {
 		}
 		Object value = this.data.get(key);
 		if (!(value instanceof String)) {
+			LOGGER.error("Called getParseFile(\"{}\") but the value is a {}", key, value.getClass());
 			return null;
 		}
 		return (String) value;
 	}
 	
-	private <T extends ParseObject> ParseRelation<T> getRelation(String key) {
+	public <T> List<T> getList(String key) {
+
+		if (!this.data.containsKey(key)) {
+			return null;
+		}
+		Object value = this.data.get(key);
+
+		if ((value instanceof JSONArray)) {
+			value = ParseDecoder.decode(value);
+			put(key, value);
+		}
+
+		if (!(value instanceof List)) {
+			return null;
+		}
+
+		List<T> returnValue = (List<T>) value;
+		return returnValue;
+	}
+	
+	public ParseObject getParseObject(String key) {
+		if (!this.data.containsKey(key)) {
+			return null;
+		}
+		Object value = this.data.get(key);
+		if (!(value instanceof ParseObject)) {
+			LOGGER.error("Called getParseObject(\"{}\") but the value is a {}", key, value.getClass());
+			return null;
+		}
+		return (ParseObject) value;
+	}
+	
+	public Object get(String key) {
+
+		if (!this.data.containsKey(key)) {
+			return null;
+		}
+
+		Object value = this.data.get(key);
+
+		/*
+		if (((value instanceof ParseACL)) && (key.equals("ACL"))) {
+			ParseACL acl = (ParseACL) value;
+			if (acl.isShared()) {
+				ParseACL copy = acl.copy();
+				this.estimatedData.put("ACL", copy);
+				addToHashedObjects(copy);
+				return getACL();
+			}
+
+		}*/
+
+		if ((value instanceof ParseRelation)) {
+			((ParseRelation<?>) value).ensureParentAndKey(this, key);
+		}
+
+		return value;
+
+	}	
+	
+	public <T extends ParseObject> ParseRelation<T> getRelation(String key) {
 		ParseRelation<T> relation = new ParseRelation<T>(this, key);
 		Object value = this.data.get(key);
-		if (value instanceof ParseRelation) {
-			relation.setTargetClass(((ParseRelation<?>) value).getTargetClass());
+		if(value != null) {
+			if (value instanceof ParseRelation) {
+				relation.setTargetClass(((ParseRelation<?>) value).getTargetClass());
+			}
+		}
+		else {
+			this.data.put(key, relation);
 		}
 		return relation;
-
 	}
 
 	public void clearData() {
@@ -247,7 +318,7 @@ public class ParseObject {
 	}
 
 	public void addAll(String key, Collection<?> values) {
-		ParseAddOperation operation = new ParseAddOperation(values);
+		AddOperation operation = new AddOperation(values);
 		performOperation(key, operation);
 	}
 
@@ -256,12 +327,12 @@ public class ParseObject {
 	}
 
 	public void addAllUnique(String key, Collection<?> values) {
-		ParseAddUniqueOperation operation = new ParseAddUniqueOperation(values);
+		AddUniqueOperation operation = new AddUniqueOperation(values);
 		performOperation(key, operation);
 	}
 
 	public void removeAll(String key, Collection<?> values) {
-		ParseRemoveOperation operation = new ParseRemoveOperation(values);
+		RemoveFieldOperation operation = new RemoveFieldOperation(values);
 		performOperation(key, operation);
 	}
 
@@ -375,9 +446,6 @@ public class ParseObject {
 			command =  new ParsePutCommand(getEndPoint(), getObjectId());
 		}
 		
-		if(LOGGER.isDebugEnabled()) {
-			LOGGER.debug("parseData-> " + getParseData());
-		}
 		command.setData(getParseData());
 		ParseResponse response = command.perform();
 		if(!response.isFailed()) {
@@ -448,6 +516,9 @@ public class ParseObject {
 			else if(operation instanceof DeleteFieldOperation) {
 				parseData.put(key, operation.encode(PointerEncodingStrategy.get()));
 			}
+			else if(operation instanceof RelationOperation) {
+				parseData.put(key, operation.encode(PointerEncodingStrategy.get()));
+			}
 			else {
 				//here we deal will sub objects like ParseObject;
 				Object obj = data.get(key);
@@ -457,6 +528,10 @@ public class ParseObject {
 				}
 			}
 			
+		}
+		
+		if(LOGGER.isDebugEnabled()) {
+			LOGGER.debug("parseData-> " + parseData);
 		}
 		
 		return parseData;
@@ -543,6 +618,9 @@ public class ParseObject {
 	public <T extends ParseObject> T fetchIfNeeded() throws ParseException {
 	
 		ParseGetCommand command = new ParseGetCommand(getEndPoint(), getObjectId());
+		//JSONObject query = new JSONObject();
+		//query.put("objectId", getObjectId());
+		//command.setData(query);
 		ParseResponse response = command.perform();
 		if(!response.isFailed()) {
 			JSONObject jsonResponse = response.getJsonObject();
@@ -619,7 +697,12 @@ public class ParseObject {
             	
             }
             else {
-            	po.put(key, obj);
+    			if(Parse.isInvalidKey(key)) {
+    				setReservedKey(key, obj);
+    			}
+    			else {
+    				put(key, ParseDecoder.decode(obj));
+    			}
             }
             
         }

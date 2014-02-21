@@ -58,7 +58,7 @@ public class Parse4JTestCase {
 		ParseUser parseUser = new ParseUser();
 		parseUser.setUsername("parse4j-user" + number);
 		parseUser.setPassword("parse4j-password");
-		parseUser.setEmail("thiago.locatelli@gmail.com");
+		parseUser.setEmail("parse4j-email"+number+"@gmail.com");
 		parseUser.put("dob", new Date());
 		parseUser.put("city", "westbury");
 		parseUser.put("state", "ny");

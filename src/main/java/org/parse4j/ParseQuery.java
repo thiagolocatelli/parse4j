@@ -15,6 +15,7 @@ import org.parse4j.callback.FindCallback;
 import org.parse4j.callback.GetCallback;
 import org.parse4j.command.ParseGetCommand;
 import org.parse4j.command.ParseResponse;
+import org.parse4j.encode.ParseObjectEncodingStrategy;
 import org.parse4j.encode.PointerEncodingStrategy;
 import org.parse4j.util.ParseEncoder;
 import org.parse4j.util.ParseRegistry;
@@ -233,14 +234,12 @@ public class ParseQuery<T extends ParseObject> {
 		return this;
 	}
 
-	/*
-	ParseQuery<T> whereRelatedTo(ParseObject parent, String key) {
+	public ParseQuery<T> whereRelatedTo(ParseObject parent, String key) {
 		this.where.put("$relatedTo", new RelationConstraint(key, parent));
 		return this;
 	}
-	*/
 
-	ParseQuery<T> redirectClassNameForKey(String key) {
+	public ParseQuery<T> redirectClassNameForKey(String key) {
 		this.extraOptions.put("redirectClassNameForKey", key);
 		return this;
 	}
@@ -635,14 +634,12 @@ public class ParseQuery<T extends ParseObject> {
 	}
 
 	@SuppressWarnings("serial")
-	static class KeyConstraints extends HashMap<String, Object> {
-	}
+	static class KeyConstraints extends HashMap<String, Object> { }
 
 	@SuppressWarnings("serial")
-	static class QueryConstraints extends HashMap<String, Object> {
-	}
+	static class QueryConstraints extends HashMap<String, Object> { }
 	
-	/*
+
 	static class RelationConstraint {
 		private String key;
 		private ParseObject object;
@@ -663,9 +660,11 @@ public class ParseQuery<T extends ParseObject> {
 			return this.object;
 		}
 
+		/*
 		public ParseRelation<ParseObject> getRelation() {
 			return this.object.getRelation(this.key);
 		}
+		*/
 
 		public JSONObject encode(ParseObjectEncodingStrategy objectEncoder) {
 			JSONObject json = new JSONObject();
@@ -679,6 +678,5 @@ public class ParseQuery<T extends ParseObject> {
 			return json;
 		}
 	}
-	*/
 
 }

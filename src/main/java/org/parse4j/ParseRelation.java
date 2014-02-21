@@ -5,8 +5,10 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
-import org.parse4j.operation.ParseRelationOperation;
+import org.parse4j.encode.ParseObjectEncodingStrategy;
+import org.parse4j.operation.RelationOperation;
 import org.parse4j.util.ParseDecoder;
 
 public class ParseRelation<T extends ParseObject> {
@@ -14,9 +16,9 @@ public class ParseRelation<T extends ParseObject> {
 	private ParseObject parent;
 	private String key;
 	private String targetClass;
-	private Set<ParseObject> knownObjects = new HashSet<ParseObject>();	
+	private Set<T> knownObjects = new HashSet<T>();	
 	
-	
+	@SuppressWarnings("unchecked")
 	public ParseRelation(JSONObject jsonObject) {
 		this.parent = null;
 		this.key = null;
@@ -24,7 +26,7 @@ public class ParseRelation<T extends ParseObject> {
 		JSONArray objectsArray = jsonObject.optJSONArray("objects");
 		if (objectsArray != null) {
 			for (int i = 0; i < objectsArray.length(); i++) {
-				this.knownObjects.add((ParseObject) ParseDecoder.decode(objectsArray
+				this.knownObjects.add((T) ParseDecoder.decode(objectsArray
 						.optJSONObject(i)));
 			}
 		}
@@ -74,24 +76,32 @@ public class ParseRelation<T extends ParseObject> {
 
 	public void add(T object) {
 
-		ParseRelationOperation<T> operation = new ParseRelationOperation<T>(
+		this.knownObjects.add(object);
+		
+		/*
+		RelationOperation<T> operation = new RelationOperation<T>(
 				Collections.singleton(object), null);
+		*/
+		
+		RelationOperation<T> operation = new RelationOperation<T>(
+				Collections.unmodifiableSet(this.knownObjects), null);
 
 		this.targetClass = operation.getTargetClass();
 		this.parent.performOperation(this.key, operation);
-		this.knownObjects.add(object);
 
 	}
 
 	public void remove(T object) {
 
-		ParseRelationOperation<T> operation = new ParseRelationOperation<T>(null,
+		this.knownObjects.remove(object);
+		
+		RelationOperation<T> operation = new RelationOperation<T>(null,
 				Collections.singleton(object));
 
 		this.targetClass = operation.getTargetClass();
 		this.parent.performOperation(this.key, operation);
-		this.knownObjects.remove(object);
 	}
+	
 	
 	public ParseQuery<T> getQuery() {
 
@@ -102,9 +112,24 @@ public class ParseRelation<T extends ParseObject> {
 		} else {
 			query = ParseQuery.getQuery(this.targetClass);
 		}
-		//query.whereRelatedTo(this.parent, this.key);
+		query.whereRelatedTo(this.parent, this.key);
 		return query;
 
-	}	
+	}
+		
+	
+	public JSONObject encodeToJSON(ParseObjectEncodingStrategy objectEncoder) throws JSONException {
+		JSONObject relation = new JSONObject();
+		relation.put("__type", "Relation");
+		relation.put("className", this.targetClass);
+		JSONArray knownObjectsArray = new JSONArray();
+		for (ParseObject knownObject : this.knownObjects) {
+			try {
+				knownObjectsArray.put(objectEncoder.encodeRelatedObject(knownObject));
+			} catch (Exception e) { }
+		}
+		relation.put("objects", knownObjectsArray);
+		return relation;
+	}
 	
 }

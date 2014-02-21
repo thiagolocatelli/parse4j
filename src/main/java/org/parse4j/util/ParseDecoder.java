@@ -15,9 +15,11 @@ import org.parse4j.ParseFile;
 import org.parse4j.ParseGeoPoint;
 import org.parse4j.ParseObject;
 import org.parse4j.ParseRelation;
+import org.parse4j.operation.ParseFieldOperations;
 
 public class ParseDecoder {
 
+	@SuppressWarnings("rawtypes")
 	public static Object decode(Object object) {
 
 		if ((object instanceof JSONArray)) {
@@ -29,18 +31,6 @@ public class ParseDecoder {
 		}
 		
 		JSONObject jsonObject = (JSONObject) object;
-		
-		//TODO
-		/*
-		String opString = jsonObject.optString("__op", null);
-	    if (opString != null) {
-	      try {
-	        return ParseFieldOperations.decode(jsonObject, this);
-	      } catch (JSONException e) {
-	        throw new RuntimeException(e);
-	      }
-	    }
-	    */
 		
 		String typeString = jsonObject.optString("__type", null);
 		if (typeString == null) {
@@ -77,10 +67,19 @@ public class ParseDecoder {
 			}
 			return new ParseGeoPoint(latitude, longitude);
 		}	
-	    
+
 		if (typeString.equals("Relation")) {
-		      return new ParseRelation(jsonObject);
-		    }
+			return new ParseRelation(jsonObject);
+		}
+		
+		String opString = jsonObject.optString("__op", null);
+	    if (opString != null) {
+	      try {
+	        return ParseFieldOperations.decode(jsonObject);
+	      } catch (JSONException e) {
+	        throw new RuntimeException(e);
+	      }
+	    }		
 
 		return null;
 		
@@ -100,7 +99,7 @@ public class ParseDecoder {
 
 	private static Map<String, Object> convertJSONObjectToMap(JSONObject object) {
 		Map<String, Object> outputMap = new HashMap<String, Object>();
-		Iterator it = object.keys();
+		Iterator<?> it = object.keys();
 		while (it.hasNext()) {
 			String key = (String) it.next();
 			Object value = object.opt(key);

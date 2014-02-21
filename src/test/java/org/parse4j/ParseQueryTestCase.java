@@ -228,18 +228,36 @@ public class ParseQueryTestCase extends Parse4JTestCase {
 	@Test
 	public void test5() {
 		//selectKeys
-		System.out.println("test1(): initializing...");
+		System.out.println("test5(): initializing...");
 		
 		try {
 			ParseQuery<ParseObject> query = ParseQuery.getQuery("games");
 			query.selectKeys(Arrays.asList("losingTeam", "losingScore"));
 			query.setTrace(true);
 			ParseObject po = query.get("GLVPuc2X8H");
-			assertNotNull("ObjectId should not be null", po.getObjectId());
+			assertNotNull("test5(): ObjectId should not be null", po.getObjectId());
 		}
 		catch(ParseException e) {
-			assertNull("test1(): should not have thrown ParseException", e);
+			assertNull("test5(): should not have thrown ParseException", e);
 		}
+	}
+	
+	@Test
+	public void test6() {
+		System.out.println("test6(): initializing...");
+		
+		try {
+			ParseQuery<ParseObject> query = ParseQuery.getQuery("games");
+			ParseObject po = query.get("GLVPuc2X8H");
+			//po.increment("losingScore", -3);
+			//po.remove("data");
+			//po.save();
+			assertNotNull("test6(): ObjectId should not be null", po.getObjectId());
+		}
+		catch(ParseException e) {
+			assertNull("test6(): should not have thrown ParseException", e);
+		}
+		
 	}
 	
 }

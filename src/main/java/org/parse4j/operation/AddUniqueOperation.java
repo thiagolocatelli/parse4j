@@ -10,15 +10,15 @@ import org.parse4j.ParseObject;
 import org.parse4j.encode.ParseObjectEncodingStrategy;
 import org.parse4j.util.ParseEncoder;
 
-public class ParseAddUniqueOperation implements ParseFieldOperation {
+public class AddUniqueOperation implements ParseFieldOperation {
 
 	protected LinkedHashSet<Object> objects = new LinkedHashSet<Object>();
 
-	public ParseAddUniqueOperation(Collection<?> coll) {
+	public AddUniqueOperation(Collection<?> coll) {
 		this.objects.addAll(coll);
 	}
 
-	public ParseAddUniqueOperation(Object o) {
+	public AddUniqueOperation(Object o) {
 		this.objects.add(o);
 	}
 

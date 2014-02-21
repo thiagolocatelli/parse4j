@@ -12,6 +12,8 @@ import java.util.SimpleTimeZone;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.parse4j.operation.ParseFieldOperations;
+import org.parse4j.util.ParseRegistry;
 
 public class Parse {
 
@@ -23,6 +25,8 @@ public class Parse {
 		DateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
 		format.setTimeZone(new SimpleTimeZone(0, "GMT"));
 		dateFormat = format;
+		ParseRegistry.registerDefaultSubClasses();
+		ParseFieldOperations.registerDefaultDecoders();
 	}
 
 	static public void initialize(String applicationId, String restAPIKey) {
@@ -70,7 +74,7 @@ public class Parse {
 				|| ((value instanceof ParseObject))
 				// || ((value instanceof ParseACL))
 				|| ((value instanceof ParseFile))
-				// || ((value instanceof ParseRelation)
+				|| ((value instanceof ParseRelation))
 				|| ((value instanceof ParseGeoPoint))
 				|| ((value instanceof Date)) 
 				|| ((value instanceof byte[]))

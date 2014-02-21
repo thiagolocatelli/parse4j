@@ -28,6 +28,7 @@ public class ParseObjectCustomTest extends Parse4JTestCase {
 		Person parseObject = new Person();
 		parseObject.setAge(15);
 		parseObject.setGender("male");
+		parseObject.getString("age");
 		
 		try {
 			parseObject.save();

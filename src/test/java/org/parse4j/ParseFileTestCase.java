@@ -80,7 +80,6 @@ public class ParseFileTestCase extends Parse4JTestCase {
 		}		
 	}
 	
-	@Test
 	public void uploadPdfWithProgressCallback() {
 		System.out.println("uploadPdf(): initializing...");
 		try {

@@ -25,6 +25,7 @@ public class ParseAnalytics {
 	public static void trackEvent(String name, Map<String, String> dimensions) {
 
 		if ((name == null) || (name.trim().length() == 0)) {
+			LOGGER.error("A name for the custom event must be provided.");
 			throw new RuntimeException(
 					"A name for the custom event must be provided.");
 		}
