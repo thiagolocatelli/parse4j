@@ -27,7 +27,7 @@ Getting Started
 
 
 
-#### Maven (pending sonatype request)
+#### Maven
 
 ```XML
 <project ...>
