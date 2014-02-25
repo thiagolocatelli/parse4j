@@ -121,9 +121,9 @@ gameScore.put("cheatMode", false);
 gameScore.saveInBackground(new SaveCallback() {			
 		@Override
 		public void done(ParseException parseException) {
-			System.out.println("saveInBackground(): objectId: " + parseObject.getObjectId());
-			System.out.println("saveInBackground(): createdAt: " + parseObject.getCreatedAt());
-			System.out.println("saveInBackground(): updatedAt: " + parseObject.getUpdatedAt());
+			System.out.println("saveInBackground(): objectId: " + gameScore.getObjectId());
+			System.out.println("saveInBackground(): createdAt: " + gameScore.getCreatedAt());
+			System.out.println("saveInBackground(): updatedAt: " + gameScore.getUpdatedAt());
 		}
 	});
 ```
