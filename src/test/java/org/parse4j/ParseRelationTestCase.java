@@ -61,14 +61,12 @@ public class ParseRelationTestCase extends Parse4JTestCase {
 
 	
 	@Test
-	public void relation() throws ParseException {
-	
+	public void relation() throws ParseException {	
 
 		ParseObject member = new ParseObject("Member");
 		member.put("name", "member name");
 		member.put("country", "brazil");
 		member.save();
-		
 		
 		ParseObject project1 = new ParseObject("Project");
 		project1.put("name", "project name 1");
@@ -89,7 +87,51 @@ public class ParseRelationTestCase extends Parse4JTestCase {
 		ParseObject fetchedMember = query.get(member.getObjectId());
 		
 		ParseRelation<ParseObject> fetchedRelations = member.getRelation("projects");
+		ParseQuery<ParseObject> fetchQuery = fetchedRelations.getQuery();
+		List<ParseObject> list = fetchQuery.find();
+		
 	}
+	
+	@Test
+	public void relation3() throws ParseException {
+		
+		ParseQuery<ParseObject> query = ParseQuery.getQuery("Member");
+		ParseObject member = query.get("8EOuUQSV38");
+		
+		ParseRelation<ParseObject> fetchedRelations = member.getRelation("projects");
+		ParseQuery<ParseObject> fetchQuery = fetchedRelations.getQuery();
+		List<ParseObject> list = fetchQuery.find();
+		for(ParseObject po : list) {
+			System.out.println(po.getDate("start"));
+		}
+	}
+	
+	@Test
+	public void relation2() throws ParseException {	
+
+		ParseObject member = new ParseObject("GameScore");
+		member.put("date", new Date());
+		member.put("local", "usa");
+		member.save();
+		
+		ParseObject project1 = new ParseObject("Team");
+		project1.put("name", "Team C");
+		project1.save();
+		
+		ParseObject project2 = new ParseObject("Team");
+		project2.put("name", "Team D");
+		project2.save();
+		
+		ParseRelation<ParseObject> relation = member.getRelation("opponents");
+		relation.add(project1);
+		//relation.add(project2);
+		member.save();
+		
+		ParseQuery<ParseObject> query = ParseQuery.getQuery("GameScore");
+		ParseObject fetchedMember = query.get(member.getObjectId());
+		
+		ParseRelation<ParseObject> fetchedRelations = member.getRelation("opponents");
+	}	
 	
 	
 	@Test

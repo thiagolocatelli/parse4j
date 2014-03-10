@@ -495,13 +495,13 @@ public class ParseQuery<T extends ParseObject> {
 					Class<?> clazz = ParseRegistry.getParseClass(getClassName());
 					if(clazz != null) {
 						T po = (T) clazz.newInstance();
-						JSONObject obj = (JSONObject) objs.get(0);
+						JSONObject obj = (JSONObject) objs.get(i);
 						po.setData(obj);
 						results.add((T) po);
 					}
 					else {
 						ParseObject po = new ParseObject(getClassName());
-						JSONObject obj = (JSONObject) objs.get(0);
+						JSONObject obj = (JSONObject) objs.get(i);
 						po.setData(obj);
 						results.add((T) po);
 					}
@@ -640,7 +640,7 @@ public class ParseQuery<T extends ParseObject> {
 	static class QueryConstraints extends HashMap<String, Object> { }
 	
 
-	static class RelationConstraint {
+	public class RelationConstraint {
 		private String key;
 		private ParseObject object;
 
@@ -660,11 +660,9 @@ public class ParseQuery<T extends ParseObject> {
 			return this.object;
 		}
 
-		/*
 		public ParseRelation<ParseObject> getRelation() {
 			return this.object.getRelation(this.key);
 		}
-		*/
 
 		public JSONObject encode(ParseObjectEncodingStrategy objectEncoder) {
 			JSONObject json = new JSONObject();

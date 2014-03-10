@@ -35,7 +35,7 @@ public class ParsePutCommand extends ParseCommand {
 			if(LOGGER.isDebugEnabled()) {
 				LOGGER.debug("Sending data: {}", data.getJSONObject("data"));
 			}
-			httpput.setEntity(new StringEntity(data.toString()));
+			httpput.setEntity(new StringEntity(data.getJSONObject("data").toString()));
 		}		
 		return httpput;
 	}

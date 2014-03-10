@@ -12,6 +12,7 @@ import org.parse4j.Parse;
 import org.parse4j.ParseFile;
 import org.parse4j.ParseGeoPoint;
 import org.parse4j.ParseObject;
+import org.parse4j.ParseQuery;
 import org.parse4j.ParseRelation;
 import org.parse4j.encode.ParseObjectEncodingStrategy;
 import org.slf4j.Logger;
@@ -86,7 +87,11 @@ public class ParseEncoder {
 		if ((value instanceof ParseRelation)) {
 			ParseRelation relation = (ParseRelation) value;
 			return relation.encodeToJSON(objectEncoder);
-		}		
+		}
+		
+		if ((value instanceof ParseQuery.RelationConstraint)) {
+	        return ((ParseQuery.RelationConstraint) value).encode(objectEncoder);
+		}
 		
 		if(value instanceof ParseFile) {
 			ParseFile file = (ParseFile) value;
