@@ -1,5 +1,15 @@
 package org.parse4j;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+
+import org.apache.http.Header;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONObject;
 import org.parse4j.callback.GetDataCallback;
 import org.parse4j.callback.ProgressCallback;
@@ -10,6 +20,7 @@ import org.parse4j.util.MimeType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@SuppressWarnings("deprecation")
 public class ParseFile {	
 	
 	private static Logger LOGGER = LoggerFactory.getLogger(ParseFile.class);
@@ -177,14 +188,53 @@ public class ParseFile {
 	}
 	
 	public byte[] getData() throws ParseException {
-		return getData(null);
+		
+		HttpGet get = new HttpGet(url);
+		HttpClient client = new DefaultHttpClient();
+		
+		HttpResponse response;
+		try {
+			response = client.execute(get);
+			int totalSize = -1;
+			Header[] contentLengthHeader = response
+					.getHeaders("Content-Length");
+			if (contentLengthHeader.length > 0) {
+				totalSize = Integer.parseInt(contentLengthHeader[0].getValue());
+	             LOGGER.debug("File size: {}", totalSize);
+			}
+			int downloadedSize = 0;
+            InputStream responseStream = response.getEntity().getContent();
+            ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+			byte[] data = new byte[32768];
+            int nRead;
+            while ((nRead = responseStream.read(data, 0, data.length)) != -1) {
+              buffer.write(data, 0, nRead);
+              downloadedSize += nRead;
+              LOGGER.debug("Downloaded: {}", downloadedSize);
+            }
+            
+            responseStream.close();
+            buffer.close();
+            return buffer.toByteArray();			
+		}
+		catch(ClientProtocolException cpe) {
+			throw new ParseException(100, "bad protocol: " + cpe.getClass().getName() + ": " + cpe.getMessage());
+		} catch (IOException e) {
+			throw new ParseException(100, "i/o failure: " + e.getClass().getName() + ": " + e.getMessage());
+		}
+		
 	}
 	
-	public byte[] getData(GetDataCallback dataCallback) throws ParseException {
+	public void getData(GetDataCallback dataCallback) throws ParseException {
 		
+		try {
+			byte[] result = getData();
+			dataCallback.done(result, null);
+		}
+		catch(ParseException pe) {
+			dataCallback.done(null, pe);
+		}
 		
-		
-		return null;
 	}	
 
 	public void getDataInBackground() {

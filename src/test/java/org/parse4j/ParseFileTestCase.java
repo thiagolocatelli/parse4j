@@ -1,7 +1,9 @@
 package org.parse4j;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import junit.framework.Assert;
 
 import org.junit.Test;
 import org.parse4j.callback.ProgressCallback;
@@ -48,7 +50,7 @@ public class ParseFileTestCase extends Parse4JTestCase {
 			testParseFile(file);
 		}
 		catch(ParseException pe) {
-			assertNull("uploadTxt(): should not have thrown ParseException", pe);
+			assertNull("uploadDoc(): should not have thrown ParseException", pe);
 		}		
 	}
 	
@@ -62,7 +64,7 @@ public class ParseFileTestCase extends Parse4JTestCase {
 			testParseFile(file);
 		}
 		catch(ParseException pe) {
-			assertNull("uploadTxt(): should not have thrown ParseException", pe);
+			assertNull("uploadExr(): should not have thrown ParseException", pe);
 		}		
 	}
 	
@@ -76,7 +78,7 @@ public class ParseFileTestCase extends Parse4JTestCase {
 			testParseFile(file);
 		}
 		catch(ParseException pe) {
-			assertNull("uploadTxt(): should not have thrown ParseException", pe);
+			assertNull("uploadPdf(): should not have thrown ParseException", pe);
 		}		
 	}
 	
@@ -96,7 +98,27 @@ public class ParseFileTestCase extends Parse4JTestCase {
 			testParseFile(file);
 		}
 		catch(ParseException pe) {
-			assertNull("uploadTxt(): should not have thrown ParseException", pe);
+			assertNull("uploadPdfWithProgressCallback(): should not have thrown ParseException", pe);
+		}		
+	}
+	
+	@Test
+	public void uploadDocAndGetData() {
+		System.out.println("uploadDocAndGetData(): initializing...");
+		try {
+			byte[] data = getBytes("/parse.docx");
+			ParseFile file = new ParseFile("parse.docx", data);
+			file.save();
+			testParseFile(file);
+			
+			ParseFile getFile = new ParseFile(file.getName(), file.getUrl());
+			byte[] getData = getFile.getData();
+			System.out.println("uploadDocAndGetData(): data.length: " + data.length);
+			System.out.println("uploadDocAndGetData(): getData.length: " + getData.length);
+			assertEquals(data.length, getData.length);
+		}
+		catch(ParseException pe) {
+			assertNull("uploadDocAndGetData(): should not have thrown ParseException", pe);
 		}		
 	}
 	
