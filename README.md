@@ -36,7 +36,7 @@ Getting Started
         <dependency>
             <groupId>com.github.thiagolocatelli</groupId>
             <artifactId>parse4j</artifactId>
-            <version>1.1</version>
+            <version>1.2</version>
         </dependency>
     </dependencies>
     ...
