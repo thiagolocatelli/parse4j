@@ -68,4 +68,27 @@ public class ParseObjectCustomTest extends Parse4JTestCase {
 			assertNull("save(): should not have thrown ParseException", pe);
 		}
 	}
+	
+	@Test
+	public void saveWithChar() {
+		System.out.println("save(): initializing...");
+		ParseRegistry.registerSubclass(Person.class);
+		Person parseObject = new Person();
+		parseObject.setAge(15);
+		parseObject.setGender("Suíça");
+		parseObject.getString("age");
+		
+		try {
+			parseObject.save();
+			System.out.println("save(): objectId: " + parseObject.getObjectId());
+			System.out.println("save(): createdAt: " + parseObject.getCreatedAt());
+			System.out.println("save(): updatedAt: " + parseObject.getUpdatedAt());
+			assertNotNull("objectId should not be null", parseObject.getObjectId());
+			assertNotNull("createdAt should not be null", parseObject.getCreatedAt());
+			assertNotNull("updatedAt should not be null", parseObject.getUpdatedAt());
+		}
+		catch(ParseException pe) {
+			assertNull("save(): should not have thrown ParseException", pe);
+		}
+	}
 }

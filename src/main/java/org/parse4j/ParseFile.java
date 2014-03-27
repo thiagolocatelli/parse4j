@@ -222,6 +222,9 @@ public class ParseFile {
 		} catch (IOException e) {
 			throw new ParseException(100, "i/o failure: " + e.getClass().getName() + ": " + e.getMessage());
 		}
+		finally {
+			//client.close();
+		}
 		
 	}
 	

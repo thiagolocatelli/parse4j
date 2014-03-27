@@ -36,7 +36,7 @@ Getting Started
         <dependency>
             <groupId>com.github.thiagolocatelli</groupId>
             <artifactId>parse4j</artifactId>
-            <version>1.2</version>
+            <version>1.3</version>
         </dependency>
     </dependencies>
     ...
@@ -903,11 +903,11 @@ TODO
  * [CloudFunctions](#CloudFunctions) 
  * [GeoPoints](#GeoPoints)
  * [Analytics](#Analytics) 
+ * [Files](#Files) 
 
  
 ### In development
-
- * [Files](#Files)  
+ 
  * [Users](#Users) 
  * [Push Notifications](#PushNotifications) 
 

@@ -35,7 +35,7 @@ public class ParsePostCommand extends ParseCommand {
 			if(LOGGER.isDebugEnabled()) {
 				LOGGER.debug("Sending data: {}", data.getJSONObject("data"));
 			}
-			httppost.setEntity(new StringEntity(data.getJSONObject("data").toString()));
+			httppost.setEntity(new StringEntity(data.getJSONObject("data").toString(), "UTF8"));
 		}
 		return httppost;
 	}
