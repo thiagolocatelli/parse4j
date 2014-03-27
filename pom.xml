@@ -3,7 +3,7 @@
 
 	<groupId>com.github.thiagolocatelli</groupId>
 	<artifactId>parse4j</artifactId>
-	<version>1.3</version>
+	<version>1.4-SNAPSHOT</version>
 	<packaging>jar</packaging>
 	<name>parse4j</name>
 	<url>https://github.com/thiagolocatelli/parse4j</url>
