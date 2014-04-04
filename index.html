@@ -1,0 +1,966 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link href='https://fonts.googleapis.com/css?family=Architects+Daughter' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print" />
+
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <title>Parse4j for Parse.com by thiagolocatelli</title>
+  </head>
+
+  <body>
+    <header>
+      <div class="inner">
+        <h1>Parse4j for Parse.com</h1>
+        <h2>@thiaglocatelli</h2>
+        <a href="https://github.com/thiagolocatelli/parse4j" class="button"><small>View project on</small>GitHub</a>
+      </div>
+    </header>
+
+    <div id="content-wrapper">
+      <div class="inner clearfix">
+        <section id="main-content">
+          <h1>
+<a name="parse4j---java-library-for-parse" class="anchor" href="#parse4j---java-library-for-parse"><span class="octicon octicon-link"></span></a>Parse4J - Java Library for <a href="https://parse.com">Parse</a>
+</h1>
+
+<p>Ths library is a non-official java library, but it works according to Parse's REST api specification.</p>
+
+<p>ps.: most of the following code snippets and text have been extracted from the parse website, since the java library mimicks the android library. I am not a Parse/Facebook employee.</p>
+
+<h2>
+<a name="summary" class="anchor" href="#summary"><span class="octicon octicon-link"></span></a>Summary</h2>
+
+<p>The Parse platform provides a complete backend solution for your mobile application. Our goal is to totally eliminate the need for writing server code or maintaining servers.</p>
+
+<p>If you're familiar with web frameworks like Ruby on Rails, we've taken many of the same principles and applied them to our platform. In particular, our SDK is ready to use out of the box with minimal configuration on your part.</p>
+
+<h4>
+<a name="apps" class="anchor" href="#apps"><span class="octicon octicon-link"></span></a>Apps</h4>
+
+<p>On Parse, you create an App for each of your applications. Each App has its own application id and client key that you apply to your application, like the code below. Your account on Parse can accommodate multiple Apps. This is useful even if you have one application, since you can deploy different versions for test and production.</p>
+
+<div class="highlight highlight-Java"><pre>    <span class="n">Parse</span><span class="o">.</span><span class="na">initialize</span><span class="o">(</span><span class="n">APP_ID</span><span class="o">,</span> <span class="n">APP_REST_API_ID</span><span class="o">);</span>
+</pre></div>
+
+<h2>
+<a name="getting-started" class="anchor" href="#getting-started"><span class="octicon octicon-link"></span></a>Getting Started</h2>
+
+<h4>
+<a name="download-the-library-manually" class="anchor" href="#download-the-library-manually"><span class="octicon octicon-link"></span></a>Download the library manually</h4>
+
+<h4>
+<a name="maven" class="anchor" href="#maven"><span class="octicon octicon-link"></span></a>Maven</h4>
+
+<div class="highlight highlight-XML"><pre><span class="nt">&lt;project</span> <span class="err">...</span><span class="nt">&gt;</span>
+    ...
+    <span class="nt">&lt;dependencies&gt;</span>
+        <span class="nt">&lt;dependency&gt;</span>
+            <span class="nt">&lt;groupId&gt;</span>com.github.thiagolocatelli<span class="nt">&lt;/groupId&gt;</span>
+            <span class="nt">&lt;artifactId&gt;</span>parse4j<span class="nt">&lt;/artifactId&gt;</span>
+            <span class="nt">&lt;version&gt;</span>1.3<span class="nt">&lt;/version&gt;</span>
+        <span class="nt">&lt;/dependency&gt;</span>
+    <span class="nt">&lt;/dependencies&gt;</span>
+    ...
+<span class="nt">&lt;/project&gt;</span>
+</pre></div>
+
+<p><a name="Objects"></a></p>
+
+<h2>
+<a name="objects" class="anchor" href="#objects"><span class="octicon octicon-link"></span></a>Objects</h2>
+
+<p>Storing data on Parse is built around the ParseObject. Each <strong>ParseObject</strong> contains key-value pairs of JSON-compatible data. This data is schemaless, which means that you don't need to specify ahead of time what keys exist on each <strong>ParseObject</strong>. You simply set whatever key-value pairs you want, and our backend will store it.</p>
+
+<p>For example, let's say you're tracking high scores for a game. A single ParseObject could contain:</p>
+
+<div class="highlight highlight-Java"><pre><span class="nl">score:</span> <span class="mi">1337</span><span class="o">,</span> <span class="nl">playerName:</span> <span class="s">"Sean Plott"</span><span class="o">,</span> <span class="nl">cheatMode:</span> <span class="kc">false</span> 
+</pre></div>
+
+<p>Keys must be alphanumeric strings. Values can be strings, numbers, booleans, or even arrays and objects - anything that can be JSON-encoded.</p>
+
+<p>Each ParseObject has a class name that you can use to distinguish different sorts of data. For example, we could call the high score object a GameScore. Parse recommend that you NameYourClassesLikeThis and nameYourKeysLikeThis, just to keep your code looking pretty.</p>
+
+<h4>
+<a name="saving-objects" class="anchor" href="#saving-objects"><span class="octicon octicon-link"></span></a>Saving Objects</h4>
+
+<div class="highlight highlight-Java"><pre><span class="n">ParseObject</span> <span class="n">gameScore</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ParseObject</span><span class="o">(</span><span class="s">"GameScore"</span><span class="o">);</span>
+<span class="n">gameScore</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">"score"</span><span class="o">,</span> <span class="mi">1337</span><span class="o">);</span>
+<span class="n">gameScore</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">"playerName"</span><span class="o">,</span> <span class="s">"Sean Plott"</span><span class="o">);</span>
+<span class="n">gameScore</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">"cheatMode"</span><span class="o">,</span> <span class="kc">false</span><span class="o">);</span>
+<span class="n">gameScore</span><span class="o">.</span><span class="na">save</span><span class="o">();</span>
+</pre></div>
+
+<p>Use saveInBackground() if you want to delegate the operation to a background thread</p>
+
+<div class="highlight highlight-Java"><pre><span class="n">gameScore</span><span class="o">.</span><span class="na">saveInBackground</span><span class="o">();</span>  
+</pre></div>
+
+<h4>
+<a name="retrieving-objects" class="anchor" href="#retrieving-objects"><span class="octicon octicon-link"></span></a>Retrieving Objects</h4>
+
+<div class="highlight highlight-Java"><pre><span class="n">ParseQuery</span><span class="o">&lt;</span><span class="n">ParseObject</span><span class="o">&gt;</span> <span class="n">query</span> <span class="o">=</span> <span class="n">ParseQuery</span><span class="o">.</span><span class="na">getQuery</span><span class="o">(</span><span class="s">"GameScore"</span><span class="o">);</span>
+<span class="n">query</span><span class="o">.</span><span class="na">getInBackground</span><span class="o">(</span><span class="s">"xWMyZ4YEGZ"</span><span class="o">,</span> <span class="k">new</span> <span class="n">GetCallback</span><span class="o">&lt;</span><span class="n">ParseObject</span><span class="o">&gt;()</span> <span class="o">{</span>
+      <span class="kd">public</span> <span class="kt">void</span> <span class="nf">done</span><span class="o">(</span><span class="n">ParseObject</span> <span class="n">object</span><span class="o">,</span> <span class="n">ParseException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">e</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+          <span class="c1">// object will be your game score</span>
+        <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+          <span class="c1">// something went wrong</span>
+        <span class="o">}</span>
+      <span class="o">}</span>
+<span class="o">});</span> 
+</pre></div>
+
+<p>To get the values out of the <strong>ParseObject</strong>, there's a getX method for each data type:</p>
+
+<div class="highlight highlight-Java"><pre><span class="kt">int</span> <span class="n">score</span> <span class="o">=</span> <span class="n">gameScore</span><span class="o">.</span><span class="na">getInt</span><span class="o">(</span><span class="s">"score"</span><span class="o">);</span>
+<span class="n">String</span> <span class="n">playerName</span> <span class="o">=</span> <span class="n">gameScore</span><span class="o">.</span><span class="na">getString</span><span class="o">(</span><span class="s">"playerName"</span><span class="o">);</span>
+<span class="kt">boolean</span> <span class="n">cheatMode</span> <span class="o">=</span> <span class="n">gameScore</span><span class="o">.</span><span class="na">getBoolean</span><span class="o">(</span><span class="s">"cheatMode"</span><span class="o">);</span>
+</pre></div>
+
+<p>If you don't know what type of data you're getting out, you can call get(key), but then you probably have to cast it right away anyways. In most situations you should use the typed accessors like getString.</p>
+
+<p>The three special values have their own accessors:</p>
+
+<div class="highlight highlight-Java"><pre><span class="n">String</span> <span class="n">objectId</span> <span class="o">=</span> <span class="n">gameScore</span><span class="o">.</span><span class="na">getObjectId</span><span class="o">();</span>
+<span class="n">Date</span> <span class="n">updatedAt</span> <span class="o">=</span> <span class="n">gameScore</span><span class="o">.</span><span class="na">getUpdatedAt</span><span class="o">();</span>
+<span class="n">Date</span> <span class="n">createdAt</span> <span class="o">=</span> <span class="n">gameScore</span><span class="o">.</span><span class="na">getCreatedAt</span><span class="o">();</span>
+</pre></div>
+
+<h4>
+<a name="callback-functions" class="anchor" href="#callback-functions"><span class="octicon octicon-link"></span></a>Callback functions</h4>
+
+<p>You can also add a callback function to the save operation</p>
+
+<div class="highlight highlight-Java"><pre><span class="kd">final</span> <span class="n">ParseObject</span> <span class="n">gameScore</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ParseObject</span><span class="o">(</span><span class="s">"GameScore"</span><span class="o">);</span>
+<span class="n">gameScore</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">"score"</span><span class="o">,</span> <span class="mi">1337</span><span class="o">);</span>
+<span class="n">gameScore</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">"playerName"</span><span class="o">,</span> <span class="s">"Sean Plott"</span><span class="o">);</span>
+<span class="n">gameScore</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">"cheatMode"</span><span class="o">,</span> <span class="kc">false</span><span class="o">);</span>
+<span class="n">gameScore</span><span class="o">.</span><span class="na">saveInBackground</span><span class="o">(</span><span class="k">new</span> <span class="n">SaveCallback</span><span class="o">()</span> <span class="o">{</span>         
+        <span class="nd">@Override</span>
+        <span class="kd">public</span> <span class="kt">void</span> <span class="nf">done</span><span class="o">(</span><span class="n">ParseException</span> <span class="n">parseException</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"saveInBackground(): objectId: "</span> <span class="o">+</span> <span class="n">gameScore</span><span class="o">.</span><span class="na">getObjectId</span><span class="o">());</span>
+            <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"saveInBackground(): createdAt: "</span> <span class="o">+</span> <span class="n">gameScore</span><span class="o">.</span><span class="na">getCreatedAt</span><span class="o">());</span>
+            <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"saveInBackground(): updatedAt: "</span> <span class="o">+</span> <span class="n">gameScore</span><span class="o">.</span><span class="na">getUpdatedAt</span><span class="o">());</span>
+        <span class="o">}</span>
+    <span class="o">});</span>
+</pre></div>
+
+<h4>
+<a name="delete" class="anchor" href="#delete"><span class="octicon octicon-link"></span></a>Delete</h4>
+
+<p>To delete an object, just call the method delete().</p>
+
+<div class="highlight highlight-Java"><pre><span class="n">gameScore</span><span class="o">.</span><span class="na">delete</span><span class="o">();</span>
+</pre></div>
+
+<p>You can also attach a callback function on the delete/deleteInBackground methods.</p>
+
+<div class="highlight highlight-Java"><pre><span class="n">gameScore</span><span class="o">.</span><span class="na">deleteInBackground</span><span class="o">(</span><span class="k">new</span> <span class="n">DeleteCallback</span><span class="o">()</span> <span class="o">{</span>
+        <span class="nd">@Override</span>
+        <span class="kd">public</span> <span class="kt">void</span> <span class="nf">done</span><span class="o">(</span><span class="n">ParseException</span> <span class="n">parseException</span><span class="o">)</span> <span class="o">{</span>
+            <span class="c1">//do something</span>
+        <span class="o">}</span>
+    <span class="o">});</span>
+</pre></div>
+
+<h4>
+<a name="counters" class="anchor" href="#counters"><span class="octicon octicon-link"></span></a>Counters</h4>
+
+<p>You can also increment and decrement values from Number (int, long, double...) attributes.</p>
+
+<div class="highlight highlight-Java"><pre><span class="n">gameScore</span><span class="o">.</span><span class="na">increment</span><span class="o">(</span><span class="s">"score"</span><span class="o">);</span>
+<span class="n">gameScore</span><span class="o">.</span><span class="na">decrement</span><span class="o">(</span><span class="s">"score"</span><span class="o">);</span>
+<span class="n">gameScore</span><span class="o">.</span><span class="na">saveInBackground</span><span class="o">();</span>
+</pre></div>
+
+<p>You can also increment by any amount using increment(key, amount) or decrement by any amount using decrement(key, amount).</p>
+
+<h4>
+<a name="arrays" class="anchor" href="#arrays"><span class="octicon octicon-link"></span></a>Arrays</h4>
+
+<div class="highlight highlight-Java"><pre><span class="n">gameScore</span><span class="o">.</span><span class="na">addAllUnique</span><span class="o">(</span><span class="s">"skills"</span><span class="o">,</span> <span class="n">Arrays</span><span class="o">.</span><span class="na">asList</span><span class="o">(</span><span class="s">"flying"</span><span class="o">,</span> <span class="s">"kungfu"</span><span class="o">));</span>
+<span class="n">gameScore</span><span class="o">.</span><span class="na">saveInBackground</span><span class="o">();</span>
+</pre></div>
+
+<h4>
+<a name="relational-data" class="anchor" href="#relational-data"><span class="octicon octicon-link"></span></a>Relational data</h4>
+
+<p>Objects can have relationships with other objects. To model this behavior, any <strong>ParseObject</strong> can be used as a value in other <strong>ParseObjects</strong>. Internally, the Parse framework will store the referred-to object in just one place, to maintain consistency.</p>
+
+<p>For example, each Comment in a blogging app might correspond to one Post. To create a new Post with a single Comment, you could write:</p>
+
+<div class="highlight highlight-Java"><pre><span class="c1">// Create the post</span>
+<span class="n">ParseObject</span> <span class="n">myPost</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ParseObject</span><span class="o">(</span><span class="s">"Post"</span><span class="o">);</span>
+<span class="n">myPost</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">"title"</span><span class="o">,</span> <span class="s">"I'm Hungry"</span><span class="o">);</span>
+<span class="n">myPost</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">"content"</span><span class="o">,</span> <span class="s">"Where should we go for lunch?"</span><span class="o">);</span>
+<span class="n">myPost</span><span class="o">.</span><span class="na">save</span><span class="o">();</span>
+
+<span class="c1">// Create the comment</span>
+<span class="n">ParseObject</span> <span class="n">myComment</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ParseObject</span><span class="o">(</span><span class="s">"Comment"</span><span class="o">);</span>
+<span class="n">myComment</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">"content"</span><span class="o">,</span> <span class="s">"Let's do Sushirrito."</span><span class="o">);</span>
+<span class="n">myComment</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">"parent"</span><span class="o">,</span> <span class="n">myPost</span><span class="o">);</span> <span class="c1">// Add a relation between the Post and Comment</span>
+<span class="n">myComment</span><span class="o">.</span><span class="na">saveInBackground</span><span class="o">();</span> <span class="c1">// This will save both myPost and myComment</span>
+</pre></div>
+
+<p>You can also link objects using just their objectIds like so:</p>
+
+<div class="highlight highlight-Java"><pre><span class="c1">// Add a relation between the Post with objectId "1zEcyElZ80" and the comment</span>
+<span class="n">myComment</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">"parent"</span><span class="o">,</span> <span class="n">ParseObject</span><span class="o">.</span><span class="na">createWithoutData</span><span class="o">(</span><span class="s">"Post"</span><span class="o">,</span> <span class="s">"1zEcyElZ80"</span><span class="o">));</span>
+</pre></div>
+
+<p>By default, when fetching an object, related <strong>ParseObjects</strong> are not fetched. These objects' values cannot be retrieved until they have been fetched like so:</p>
+
+<div class="highlight highlight-Java"><pre><span class="n">fetchedComment</span><span class="o">.</span><span class="na">getParseObject</span><span class="o">(</span><span class="s">"parent"</span><span class="o">)</span>
+    <span class="o">.</span><span class="na">fetchIfNeededInBackground</span><span class="o">(</span><span class="k">new</span> <span class="n">GetCallback</span><span class="o">&lt;</span><span class="n">ParseObject</span><span class="o">&gt;()</span> <span class="o">{</span>
+        <span class="kd">public</span> <span class="kt">void</span> <span class="nf">done</span><span class="o">(</span><span class="n">ParseObject</span> <span class="n">post</span><span class="o">,</span> <span class="n">ParseException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+          <span class="n">String</span> <span class="n">title</span> <span class="o">=</span> <span class="n">post</span><span class="o">.</span><span class="na">getString</span><span class="o">(</span><span class="s">"title"</span><span class="o">);</span>
+        <span class="o">}</span>
+    <span class="o">});</span>
+</pre></div>
+
+<p><a name="Subclasses"></a></p>
+
+<h2>
+<a name="subclasses" class="anchor" href="#subclasses"><span class="octicon octicon-link"></span></a>Subclasses</h2>
+
+<p>Parse is designed to get you up and running as quickly as possible. You can access all of your data using the <strong>ParseObject</strong> class and access any field with get(). In mature codebases, subclasses have many advantages, including terseness, extensibility, and support for autocomplete. Subclassing is completely optional, but can transform this code:</p>
+
+<div class="highlight highlight-Java"><pre><span class="n">ParseObject</span> <span class="n">shield</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ParseObject</span><span class="o">(</span><span class="s">"Armor"</span><span class="o">);</span>
+<span class="n">shield</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">"displayName"</span><span class="o">,</span> <span class="s">"Wooden Shield"</span><span class="o">);</span>
+<span class="n">shield</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">"fireproof"</span><span class="o">,</span> <span class="kc">false</span><span class="o">);</span>
+<span class="n">shield</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">"rupees"</span><span class="o">,</span> <span class="mi">50</span><span class="o">);</span>
+</pre></div>
+
+<p>Into this:</p>
+
+<div class="highlight highlight-Java"><pre><span class="n">Armor</span> <span class="n">shield</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Armor</span><span class="o">();</span>
+<span class="n">shield</span><span class="o">.</span><span class="na">setDisplayName</span><span class="o">(</span><span class="s">"Wooden Shield"</span><span class="o">);</span>
+<span class="n">shield</span><span class="o">.</span><span class="na">setFireproof</span><span class="o">(</span><span class="kc">false</span><span class="o">);</span>
+<span class="n">shield</span><span class="o">.</span><span class="na">setRupees</span><span class="o">(</span><span class="mi">50</span><span class="o">);</span>
+</pre></div>
+
+<h4>
+<a name="subclassing-parseobject" class="anchor" href="#subclassing-parseobject"><span class="octicon octicon-link"></span></a>Subclassing ParseObject</h4>
+
+<p>To create a ParseObject subclass:</p>
+
+<ol>
+<li>Declare a subclass which extends <strong>ParseObject</strong>.</li>
+<li>Add a <strong>@ParseClassName</strong> annotation. Its value should be the string you would pass into the <strong>ParseObject</strong> constructor, and makes all future class name references unnecessary.</li>
+<li>Ensure that your subclass has a public default (i.e. zero-argument) constructor. You must not modify any <strong>ParseObject</strong> fields in this constructor.</li>
+<li>Call <strong>ParseRegistry.registerSubclass(YourClass.class)</strong> in your Application constructor before calling <strong>Parse.initialize()</strong>.</li>
+</ol><p>The following code sucessfully implements and registers the Armor subclass of <strong>ParseObject</strong>:</p>
+
+<div class="highlight highlight-Java"><pre><span class="c1">// Armor.java</span>
+<span class="kn">import</span> <span class="nn">com.parse.ParseObject</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">com.parse.ParseClassName</span><span class="o">;</span>
+
+<span class="nd">@ParseClassName</span><span class="o">(</span><span class="s">"Armor"</span><span class="o">)</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Armor</span> <span class="kd">extends</span> <span class="n">ParseObject</span> <span class="o">{</span>
+<span class="o">}</span>
+
+<span class="c1">// App.java</span>
+<span class="kn">import</span> <span class="nn">com.parse.Parse</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">android.app.Application</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">App</span> <span class="kd">extends</span> <span class="n">Application</span> <span class="o">{</span>
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">onCreate</span><span class="o">()</span> <span class="o">{</span>
+        <span class="kd">super</span><span class="o">.</span><span class="na">onCreate</span><span class="o">();</span>
+
+        <span class="n">ParseObject</span><span class="o">.</span><span class="na">registerSubclass</span><span class="o">(</span><span class="n">Armor</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+        <span class="n">Parse</span><span class="o">.</span><span class="na">initialize</span><span class="o">(</span><span class="k">this</span><span class="o">,</span> <span class="n">PARSE_APPLICATION_ID</span><span class="o">,</span> <span class="n">PARSE_CLIENT_KEY</span><span class="o">);</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
+
+<h4>
+<a name="accessors-mutators-and-methods" class="anchor" href="#accessors-mutators-and-methods"><span class="octicon octicon-link"></span></a>Accessors, Mutators, and Methods</h4>
+
+<p>Adding methods to your <strong>ParseObject</strong> subclass helps encapsulate logic about the class. You can keep all your logic about a subject in one place rather than using separate classes for business logic and storage/transmission logic.</p>
+
+<p>You can add accessors and mutators for the fields of your <strong>ParseObject</strong> easily. Declare the getter and setter for the field as you normally would, but implement them in terms of <strong>get()</strong> and <strong>put()</strong>. The following example creates a displayName field in the Armor class:</p>
+
+<div class="highlight highlight-Java"><pre><span class="c1">// Armor.java</span>
+<span class="nd">@ParseClassName</span><span class="o">(</span><span class="s">"Armor"</span><span class="o">)</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Armor</span> <span class="kd">extends</span> <span class="n">ParseObject</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="n">String</span> <span class="nf">getDisplayName</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="nf">getString</span><span class="o">(</span><span class="s">"displayName"</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setDisplayName</span><span class="o">(</span><span class="n">String</span> <span class="n">value</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">put</span><span class="o">(</span><span class="s">"displayName"</span><span class="o">,</span> <span class="n">value</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
+
+<p>You can now access the displayName field using <strong>armor.getDisplayName()</strong> and assign to it using <strong>armor.setDisplayName("Wooden Sword")</strong>. This allows your IDE to provide autocompletion as you develop your app and allows typos to be caught at compile-time.</p>
+
+<p>Accessors and mutators of various types can be easily defined in this manner using the various forms of <strong>get()</strong> such as <strong>getInt()</strong>, <strong>getParseFile()</strong>, or <strong>getMap()</strong>.</p>
+
+<p>If you need more complicated logic than simple field access, you can declare your own methods as well:</p>
+
+<div class="highlight highlight-Java"><pre><span class="kd">public</span> <span class="kt">void</span> <span class="nf">takeDamage</span><span class="o">(</span><span class="kt">int</span> <span class="n">amount</span><span class="o">)</span> <span class="o">{</span>
+  <span class="c1">// Decrease the armor's durability and determine whether it has broken</span>
+  <span class="n">increment</span><span class="o">(</span><span class="s">"durability"</span><span class="o">,</span> <span class="o">-</span><span class="n">amount</span><span class="o">);</span>
+  <span class="k">if</span> <span class="o">(</span><span class="n">getDurability</span><span class="o">()</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="o">)</span> <span class="o">{</span>
+    <span class="n">setBroken</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
+
+<h4>
+<a name="initializing-subclasses" class="anchor" href="#initializing-subclasses"><span class="octicon octicon-link"></span></a>Initializing Subclasses</h4>
+
+<p>You should create new instances of your subclasses using the constructors you have defined. Your subclass must define a public default constructor that does not modify fields of the <strong>ParseObject</strong>, which will be used throughout the Parse SDK to create strongly-typed instances of your subclass.</p>
+
+<p>To create a reference to an existing object, use <strong>ParseObject.createWithoutData()</strong>:</p>
+
+<div class="highlight highlight-Java"><pre><span class="n">Armor</span> <span class="n">armorReference</span> <span class="o">=</span> <span class="n">ParseObject</span><span class="o">.</span><span class="na">createWithoutData</span><span class="o">(</span><span class="n">Armor</span><span class="o">.</span><span class="na">class</span><span class="o">,</span> <span class="n">armor</span><span class="o">.</span><span class="na">getObjectId</span><span class="o">());</span>
+</pre></div>
+
+<h4>
+<a name="queries" class="anchor" href="#queries"><span class="octicon octicon-link"></span></a>Queries</h4>
+
+<p>You can get a query for objects of a particular subclass using the static method <strong>ParseQuery.getQuery()</strong>. The following example queries for armors that the user can afford:</p>
+
+<div class="highlight highlight-Java"><pre><span class="n">ParseQuery</span><span class="o">&lt;</span><span class="n">Armor</span><span class="o">&gt;</span> <span class="n">query</span> <span class="o">=</span> <span class="n">ParseQuery</span><span class="o">.</span><span class="na">getQuery</span><span class="o">(</span><span class="n">Armor</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+<span class="n">query</span><span class="o">.</span><span class="na">whereLessThanOrEqualTo</span><span class="o">(</span><span class="s">"rupees"</span><span class="o">,</span> <span class="n">ParseUser</span><span class="o">.</span><span class="na">getCurrentUser</span><span class="o">().</span><span class="na">get</span><span class="o">(</span><span class="s">"rupees"</span><span class="o">));</span>
+<span class="n">query</span><span class="o">.</span><span class="na">findInBackground</span><span class="o">(</span><span class="k">new</span> <span class="n">FindCallback</span><span class="o">&lt;</span><span class="n">Armor</span><span class="o">&gt;()</span> <span class="o">{</span>
+  <span class="nd">@Override</span>
+  <span class="kd">public</span> <span class="kt">void</span> <span class="nf">done</span><span class="o">(</span><span class="n">List</span><span class="o">&lt;</span><span class="n">Armor</span><span class="o">&gt;</span> <span class="n">results</span><span class="o">,</span> <span class="n">ParseException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+    <span class="k">for</span> <span class="o">(</span><span class="n">Armor</span> <span class="n">a</span> <span class="o">:</span> <span class="n">results</span><span class="o">)</span> <span class="o">{</span>
+      <span class="c1">// ...</span>
+    <span class="o">}</span>
+  <span class="o">}</span>
+<span class="o">});</span>
+</pre></div>
+
+<p><a name="Queries"></a></p>
+
+<h2>
+<a name="queries-1" class="anchor" href="#queries-1"><span class="octicon octicon-link"></span></a>Queries</h2>
+
+<h4>
+<a name="basic-queries" class="anchor" href="#basic-queries"><span class="octicon octicon-link"></span></a>Basic Queries</h4>
+
+<p>In many cases, <strong>getInBackground</strong> isn't powerful enough to specify which objects you want to retrieve. The <strong>ParseQuery</strong> offers different ways to retrieve a list of objects rather than just a single object.</p>
+
+<p>The general pattern is to create a <strong>ParseQuery</strong>, put conditions on it, and then retrieve a List of matching <strong>ParseObjects</strong> using the <strong>findInBackground</strong> method with a <strong>FindCallback</strong>. For example, to retrieve scores with a particular playerName, use the whereEqualTo method to constrain the value for a key:</p>
+
+<div class="highlight highlight-Java"><pre><span class="n">ParseQuery</span><span class="o">&lt;</span><span class="n">ParseObject</span><span class="o">&gt;</span> <span class="n">query</span> <span class="o">=</span> <span class="n">ParseQuery</span><span class="o">.</span><span class="na">getQuery</span><span class="o">(</span><span class="s">"GameScore"</span><span class="o">);</span>
+<span class="n">query</span><span class="o">.</span><span class="na">whereEqualTo</span><span class="o">(</span><span class="s">"playerName"</span><span class="o">,</span> <span class="s">"Dan Stemkoski"</span><span class="o">);</span>
+<span class="n">query</span><span class="o">.</span><span class="na">findInBackground</span><span class="o">(</span><span class="k">new</span> <span class="n">FindCallback</span><span class="o">&lt;</span><span class="n">ParseObject</span><span class="o">&gt;()</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">done</span><span class="o">(</span><span class="n">List</span><span class="o">&lt;</span><span class="n">ParseObject</span><span class="o">&gt;</span> <span class="n">scoreList</span><span class="o">,</span> <span class="n">ParseException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">e</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">Log</span><span class="o">.</span><span class="na">d</span><span class="o">(</span><span class="s">"score"</span><span class="o">,</span> <span class="s">"Retrieved "</span> <span class="o">+</span> <span class="n">scoreList</span><span class="o">.</span><span class="na">size</span><span class="o">()</span> <span class="o">+</span> <span class="s">" scores"</span><span class="o">);</span>
+        <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+            <span class="n">Log</span><span class="o">.</span><span class="na">d</span><span class="o">(</span><span class="s">"score"</span><span class="o">,</span> <span class="s">"Error: "</span> <span class="o">+</span> <span class="n">e</span><span class="o">.</span><span class="na">getMessage</span><span class="o">());</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+<span class="o">});</span>
+</pre></div>
+
+<p><strong>findInBackground</strong> works similarly to <strong>getInBackground</strong> in that it assures the network request is done on a background thread, and runs its callback in the main thread.</p>
+
+<h4>
+<a name="query-constraints" class="anchor" href="#query-constraints"><span class="octicon octicon-link"></span></a>Query Constraints</h4>
+
+<p>There are several ways to put constraints on the objects found by a <strong>ParseQuery</strong>. You can filter out objects with a particular key-value pair with <strong>whereNotEqualTo</strong>:</p>
+
+<div class="highlight highlight-Java"><pre><span class="n">query</span><span class="o">.</span><span class="na">whereNotEqualTo</span><span class="o">(</span><span class="s">"playerName"</span><span class="o">,</span> <span class="s">"Michael Yabuti"</span><span class="o">);</span>
+</pre></div>
+
+<p>You can give multiple constraints, and objects will only be in the results if they match all of the constraints. In other words, it's like an AND of constraints.</p>
+
+<div class="highlight highlight-Java"><pre><span class="n">query</span><span class="o">.</span><span class="na">whereNotEqualTo</span><span class="o">(</span><span class="s">"playerName"</span><span class="o">,</span> <span class="s">"Michael Yabuti"</span><span class="o">);</span>
+<span class="n">query</span><span class="o">.</span><span class="na">whereGreaterThan</span><span class="o">(</span><span class="s">"playerAge"</span><span class="o">,</span> <span class="mi">18</span><span class="o">);</span>
+</pre></div>
+
+<p>You can limit the number of results with <strong>limit</strong>. By default, results are limited to 100, but anything from 1 to 1000 is a valid limit:</p>
+
+<div class="highlight highlight-Java"><pre><span class="n">query</span><span class="o">.</span><span class="na">limit</span><span class="o">(</span><span class="mi">10</span><span class="o">);</span> <span class="c1">// limit to at most 10 results</span>
+</pre></div>
+
+<p>If you want exactly one result, a more convenient alternative may be to use getFirst or <strong>getFirstBackground</strong> instead of using find.</p>
+
+<div class="highlight highlight-Java"><pre><span class="n">ParseQuery</span><span class="o">&lt;</span><span class="n">ParseObject</span><span class="o">&gt;</span> <span class="n">query</span> <span class="o">=</span> <span class="n">ParseQuery</span><span class="o">.</span><span class="na">getQuery</span><span class="o">(</span><span class="s">"GameScore"</span><span class="o">);</span>
+<span class="n">query</span><span class="o">.</span><span class="na">whereEqualTo</span><span class="o">(</span><span class="s">"playerEmail"</span><span class="o">,</span> <span class="s">"dstemkoski@example.com"</span><span class="o">);</span>
+<span class="n">query</span><span class="o">.</span><span class="na">getFirstInBackground</span><span class="o">(</span><span class="k">new</span> <span class="n">GetCallback</span><span class="o">&lt;</span><span class="n">ParseObject</span><span class="o">&gt;()</span> <span class="o">{</span>
+  <span class="kd">public</span> <span class="kt">void</span> <span class="nf">done</span><span class="o">(</span><span class="n">ParseObject</span> <span class="n">object</span><span class="o">,</span> <span class="n">ParseException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+    <span class="k">if</span> <span class="o">(</span><span class="n">object</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+      <span class="n">Log</span><span class="o">.</span><span class="na">d</span><span class="o">(</span><span class="s">"score"</span><span class="o">,</span> <span class="s">"The getFirst request failed."</span><span class="o">);</span>
+    <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+      <span class="n">Log</span><span class="o">.</span><span class="na">d</span><span class="o">(</span><span class="s">"score"</span><span class="o">,</span> <span class="s">"Retrieved the object."</span><span class="o">);</span>
+    <span class="o">}</span>
+  <span class="o">}</span>
+<span class="o">});</span>
+</pre></div>
+
+<p>You can skip the first results with <strong>skip</strong>. This can be useful for pagination:</p>
+
+<div class="highlight highlight-Java"><pre><span class="n">query</span><span class="o">.</span><span class="na">skip</span><span class="o">(</span><span class="mi">10</span><span class="o">);</span> <span class="c1">// skip the first 10 results</span>
+</pre></div>
+
+<p>For sortable types like numbers and strings, you can control the order in which results are returned:</p>
+
+<div class="highlight highlight-Java"><pre><span class="c1">// Sorts the results in ascending order by the score field</span>
+<span class="n">query</span><span class="o">.</span><span class="na">orderByAscending</span><span class="o">(</span><span class="s">"score"</span><span class="o">);</span>
+
+<span class="c1">// Sorts the results in descending order by the score field</span>
+<span class="n">query</span><span class="o">.</span><span class="na">orderByDescending</span><span class="o">(</span><span class="s">"score"</span><span class="o">);</span>
+</pre></div>
+
+<p>You can add more sort keys to the query as follows:</p>
+
+<div class="highlight highlight-Java"><pre><span class="c1">// Sorts the results in ascending order by the score field if the previous sort keys are equal.</span>
+<span class="n">query</span><span class="o">.</span><span class="na">addAscendingOrder</span><span class="o">(</span><span class="s">"score"</span><span class="o">);</span>
+
+<span class="c1">// Sorts the results in descending order by the score field if the previous sort keys are equal.</span>
+<span class="n">query</span><span class="o">.</span><span class="na">addDescendingOrder</span><span class="o">(</span><span class="s">"score"</span><span class="o">);</span>
+</pre></div>
+
+<p>For sortable types, you can also use comparisons in queries:</p>
+
+<div class="highlight highlight-Java"><pre><span class="c1">// Restricts to wins &lt; 50</span>
+<span class="n">query</span><span class="o">.</span><span class="na">whereLessThan</span><span class="o">(</span><span class="s">"wins"</span><span class="o">,</span> <span class="mi">50</span><span class="o">);</span>
+
+<span class="c1">// Restricts to wins &lt;= 50</span>
+<span class="n">query</span><span class="o">.</span><span class="na">whereLessThanOrEqualTo</span><span class="o">(</span><span class="s">"wins"</span><span class="o">,</span> <span class="mi">50</span><span class="o">);</span>
+
+<span class="c1">// Restricts to wins &gt; 50</span>
+<span class="n">query</span><span class="o">.</span><span class="na">whereGreaterThan</span><span class="o">(</span><span class="s">"wins"</span><span class="o">,</span> <span class="mi">50</span><span class="o">);</span>
+
+<span class="c1">// Restricts to wins &gt;= 50</span>
+<span class="n">query</span><span class="o">.</span><span class="na">whereGreaterThanOrEqualTo</span><span class="o">(</span><span class="s">"wins"</span><span class="o">,</span> <span class="mi">50</span><span class="o">);</span>
+</pre></div>
+
+<p>If you want to retrieve objects matching several different values, you can use <strong>whereContainedIn</strong>, providing a collection of acceptable values. This is often useful to replace multiple queries with a single query. For example, if you want to retrieve scores made by any player in a particular list:</p>
+
+<div class="highlight highlight-Java"><pre><span class="n">String</span><span class="o">[]</span> <span class="n">names</span> <span class="o">=</span> <span class="o">{</span><span class="s">"Jonathan Walsh"</span><span class="o">,</span> <span class="s">"Dario Wunsch"</span><span class="o">,</span> <span class="s">"Shawn Simon"</span><span class="o">};</span>
+<span class="n">query</span><span class="o">.</span><span class="na">whereContainedIn</span><span class="o">(</span><span class="s">"playerName"</span><span class="o">,</span> <span class="n">Arrays</span><span class="o">.</span><span class="na">asList</span><span class="o">(</span><span class="n">names</span><span class="o">));</span>
+</pre></div>
+
+<p>If you want to retrieve objects that do not match any of several values you can use whereKey:notContainedIn:, providing an array of acceptable values. For example, if you want to retrieve scores from players besides those in a list:</p>
+
+<div class="highlight highlight-Java"><pre><span class="n">String</span><span class="o">[]</span> <span class="n">names</span> <span class="o">=</span> <span class="o">{</span><span class="s">"Jonathan Walsh"</span><span class="o">,</span> <span class="s">"Dario Wunsch"</span><span class="o">,</span> <span class="s">"Shawn Simon"</span><span class="o">};</span>
+<span class="n">query</span><span class="o">.</span><span class="na">whereNotContainedIn</span><span class="o">(</span><span class="s">"playerName"</span><span class="o">,</span> <span class="n">Arrays</span><span class="o">.</span><span class="na">asList</span><span class="o">(</span><span class="n">names</span><span class="o">));</span>
+</pre></div>
+
+<p>If you want to retrieve objects that have a particular key set, you can use whereExists. Conversely, if you want to retrieve objects without a particular key set, you can use whereDoesNotExist.</p>
+
+<div class="highlight highlight-Java"><pre><span class="c1">// Finds objects that have the score set</span>
+<span class="n">query</span><span class="o">.</span><span class="na">whereExists</span><span class="o">(</span><span class="s">"score"</span><span class="o">);</span>
+
+<span class="c1">// Finds objects that don't have the score set</span>
+<span class="n">query</span><span class="o">.</span><span class="na">whereDoesNotExist</span><span class="o">(</span><span class="s">"score"</span><span class="o">);</span>
+</pre></div>
+
+<p>You can use the <strong>whereMatchesKeyInQuery</strong> method to get objects where a key matches the value of a key in a set of objects resulting from another query. For example, if you have a class containing sports teams and you store a user's hometown in the user class, you can issue one query to find the list of users whose hometown teams have winning records. The query would look like:</p>
+
+<div class="highlight highlight-Java"><pre><span class="n">ParseQuery</span><span class="o">&lt;</span><span class="n">ParseObject</span><span class="o">&gt;</span> <span class="n">teamQuery</span> <span class="o">=</span> <span class="n">ParseQuery</span><span class="o">.</span><span class="na">getQuery</span><span class="o">(</span><span class="s">"Team"</span><span class="o">);</span>
+<span class="n">teamQuery</span><span class="o">.</span><span class="na">whereGreaterThan</span><span class="o">(</span><span class="s">"winPct"</span><span class="o">,</span> <span class="mf">0.5</span><span class="o">);</span>
+<span class="n">ParseQuery</span><span class="o">&lt;</span><span class="n">ParseUser</span><span class="o">&gt;</span> <span class="n">userQuery</span> <span class="o">=</span> <span class="n">ParseUser</span><span class="o">.</span><span class="na">getQuery</span><span class="o">();</span>
+<span class="n">userQuery</span><span class="o">.</span><span class="na">whereMatchesKeyInQuery</span><span class="o">(</span><span class="s">"hometown"</span><span class="o">,</span> <span class="s">"city"</span><span class="o">,</span> <span class="n">teamQuery</span><span class="o">);</span>
+<span class="n">userQuery</span><span class="o">.</span><span class="na">findInBackground</span><span class="o">(</span><span class="k">new</span> <span class="n">FindCallback</span><span class="o">&lt;</span><span class="n">ParseUser</span><span class="o">&gt;()</span> <span class="o">{</span>
+  <span class="kt">void</span> <span class="nf">done</span><span class="o">(</span><span class="n">List</span><span class="o">&lt;</span><span class="n">ParseUser</span><span class="o">&gt;</span> <span class="n">results</span><span class="o">,</span> <span class="n">ParseException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+    <span class="c1">// results has the list of users with a hometown team with a winning record</span>
+  <span class="o">}</span>
+<span class="o">});</span>
+</pre></div>
+
+<p>Conversely, to get objects where a key does not match the value of a key in a set of objects resulting from another query, use <strong>whereDoesNotMatchKeyInQuery</strong>. For example, to find users whose hometown teams have losing records:</p>
+
+<div class="highlight highlight-Java"><pre><span class="n">ParseQuery</span><span class="o">&lt;</span><span class="n">ParseUser</span><span class="o">&gt;</span> <span class="n">losingUserQuery</span> <span class="o">=</span> <span class="n">ParseUser</span><span class="o">.</span><span class="na">getQuery</span><span class="o">();</span>
+<span class="n">losingUserQuery</span><span class="o">.</span><span class="na">whereDoesNotMatchKeyInQuery</span><span class="o">(</span><span class="s">"hometown"</span><span class="o">,</span> <span class="s">"city"</span><span class="o">,</span> <span class="n">teamQuery</span><span class="o">);</span>
+<span class="n">losingUserQuery</span><span class="o">.</span><span class="na">findInBackground</span><span class="o">(</span><span class="k">new</span> <span class="n">FindCallback</span><span class="o">&lt;</span><span class="n">ParseUser</span><span class="o">&gt;()</span> <span class="o">{</span>
+  <span class="kt">void</span> <span class="nf">done</span><span class="o">(</span><span class="n">List</span><span class="o">&lt;</span><span class="n">ParseUser</span><span class="o">&gt;</span> <span class="n">results</span><span class="o">,</span> <span class="n">ParseException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+    <span class="c1">// results has the list of users with a hometown team with a losing record</span>
+  <span class="o">}</span>
+<span class="o">});</span>
+</pre></div>
+
+<p>You can restrict the fields returned by calling <strong>selectKeys</strong> with a collection of keys. To retrieve documents that contain only the score and playerName fields (and also special built-in fields such as objectId, createdAt, and updatedAt):</p>
+
+<div class="highlight highlight-Java"><pre><span class="n">ParseQuery</span><span class="o">&lt;</span><span class="n">ParseObject</span><span class="o">&gt;</span> <span class="n">query</span> <span class="o">=</span> <span class="n">ParseQuery</span><span class="o">.</span><span class="na">getQuery</span><span class="o">(</span><span class="s">"GameScore"</span><span class="o">);</span>
+<span class="n">query</span><span class="o">.</span><span class="na">selectKeys</span><span class="o">(</span><span class="n">Arrays</span><span class="o">.</span><span class="na">asList</span><span class="o">(</span><span class="s">"playerName"</span><span class="o">,</span> <span class="s">"score"</span><span class="o">));</span>
+<span class="n">List</span><span class="o">&lt;</span><span class="n">ParseObject</span><span class="o">&gt;</span> <span class="n">results</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="na">find</span><span class="o">();</span>
+</pre></div>
+
+<p>The remaining fields can be fetched later by calling one of the <strong>fetchIfNeeded</strong> variants on the returned objects:</p>
+
+<div class="highlight highlight-Java"><pre><span class="n">ParseObject</span> <span class="n">object</span> <span class="o">=</span> <span class="n">results</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="mi">0</span><span class="o">);</span>
+<span class="n">object</span><span class="o">.</span><span class="na">fetchIfNeededInBackground</span><span class="o">(</span><span class="k">new</span> <span class="n">GetCallback</span><span class="o">&lt;</span><span class="n">ParseObject</span><span class="o">&gt;()</span> <span class="o">{</span>
+  <span class="kd">public</span> <span class="kt">void</span> <span class="nf">done</span><span class="o">(</span><span class="n">ParseObject</span> <span class="n">object</span><span class="o">,</span> <span class="n">ParseException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+    <span class="c1">// all fields of the object will now be available here.</span>
+  <span class="o">}</span>
+<span class="o">});</span>
+</pre></div>
+
+<h4>
+<a name="queries-on-array-values" class="anchor" href="#queries-on-array-values"><span class="octicon octicon-link"></span></a>Queries on Array Values</h4>
+
+<p>If a key contains an array value, you can search for objects where the key's array value contains 2 by:</p>
+
+<div class="highlight highlight-Java"><pre><span class="c1">// Find objects where the array in arrayKey contains the number 2.</span>
+<span class="n">query</span><span class="o">.</span><span class="na">whereEqualTo</span><span class="o">(</span><span class="s">"arrayKey"</span><span class="o">,</span> <span class="mi">2</span><span class="o">);</span>
+</pre></div>
+
+<p>You can also search for objects where the key's array value contains each of the values 2, 3, and 4 with the following:</p>
+
+<div class="highlight highlight-Java"><pre><span class="c1">// Find objects where the array in arrayKey contains all of the numbers 2, 3, and 4.</span>
+<span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">&gt;</span> <span class="n">numbers</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">&gt;();</span>
+<span class="n">numbers</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="mi">2</span><span class="o">);</span>
+<span class="n">numbers</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="mi">3</span><span class="o">);</span>
+<span class="n">numbers</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="mi">4</span><span class="o">);</span>
+<span class="n">query</span><span class="o">.</span><span class="na">whereContainsAll</span><span class="o">(</span><span class="s">"arrayKey"</span><span class="o">,</span> <span class="n">numbers</span><span class="o">);</span>
+</pre></div>
+
+<h4>
+<a name="queries-on-string-values" class="anchor" href="#queries-on-string-values"><span class="octicon octicon-link"></span></a>Queries on String Values</h4>
+
+<p>Use <strong>whereStartsWith</strong> to restrict to string values that start with a particular string. Similar to a MySQL LIKE operator, this is indexed so it is efficient for large datasets:</p>
+
+<div class="highlight highlight-Java"><pre><span class="c1">// Finds barbecue sauces that start with "Big Daddy's".</span>
+<span class="n">ParseQuery</span><span class="o">&lt;</span><span class="n">ParseObject</span><span class="o">&gt;</span> <span class="n">query</span> <span class="o">=</span> <span class="n">ParseQuery</span><span class="o">.</span><span class="na">getQuery</span><span class="o">(</span><span class="s">"BarbecueSauce"</span><span class="o">);</span>
+<span class="n">query</span><span class="o">.</span><span class="na">whereStartsWith</span><span class="o">(</span><span class="s">"name"</span><span class="o">,</span> <span class="s">"Big Daddy's"</span><span class="o">);</span>
+</pre></div>
+
+<h4>
+<a name="relational-queries" class="anchor" href="#relational-queries"><span class="octicon octicon-link"></span></a>Relational Queries</h4>
+
+<p>Pending...</p>
+
+<h4>
+<a name="counting-objects" class="anchor" href="#counting-objects"><span class="octicon octicon-link"></span></a>Counting Objects</h4>
+
+<p>If you just need to count how many objects match a query, but you do not need to retrieve all the objects that match, you can use count instead of find. For example, to count how many games have been played by a particular player:</p>
+
+<div class="highlight highlight-Java"><pre><span class="n">ParseQuery</span><span class="o">&lt;</span><span class="n">ParseObject</span><span class="o">&gt;</span> <span class="n">query</span> <span class="o">=</span> <span class="n">ParseQuery</span><span class="o">.</span><span class="na">getQuery</span><span class="o">(</span><span class="s">"GameScore"</span><span class="o">);</span>
+<span class="n">query</span><span class="o">.</span><span class="na">whereEqualTo</span><span class="o">(</span><span class="s">"playerName"</span><span class="o">,</span> <span class="s">"Sean Plott"</span><span class="o">);</span>
+<span class="n">query</span><span class="o">.</span><span class="na">countInBackground</span><span class="o">(</span><span class="k">new</span> <span class="n">CountCallback</span><span class="o">()</span> <span class="o">{</span>
+  <span class="kd">public</span> <span class="kt">void</span> <span class="nf">done</span><span class="o">(</span><span class="kt">int</span> <span class="n">count</span><span class="o">,</span> <span class="n">ParseException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+    <span class="k">if</span> <span class="o">(</span><span class="n">e</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+      <span class="c1">// The count request succeeded. Log the count</span>
+      <span class="n">Log</span><span class="o">.</span><span class="na">d</span><span class="o">(</span><span class="s">"score"</span><span class="o">,</span> <span class="s">"Sean has played "</span> <span class="o">+</span> <span class="n">count</span> <span class="o">+</span> <span class="s">" games"</span><span class="o">);</span>
+    <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+      <span class="c1">// The request failed</span>
+    <span class="o">}</span>
+  <span class="o">}</span>
+<span class="o">});</span>
+</pre></div>
+
+<p>If you want to block the calling thread, you can also use the synchronous <strong>query.count()</strong> method.</p>
+
+<p>For classes with over 1000 objects, count operations are limited by timeouts. They may routinely yield timeout errors or return results that are only approximately correct. Thus, it is preferable to architect your application to avoid this sort of count operation.</p>
+
+<h4>
+<a name="compound-queries" class="anchor" href="#compound-queries"><span class="octicon octicon-link"></span></a>Compound Queries</h4>
+
+<p>Pending...</p>
+
+<p><a name="Users"></a></p>
+
+<h2>
+<a name="users" class="anchor" href="#users"><span class="octicon octicon-link"></span></a>Users</h2>
+
+<p>At the core of many applications, there is a notion of user accounts that lets users access their information in a secure manner. Parse provides a specialized user class called ParseUser that automatically handles much of the functionality required for user account management.</p>
+
+<p>With this class, you'll be able to add user account functionality in your application.</p>
+
+<p><strong>ParseUser</strong> is a subclass of the <strong>ParseObject</strong>, and has all the same features, such as flexible schema, automatic persistence, and a key value interface. All the methods that are on <strong>ParseObject</strong> also exist in ParseUser. The difference is that <strong>ParseUser</strong> has some special additions specific to user accounts.</p>
+
+<h4>
+<a name="properties" class="anchor" href="#properties"><span class="octicon octicon-link"></span></a>Properties</h4>
+
+<p><strong>ParseUser</strong> has several properties that set it apart from <strong>ParseObject</strong>:</p>
+
+<ul>
+<li>username: The username for the user (required).</li>
+<li>password: The password for the user (required on signup).</li>
+<li>email: The email address for the user (optional).</li>
+</ul><p>We'll go through each of these in detail as we run through the various use cases for users. Keep in mind that if you set username and email using the setters, you do not need to set it using the put method.</p>
+
+<h4>
+<a name="signing-up" class="anchor" href="#signing-up"><span class="octicon octicon-link"></span></a>Signing Up</h4>
+
+<p>The first thing your app will do is probably ask the user to sign up. The following code illustrates a typical sign up:</p>
+
+<div class="highlight highlight-Java"><pre><span class="n">ParseUser</span> <span class="n">user</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ParseUser</span><span class="o">();</span>
+<span class="n">user</span><span class="o">.</span><span class="na">setUsername</span><span class="o">(</span><span class="s">"my name"</span><span class="o">);</span>
+<span class="n">user</span><span class="o">.</span><span class="na">setPassword</span><span class="o">(</span><span class="s">"my pass"</span><span class="o">);</span>
+<span class="n">user</span><span class="o">.</span><span class="na">setEmail</span><span class="o">(</span><span class="s">"email@example.com"</span><span class="o">);</span>
+
+<span class="c1">// other fields can be set just like with ParseObject</span>
+<span class="n">user</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">"phone"</span><span class="o">,</span> <span class="s">"650-253-0000"</span><span class="o">);</span>
+<span class="n">user</span><span class="o">.</span><span class="na">signUp</span><span class="o">();</span>
+</pre></div>
+
+<p>This call will synchronously create a new user in your Parse application. Before it does this, it checks to make sure that both the username and email are unique. Also, it securely hashes the password in the cloud. Parse never stores passwords in plaintext, nor will Parse ever transmit passwords back to the client in plaintext.</p>
+
+<p>You can also use signUpInBackground method, but never saveInBackground method. New ParseUsers should always be created using the signUpInBackground (or signUp) method. Subsequent updates to a user can be done by calling save.</p>
+
+<p>If a signup isn't successful, you should read the error object that is returned. The most likely case is that the username or email has already been taken by another user. You should clearly communicate this to your users, and ask them try a different username.</p>
+
+<p>You are free to use an email addresses as the username. Simply ask your users to enter their email, but fill it in the username property — ParseUser will work as normal. We'll go over how this is handled in the reset password section.</p>
+
+<h4>
+<a name="logging-in" class="anchor" href="#logging-in"><span class="octicon octicon-link"></span></a>Logging In</h4>
+
+<p>Of course, after you allow users to sign up, you need be able to let them log in to their account in the future. To do this, you can use the class methods logInInBackground or logIn.</p>
+
+<div class="highlight highlight-Java"><pre><span class="n">ParseUser</span><span class="o">.</span><span class="na">logInInBackground</span><span class="o">(</span><span class="s">"Jerry"</span><span class="o">,</span> <span class="s">"showmethemoney"</span><span class="o">,</span> <span class="k">new</span> <span class="n">LogInCallback</span><span class="o">()</span> <span class="o">{</span>
+  <span class="kd">public</span> <span class="kt">void</span> <span class="nf">done</span><span class="o">(</span><span class="n">ParseUser</span> <span class="n">user</span><span class="o">,</span> <span class="n">ParseException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+    <span class="k">if</span> <span class="o">(</span><span class="n">user</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+      <span class="c1">// Hooray! The user is logged in.</span>
+    <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+      <span class="c1">// Signup failed. Look at the ParseException to see what happened.</span>
+    <span class="o">}</span>
+  <span class="o">}</span>
+<span class="o">});</span>
+</pre></div>
+
+<h4>
+<a name="verifying-emails" class="anchor" href="#verifying-emails"><span class="octicon octicon-link"></span></a>Verifying Emails</h4>
+
+<p>Enabling email verification in an application's settings allows the application to reserve part of its experience for users with confirmed email addresses. Email verification adds the emailVerified key to the <strong>ParseUser</strong> object. When a <strong>ParseUser</strong>'s email is set or modified, emailVerified is set to false. Parse then emails the user a link which will set emailVerified to true.</p>
+
+<p>There are three emailVerified states to consider:</p>
+
+<ul>
+<li>true - the user confirmed his or her email address by clicking on the link Parse emailed them. <strong>ParseUsers</strong> can never have a true value when the user account is first created.</li>
+<li>false - at the time the <strong>ParseUser</strong> object was last fetched, the user had not confirmed his or her email address. If emailVerified is false, consider calling fetch() on the <strong>ParseUser</strong>.</li>
+<li>missing - the <strong>ParseUser</strong> was created when email verification was off or the ParseUser does not have an email.</li>
+</ul><h4>
+<a name="anonymous-user" class="anchor" href="#anonymous-user"><span class="octicon octicon-link"></span></a>Anonymous User</h4>
+
+<p>pending...</p>
+
+<h4>
+<a name="security-for-user-objects" class="anchor" href="#security-for-user-objects"><span class="octicon octicon-link"></span></a>Security For User Objects</h4>
+
+<p>pending...</p>
+
+<h4>
+<a name="security-for-other-objects" class="anchor" href="#security-for-other-objects"><span class="octicon octicon-link"></span></a>Security for Other Objects</h4>
+
+<p>pending...</p>
+
+<h4>
+<a name="resetting-passwords" class="anchor" href="#resetting-passwords"><span class="octicon octicon-link"></span></a>Resetting Passwords</h4>
+
+<p>It's a fact that as soon as you introduce passwords into a system, users will forget them. In such cases, our library provides a way to let them securely reset their password.</p>
+
+<p>To kick off the password reset flow, ask the user for their email address, and call:</p>
+
+<div class="highlight highlight-Java"><pre><span class="n">ParseUser</span><span class="o">.</span><span class="na">requestPasswordReset</span><span class="o">(</span><span class="s">"some@email.com"</span><span class="o">);</span>
+</pre></div>
+
+<p>This will attempt to match the given email with the user's email or username field, and will send them a password reset email. By doing this, you can opt to have users use their email as their username, or you can collect it separately and store it in the email field.</p>
+
+<p>The flow for password reset is as follows:</p>
+
+<ol>
+<li>User requests that their password be reset by typing in their email.</li>
+<li>Parse sends an email to their address, with a special password reset link.</li>
+<li>User clicks on the reset link, and is directed to a special Parse page that will allow them type in a new password.</li>
+<li>User types in a new password. Their password has now been reset to a value they specify.</li>
+</ol><p>Note that the messaging in this flow will reference your application by the name that you specified when you created this appplication on Parse.</p>
+
+<p><a name="Roles"></a></p>
+
+<h2>
+<a name="roles" class="anchor" href="#roles"><span class="octicon octicon-link"></span></a>Roles</h2>
+
+<p>Pending...</p>
+
+<p><a name="Files"></a></p>
+
+<h2>
+<a name="files" class="anchor" href="#files"><span class="octicon octicon-link"></span></a>Files</h2>
+
+<p><strong>ParseFile</strong> lets you store application files in the cloud that would otherwise be too large or cumbersome to fit into a regular <strong>ParseObject</strong>. The most common use case is storing images but you can also use it for documents, videos, music, and any other binary data (up to 10 megabytes).</p>
+
+<p>Getting started with <strong>ParseFile</strong> is easy. First, you'll need to have the data in byte[] form and then create a ParseFile with it. In this example, we'll just use a string:</p>
+
+<div class="highlight highlight-JAVA"><pre><span class="kt">byte</span><span class="o">[]</span> <span class="n">data</span> <span class="o">=</span> <span class="s">"Working at Parse is great!"</span><span class="o">.</span><span class="na">getBytes</span><span class="o">();</span>
+<span class="n">ParseFile</span> <span class="n">file</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ParseFile</span><span class="o">(</span><span class="s">"resume.txt"</span><span class="o">,</span> <span class="n">data</span><span class="o">);</span>
+<span class="n">file</span><span class="o">.</span><span class="na">save</span><span class="o">();</span>
+</pre></div>
+
+<p>Notice in this example that we give the file a name of resume.txt. There's two things to note here:</p>
+
+<ul>
+<li>You don't need to worry about filename collisions. Each upload gets a unique identifier so there's no problem with uploading multiple files named resume.txt.</li>
+<li>It's important that you give a name to the file that has a file extension. This lets Parse figure out the file type and handle it accordingly. So, if you're storing PNG images, make sure your filename ends with .png.</li>
+</ul><p>Next you'll want to save the file up to the cloud. As with ParseObject, there are many variants of the save method you can use depending on what sort of callback and error handling suits you.</p>
+
+<div class="highlight highlight-JAVA"><pre><span class="n">file</span><span class="o">.</span><span class="na">saveInBackground</span><span class="o">();</span>
+</pre></div>
+
+<p>Finally, after the save completes, you can associate a ParseFile onto a ParseObject just like any other piece of data:</p>
+
+<div class="highlight highlight-JAVA"><pre><span class="n">ParseObject</span> <span class="n">jobApplication</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ParseObject</span><span class="o">(</span><span class="s">"JobApplication"</span><span class="o">);</span>
+<span class="n">jobApplication</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">"applicantName"</span><span class="o">,</span> <span class="s">"Joe Smith"</span><span class="o">);</span>
+<span class="n">jobApplication</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">"applicantResumeFile"</span><span class="o">,</span> <span class="n">file</span><span class="o">);</span>
+<span class="n">jobApplication</span><span class="o">.</span><span class="na">save</span><span class="o">();</span>
+</pre></div>
+
+<p>Retrieving it back involves calling one of the getData variants on the ParseObject. Here we retrieve the resume file off another JobApplication object:</p>
+
+<div class="highlight highlight-JAVA"><pre><span class="n">ParseFile</span> <span class="n">applicantResume</span> <span class="o">=</span> <span class="o">(</span><span class="n">ParseFile</span><span class="o">)</span> <span class="n">anotherApplication</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="s">"applicantResumeFile"</span><span class="o">);</span>
+<span class="n">applicantResume</span><span class="o">.</span><span class="na">getDataInBackground</span><span class="o">(</span><span class="k">new</span> <span class="n">GetDataCallback</span><span class="o">()</span> <span class="o">{</span>
+  <span class="kd">public</span> <span class="kt">void</span> <span class="nf">done</span><span class="o">(</span><span class="kt">byte</span><span class="o">[]</span> <span class="n">data</span><span class="o">,</span> <span class="n">ParseException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+    <span class="k">if</span> <span class="o">(</span><span class="n">e</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+      <span class="c1">// data has the bytes for the resume</span>
+    <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+      <span class="c1">// something went wrong</span>
+    <span class="o">}</span>
+  <span class="o">}</span>
+<span class="o">});</span>
+</pre></div>
+
+<h4>
+<a name="progress" class="anchor" href="#progress"><span class="octicon octicon-link"></span></a>Progress</h4>
+
+<p>It's easy to get the progress of both uploads and downloads using <strong>ParseFile</strong> by passing a ProgressCallback to saveInBackground and getDataInBackground. For example:</p>
+
+<div class="highlight highlight-JAVA"><pre><span class="kt">byte</span><span class="o">[]</span> <span class="n">data</span> <span class="o">=</span> <span class="n">getBytes</span><span class="o">(</span><span class="s">"song.mp3"</span><span class="o">);</span>
+<span class="n">ParseFile</span> <span class="n">file</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ParseFile</span><span class="o">(</span><span class="s">"song.mp3"</span><span class="o">,</span> <span class="n">data</span><span class="o">);</span>
+<span class="n">file</span><span class="o">.</span><span class="na">save</span><span class="o">(</span><span class="k">new</span> <span class="n">ProgressCallback</span><span class="o">()</span> <span class="o">{</span>
+
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">done</span><span class="o">(</span><span class="n">Integer</span> <span class="n">percentDone</span><span class="o">)</span> <span class="o">{</span>
+        <span class="c1">//do something</span>
+    <span class="o">}</span>
+<span class="o">});</span>
+</pre></div>
+
+<p>or:</p>
+
+<div class="highlight highlight-JAVA"><pre><span class="kt">byte</span><span class="o">[]</span> <span class="n">data</span> <span class="o">=</span> <span class="n">getBytes</span><span class="o">(</span><span class="s">"song.mp3"</span><span class="o">);</span>
+<span class="n">ParseFile</span> <span class="n">file</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ParseFile</span><span class="o">(</span><span class="s">"song.mp3"</span><span class="o">,</span> <span class="n">data</span><span class="o">);</span>
+<span class="n">file</span><span class="o">.</span><span class="na">save</span><span class="o">(</span><span class="k">new</span> <span class="n">SaveCallback</span><span class="o">()</span> <span class="o">{</span>
+
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">done</span><span class="o">(</span><span class="n">ParseException</span> <span class="n">parseException</span><span class="o">)</span> <span class="o">{</span>
+        <span class="c1">//do something</span>
+    <span class="o">}</span>
+<span class="o">});</span>
+</pre></div>
+
+<p>There also another possibility to save the file and give both callbacks at one.</p>
+
+<p><a name="Analytics"></a></p>
+
+<h2>
+<a name="analytics" class="anchor" href="#analytics"><span class="octicon octicon-link"></span></a>Analytics</h2>
+
+<p>Parse provides a number of hooks for you to get a glimpse into the ticking heart of your app. We understand that it's important to understand what your app is doing, how frequently, and when.</p>
+
+<p>While this section will cover different ways to instrument your app to best take advantage of Parse's analytics backend, developers using Parse to store and retrieve data can already take advantage of metrics on Parse.</p>
+
+<p>Without having to implement any client-side logic, you can view real-time graphs and breakdowns (by device type, Parse class name, or REST verb) of your API Requests in your app's dashboard and save these graph filters to quickly access just the data you're interested in.</p>
+
+<h4>
+<a name="app-open--push-analytics" class="anchor" href="#app-open--push-analytics"><span class="octicon octicon-link"></span></a>App-Open / Push Analytics</h4>
+
+<p>Our initial analytics hook allows you to track your application being launched. By adding the following line to the onCreate method of your main Activity, you'll begin to collect data on when and how often your application is opened.</p>
+
+<div class="highlight highlight-JAVA"><pre><span class="n">ParseAnalytics</span><span class="o">.</span><span class="na">trackAppOpened</span><span class="o">();</span>
+</pre></div>
+
+<p>Graphs and breakdowns of your statistics are accessible from your app's Dashboard.</p>
+
+<h4>
+<a name="custom-analytics" class="anchor" href="#custom-analytics"><span class="octicon octicon-link"></span></a>Custom Analytics</h4>
+
+<p><strong>ParseAnalytics</strong> also allows you to track free-form events, with a handful of String keys and values. These extra dimensions allow segmentation of your custom events via your app's Dashboard.</p>
+
+<p>Say your app offers search functionality for apartment listings, and you want to track how often the feature is used, with some additional metadata.</p>
+
+<div class="highlight highlight-JAVA"><pre><span class="n">Map</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">String</span><span class="o">&gt;</span> <span class="n">dimensions</span> <span class="o">=</span> <span class="k">new</span> <span class="n">HashMap</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">String</span><span class="o">&gt;();</span>
+<span class="c1">// Define ranges to bucket data points into meaningful segments</span>
+<span class="n">dimensions</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">"priceRange"</span><span class="o">,</span> <span class="s">"1000-1500"</span><span class="o">);</span>
+<span class="c1">// Did the user filter the query?</span>
+<span class="n">dimensions</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">"source"</span><span class="o">,</span> <span class="s">"craigslist"</span><span class="o">);</span>
+<span class="c1">// Do searches happen more often on weekdays or weekends?</span>
+<span class="n">dimensions</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">"dayType"</span><span class="o">,</span> <span class="s">"weekday"</span><span class="o">);</span>
+<span class="c1">// Send the dimensions to Parse along with the 'search' event</span>
+<span class="n">ParseAnalytics</span><span class="o">.</span><span class="na">trackEvent</span><span class="o">(</span><span class="s">"search"</span><span class="o">,</span> <span class="n">dimensions</span><span class="o">);</span>
+</pre></div>
+
+<p><strong>ParseAnalytics</strong> can even be used as a lightweight error tracker — simply invoke the following and you'll have access to an overview of the rate and frequency of errors, broken down by error code, in your application:</p>
+
+<div class="highlight highlight-JAVA"><pre><span class="n">Map</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">String</span><span class="o">&gt;</span> <span class="n">dimensions</span> <span class="o">=</span> <span class="k">new</span> <span class="n">HashMap</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">String</span><span class="o">&gt;();</span>
+<span class="n">dimensions</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">"code"</span><span class="o">,</span> <span class="n">Integer</span><span class="o">.</span><span class="na">toString</span><span class="o">(</span><span class="n">error</span><span class="o">.</span><span class="na">getCode</span><span class="o">()));</span>
+<span class="n">ParseAnalytics</span><span class="o">.</span><span class="na">trackEvent</span><span class="o">(</span><span class="s">"error"</span><span class="o">,</span> <span class="n">dimensions</span><span class="o">);</span>
+</pre></div>
+
+<p>Note that Parse currently only stores the first eight dimension pairs per call to <strong>ParseAnalytics.trackEvent()</strong>.</p>
+
+<p><a name="CloudFunctions"></a></p>
+
+<h2>
+<a name="cloud-functions" class="anchor" href="#cloud-functions"><span class="octicon octicon-link"></span></a>Cloud Functions</h2>
+
+<p>Cloud Functions can be called from Android using <strong>ParseCloud</strong>. For example, to call the Cloud Function named "Multiply", defined below:</p>
+
+<div class="highlight highlight-JAVASCRIPT"><pre><span class="nx">Parse</span><span class="p">.</span><span class="nx">Cloud</span><span class="p">.</span><span class="nx">define</span><span class="p">(</span><span class="s2">"Multiply"</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">request</span><span class="p">,</span> <span class="nx">response</span><span class="p">)</span> <span class="p">{</span>
+  <span class="nx">response</span><span class="p">.</span><span class="nx">success</span><span class="p">(</span><span class="nx">request</span><span class="p">.</span><span class="nx">params</span><span class="p">.</span><span class="nx">A</span> <span class="o">*</span> <span class="nx">request</span><span class="p">.</span><span class="nx">params</span><span class="p">.</span><span class="nx">B</span><span class="p">);</span>
+<span class="p">});</span>
+</pre></div>
+
+<p>and to run the code in the cloud:</p>
+
+<div class="highlight highlight-JAVA"><pre><span class="n">HashMap</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">Integer</span><span class="o">&gt;</span> <span class="n">params</span> <span class="o">=</span> <span class="k">new</span> <span class="n">HashMap</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">Integer</span><span class="o">&gt;();</span>
+<span class="n">params</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">"A"</span><span class="o">,</span> <span class="mi">12</span><span class="o">);</span>
+<span class="n">params</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">"B"</span><span class="o">,</span> <span class="mi">4</span><span class="o">);</span>
+<span class="n">Integer</span> <span class="n">result</span> <span class="o">=</span> <span class="n">ParseCloud</span><span class="o">.</span><span class="na">callFunction</span><span class="o">(</span><span class="s">"Multiply"</span><span class="o">,</span> <span class="n">params</span><span class="o">);</span>
+</pre></div>
+
+<p>Take a look at the <a href="https://parse.com/docs/rest#cloudfunctions">Cloud Code Guide</a> to learn more about Cloud Functions.</p>
+
+<p><a name="GeoPoints"></a></p>
+
+<h2>
+<a name="geopoints" class="anchor" href="#geopoints"><span class="octicon octicon-link"></span></a>GeoPoints</h2>
+
+<p>Parse allows you to associate real-world latitude and longitude coordinates with an object. Adding a <strong>ParseGeoPoint</strong> to a ParseObject allows queries to take into account the proximity of an object to a reference point. This allows you to easily do things like find out what user is closest to another user or which places are closest to a user.</p>
+
+<h4>
+<a name="parsegeopoint" class="anchor" href="#parsegeopoint"><span class="octicon octicon-link"></span></a>ParseGeoPoint</h4>
+
+<p>To associate a point with an object you first need to create a <strong>ParseGeoPoint</strong>. For example, to create a point with latitude of 40.0 degrees and -30.0 degrees longitude:</p>
+
+<div class="highlight highlight-JAVA"><pre><span class="n">ParseGeoPoint</span> <span class="n">point</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ParseGeoPoint</span><span class="o">(</span><span class="mf">40.0</span><span class="o">,</span> <span class="o">-</span><span class="mf">30.0</span><span class="o">);</span>
+</pre></div>
+
+<p>This point is then stored in the object as a regular field.</p>
+
+<div class="highlight highlight-JAVA"><pre><span class="n">placeObject</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">"location"</span><span class="o">,</span> <span class="n">point</span><span class="o">);</span>
+</pre></div>
+
+<h4>
+<a name="geo-queries" class="anchor" href="#geo-queries"><span class="octicon octicon-link"></span></a>Geo Queries</h4>
+
+<p>Now that you have a bunch of objects with spatial coordinates, it would be nice to find out which objects are closest to a point. This can be done by adding another restriction to <strong>ParseQuery</strong> using whereNear. Getting a list of ten places that are closest to a user may look something like:</p>
+
+<div class="highlight highlight-JAVA"><pre><span class="n">ParseGeoPoint</span> <span class="n">userLocation</span> <span class="o">=</span> <span class="o">(</span><span class="n">ParseGeoPoint</span><span class="o">)</span> <span class="n">userObject</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="s">"location"</span><span class="o">);</span>
+<span class="n">ParseQuery</span><span class="o">&lt;</span><span class="n">ParseObject</span><span class="o">&gt;</span> <span class="n">query</span> <span class="o">=</span> <span class="n">ParseQuery</span><span class="o">.</span><span class="na">getQuery</span><span class="o">(</span><span class="s">"PlaceObject"</span><span class="o">);</span>
+<span class="n">query</span><span class="o">.</span><span class="na">whereNear</span><span class="o">(</span><span class="s">"location"</span><span class="o">,</span> <span class="n">userLocation</span><span class="o">);</span>
+<span class="n">query</span><span class="o">.</span><span class="na">limit</span><span class="o">(</span><span class="mi">10</span><span class="o">);</span>
+<span class="n">query</span><span class="o">.</span><span class="na">findInBackground</span><span class="o">(</span><span class="k">new</span> <span class="n">FindCallback</span><span class="o">&lt;</span><span class="n">ParseObject</span><span class="o">&gt;()</span> <span class="o">{</span> <span class="o">...</span> <span class="o">});</span>
+</pre></div>
+
+<p>At this point nearPlaces will be an array of objects ordered by distance (nearest to farthest) from userLocation. Note that if an additional orderByAscending()/orderByDescending() constraint is applied, it will take precedence over the distance ordering.</p>
+
+<p>To limit the results using distance, check out whereWithinKilometers, whereWithinMiles, and whereWithinRadians.</p>
+
+<p>It's also possible to query for the set of objects that are contained within a particular area. To find the objects in a rectangular bounding box, add the whereWithinGeoBox restriction to your <strong>ParseQuery</strong>.</p>
+
+<div class="highlight highlight-JAVA"><pre><span class="n">ParseGeoPoint</span> <span class="n">southwestOfSF</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ParseGeoPoint</span><span class="o">(</span><span class="mf">37.708813</span><span class="o">,</span> <span class="o">-</span><span class="mf">122.526398</span><span class="o">);</span>
+<span class="n">ParseGeoPoint</span> <span class="n">northeastOfSF</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ParseGeoPoint</span><span class="o">(</span><span class="mf">37.822802</span><span class="o">,</span> <span class="o">-</span><span class="mf">122.373962</span><span class="o">);</span>
+<span class="n">ParseQuery</span><span class="o">&lt;</span><span class="n">ParseObject</span><span class="o">&gt;</span> <span class="n">query</span> <span class="o">=</span> <span class="n">ParseQuery</span><span class="o">.</span><span class="na">getQuery</span><span class="o">(</span><span class="s">"PizzaPlaceObject"</span><span class="o">);</span>
+<span class="n">query</span><span class="o">.</span><span class="na">whereWithinGeoBox</span><span class="o">(</span><span class="s">"location"</span><span class="o">,</span> <span class="n">southwestOfSF</span><span class="o">,</span> <span class="n">northeastOfSF</span><span class="o">);</span>
+<span class="n">query</span><span class="o">.</span><span class="na">findInBackground</span><span class="o">(</span><span class="k">new</span> <span class="n">FindCallback</span><span class="o">&lt;</span><span class="n">ParseObject</span><span class="o">&gt;()</span> <span class="o">{</span> <span class="o">...</span> <span class="o">});</span>
+</pre></div>
+
+<h4>
+<a name="caveats" class="anchor" href="#caveats"><span class="octicon octicon-link"></span></a>Caveats</h4>
+
+<p>At the moment there are a couple of things to watch out for:</p>
+
+<ul>
+<li>Each <strong>ParseObject</strong> class may only have one key with a <strong>ParseGeoPoint</strong> object. The last one added is the one that is gonna be saved to the backend.</li>
+<li>Points should not equal or exceed the extreme ends of the ranges. Latitude should not be -90.0 or 90.0. Longitude should not be -180.0 or 180.0. Attempting to set latitude or longitude out of bounds will cause an error.</li>
+</ul><p><a name="PushNotifications"></a></p>
+
+<h2>
+<a name="push-notifications" class="anchor" href="#push-notifications"><span class="octicon octicon-link"></span></a>Push Notifications</h2>
+
+<p>Pending...</p>
+
+<p><a name="Instalations"></a></p>
+
+<h2>
+<a name="instalations" class="anchor" href="#instalations"><span class="octicon octicon-link"></span></a>Instalations</h2>
+
+<p>Pending...</p>
+
+<h2>
+<a name="notes" class="anchor" href="#notes"><span class="octicon octicon-link"></span></a>Notes</h2>
+
+<h3>
+<a name="license" class="anchor" href="#license"><span class="octicon octicon-link"></span></a>License</h3>
+
+<h2>
+<a name="todo" class="anchor" href="#todo"><span class="octicon octicon-link"></span></a>TODO</h2>
+
+<h3>
+<a name="implemented-functionalities" class="anchor" href="#implemented-functionalities"><span class="octicon octicon-link"></span></a>Implemented Functionalities</h3>
+
+<ul>
+<li><a href="#Objects">Objects</a></li>
+<li>
+<a href="#Subclasses">Subclasses</a> </li>
+<li>
+<a href="#Queries">Queries</a> </li>
+<li>
+<a href="#CloudFunctions">CloudFunctions</a> </li>
+<li><a href="#GeoPoints">GeoPoints</a></li>
+<li>
+<a href="#Analytics">Analytics</a> </li>
+<li>
+<a href="#Files">Files</a> </li>
+</ul><h3>
+<a name="in-development" class="anchor" href="#in-development"><span class="octicon octicon-link"></span></a>In development</h3>
+
+<ul>
+<li>
+<a href="#Users">Users</a> </li>
+<li>
+<a href="#PushNotifications">Push Notifications</a> </li>
+</ul><h3>
+<a name="pending-functionalities" class="anchor" href="#pending-functionalities"><span class="octicon octicon-link"></span></a>Pending Functionalities</h3>
+
+<ul>
+<li>
+<a href="#Objects">ACL</a><br>
+</li>
+<li>
+<a href="#Roles">Roles</a> </li>
+<li>
+<a href="#Instalations">Instalations</a> </li>
+</ul>
+        </section>
+
+        <aside id="sidebar">
+          <a href="https://github.com/thiagolocatelli/parse4j/zipball/master" class="button">
+            <small>Download</small>
+            .zip file
+          </a>
+          <a href="https://github.com/thiagolocatelli/parse4j/tarball/master" class="button">
+            <small>Download</small>
+            .tar.gz file
+          </a>
+
+          <p class="repo-owner"><a href="https://github.com/thiagolocatelli/parse4j"></a> is maintained by <a href="https://github.com/thiagolocatelli">thiagolocatelli</a>.</p>
+
+          <p>This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the Architect theme by <a href="https://twitter.com/jasonlong">Jason Long</a>.</p>
+        </aside>
+      </div>
+    </div>
+
+  
+  </body>
+</html>
