@@ -36,6 +36,7 @@ public class ParseQuery<T extends ParseObject> {
 	private String order;
 	
 	private boolean trace;
+	private boolean caseSensitive = true;
 	private String strTrace;
 
 	public ParseQuery(Class<T> subclass) {
@@ -207,20 +208,21 @@ public class ParseQuery<T extends ParseObject> {
 	}
 	
 	public ParseQuery<T> whereContains(String key, String substring) {
-		String regex = Pattern.quote(substring);
-		whereMatches(key, regex);
+		whereMatches(key, new StringBuilder(caseSensitive?"":"(?i)").
+				append(Pattern.quote(substring)).toString());
 		return this;
 	}
 
 	public ParseQuery<T> whereStartsWith(String key, String prefix) {
-		String regex = "^" + Pattern.quote(prefix);
-		whereMatches(key, regex);
+		whereMatches(key, new StringBuilder("^").
+				append(caseSensitive?"":"(?i)").
+				append(Pattern.quote(prefix)).toString());
 		return this;
 	}
 
 	public ParseQuery<T> whereEndsWith(String key, String suffix) {
-		String regex = Pattern.quote(suffix) + "$";
-		whereMatches(key, regex);
+		whereMatches(key, new StringBuilder(caseSensitive?"":"(?i)").
+				append(Pattern.quote(suffix)).append("$").toString());
 		return this;
 	}
 	
@@ -282,6 +284,10 @@ public class ParseQuery<T extends ParseObject> {
 
 	public void setTrace(boolean shouldTrace) {
 		this.trace = shouldTrace;
+	}
+
+	public void setCaseSensitive(boolean caseSensitive) {
+		this.caseSensitive = caseSensitive;
 	}
 
 	public int getLimit() {
@@ -454,8 +460,31 @@ public class ParseQuery<T extends ParseObject> {
 		}
 	}
 
-	@SuppressWarnings("unchecked")
+	/**
+	 * 
+	 * @return
+	 * @throws ParseException
+	 */
 	public List<T> find() throws ParseException {
+		
+		return find(toREST());
+		
+	}
+
+	/**
+	 * 
+	 * @param json
+	 * @return
+	 * @throws ParseException
+	 */
+	public List<T> find(String json) throws ParseException {
+		
+		return find(new JSONObject(json));
+		
+	}
+		
+	@SuppressWarnings("unchecked")
+	public List<T> find(JSONObject query) throws ParseException {
 		
 		String endPoint;
 		if(!"users".equals(getClassName()) && !"roles".equals(getClassName())) {
@@ -466,7 +495,6 @@ public class ParseQuery<T extends ParseObject> {
 		}
 
 		ParseGetCommand command = new ParseGetCommand(endPoint);
-		JSONObject query = toREST();
 		query.remove("className");
 		command.setData(query);
 		ParseResponse response = command.perform();
