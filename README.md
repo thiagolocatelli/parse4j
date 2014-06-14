@@ -253,7 +253,7 @@ public class App extends Application {
 	public void onCreate() {
     	super.onCreate();
  
-    	ParseObject.registerSubclass(Armor.class);
+    	ParseRegistry.registerSubclass(Armor.class);
     	Parse.initialize(this, PARSE_APPLICATION_ID, PARSE_CLIENT_KEY);
   }
 }
