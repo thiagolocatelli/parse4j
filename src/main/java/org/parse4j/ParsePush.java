@@ -55,14 +55,19 @@ public class ParsePush {
 	}
 
 	public void setMessage(String message) {
-		JSONObject data = new JSONObject();
-		data.put("alert", message);
+		JSONObject pushData = new JSONObject();
+		pushData.put("alert", message);
+                
+                JSONObject data = new JSONObject();
+                data.put("data", pushData);
+
 		setData(data);
 	}
 	
 	public void send() throws ParseException {
 		ParsePostCommand command = new ParsePostCommand("push");
-		command.setData(getJSONData());
+                JSONObject requestData = getJSONData();
+		command.setData(requestData);
 		ParseResponse response = command.perform();
 		if(response.isFailed()) {
 			throw response.getException();
