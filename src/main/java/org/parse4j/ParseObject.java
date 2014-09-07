@@ -335,8 +335,17 @@ public class ParseObject {
 		RemoveFieldOperation operation = new RemoveFieldOperation(values);
 		performOperation(key, operation);
 	}
-
 	public void put(String key, Object value) {
+	    put(key, value, false);
+	}
+	/**
+	 * 
+	 * @param key
+	 * @param value
+	 * @param disableChecks some checks have to be skipped during fetch. Currently the only
+	 * effect of passing true here is to disable the check on uploaded files. See issue #17 on github.
+	 */
+	protected void put(String key, Object value, boolean disableChecks){
 		
 		if (key == null) {
 			LOGGER.error("key may not be null.");
@@ -354,7 +363,7 @@ public class ParseObject {
 					"ParseFile must be saved before being set on a ParseObject.");
 		}
 		
-		if (value instanceof ParseFile && !((ParseFile) value).isUploaded()) {
+		if (value instanceof ParseFile && !((ParseFile) value).isUploaded() && !disableChecks) {
 			LOGGER.error("ParseFile must be saved before being set on a ParseObject.");
 			throw new IllegalArgumentException(
 					"ParseFile must be saved before being set on a ParseObject.");
@@ -713,7 +722,9 @@ public class ParseObject {
 	}
 	
 	protected void setData(JSONObject jsonObject) {
-		
+		  setData(jsonObject, false);  
+	}
+	protected void setData(JSONObject jsonObject, boolean disableChecks) {
 		Iterator<?> it = jsonObject.keys();
 		while (it.hasNext()) {
 			String key = (String) it.next();
@@ -722,7 +733,7 @@ public class ParseObject {
 				setReservedKey(key, value);
 			}
 			else {
-				put(key, ParseDecoder.decode(value));
+				put(key, ParseDecoder.decode(value), disableChecks);
 			}
 		}
 		

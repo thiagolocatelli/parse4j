@@ -524,13 +524,20 @@ public class ParseQuery<T extends ParseObject> {
 					if(clazz != null) {
 						T po = (T) clazz.newInstance();
 						JSONObject obj = (JSONObject) objs.get(i);
-						po.setData(obj);
+						 
+						/*
+						We disable some checks while setting data in objects during fetch because
+						those checks are useful only when setting data from client
+						code. The "true" argument disables such checks.
+						*/
+						po.setData(obj, true);
 						results.add((T) po);
 					}
 					else {
 						ParseObject po = new ParseObject(getClassName());
 						JSONObject obj = (JSONObject) objs.get(i);
-						po.setData(obj);
+						// see above for the "true" argument
+						po.setData(obj, true);
 						results.add((T) po);
 					}
 				}
