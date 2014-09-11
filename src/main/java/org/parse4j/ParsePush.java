@@ -19,7 +19,7 @@ public class ParsePush {
 	private Long expirationTimeInterval = null;
 	private Boolean pushToIOS = null;
 	private Boolean pushToAndroid = null;
-	private JSONObject data;
+	private JSONObject pushData = new JSONObject();
 
 	public void setChannel(String channel) {
 		this.channelSet = new ArrayList<String>();
@@ -50,19 +50,28 @@ public class ParsePush {
 		this.expirationTimeInterval = null;
 	}
 
-	public void setData(JSONObject data) {
-		this.data = data;
-	}
-
 	public void setMessage(String message) {
-		JSONObject pushData = new JSONObject();
-		pushData.put("alert", message);
-                
-                JSONObject data = new JSONObject();
-                data.put("data", pushData);
-
-		setData(data);
+		this.pushData.put("alert", message);
 	}
+        
+        public void setBadge(String badge) {
+                if(badge == null || badge.length() == 0) {
+                    badge = "Increment";
+                }
+                this.pushData.put("badge", badge);
+        }
+        
+        public void setSound(String sound) {
+                this.pushData.put("sound", sound);
+        }
+        
+        public void setTitle(String title) {
+                this.pushData.put("title", title);
+        }
+        
+        public void setData(String key, String value) {
+                this.pushData.put(key, value);
+        }
 	
 	public void send() throws ParseException {
 		ParsePostCommand command = new ParsePostCommand("push");
@@ -91,6 +100,8 @@ public class ParsePush {
 	}
 
 	private JSONObject getJSONData() {
+                JSONObject data = new JSONObject();
+                data.put("data", this.pushData);
 
 		if (this.channelSet == null) {
 			data.put("channel", "");
