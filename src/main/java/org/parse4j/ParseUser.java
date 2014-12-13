@@ -12,7 +12,7 @@ import org.parse4j.util.ParseRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@ParseClassName("users")
+@ParseClassName("_User")
 public class ParseUser extends ParseObject {
 	
 	private static Logger LOGGER = LoggerFactory.getLogger(ParseUser.class);
@@ -22,7 +22,7 @@ public class ParseUser extends ParseObject {
 
 	public ParseUser() {
 		super(ParseRegistry.getClassName(ParseUser.class));
-		setEndPoint("users");
+		setEndPoint("_User");
 	}
 
 	public void remove(String key) {
