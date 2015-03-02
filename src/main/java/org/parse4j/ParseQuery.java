@@ -325,7 +325,7 @@ public class ParseQuery<T extends ParseObject> {
 	}
 	
 	
-	JSONObject toREST() {
+	public JSONObject toREST() {
 		JSONObject params = new JSONObject();
 		try {
 			params.put("className", this.className);

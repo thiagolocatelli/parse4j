@@ -120,6 +120,10 @@ public class ParseEncoder {
 			return output;	
 		}
 		
+		if(value instanceof ParseQuery){
+			return ((ParseQuery) value).toREST();
+		}
+		
 		if(Parse.isValidType(value)) {
 			return value;	
 		}
