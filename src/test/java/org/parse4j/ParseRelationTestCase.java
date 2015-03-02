@@ -1,6 +1,8 @@
 package org.parse4j;
 
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -60,6 +62,19 @@ public class ParseRelationTestCase extends Parse4JTestCase {
 	}
 
 	
+
+	@Test
+	public void relation4() throws ParseException {
+		ParseQuery<ParseObject> query = ParseQuery.getQuery("Post");
+		query.whereEqualTo("title", "Post Number 20");
+		
+		ParseQuery<ParseObject> commentsQuery = ParseQuery.getQuery("Comment");
+		commentsQuery.whereMatchesQuery("parent", query);
+		List<ParseObject> find = commentsQuery.find();
+		
+		assertNotNull(find);
+		assertTrue(find.size()>1);
+	}	
 	@Test
 	public void relation() throws ParseException {	
 
@@ -105,7 +120,7 @@ public class ParseRelationTestCase extends Parse4JTestCase {
 			System.out.println(po.getDate("start"));
 		}
 	}
-	
+
 	@Test
 	public void relation2() throws ParseException {	
 
