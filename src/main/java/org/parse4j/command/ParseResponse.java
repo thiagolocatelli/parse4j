@@ -96,8 +96,10 @@ public class ParseResponse {
 			return null;
 		}
 		*/
-	}	
-	
+	}
+	public String getRawResponseBody(){
+		return responseBody;
+	}
 	private ParseException getParseError(JSONObject response) {
 		
 		int code;
