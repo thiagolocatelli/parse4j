@@ -170,7 +170,7 @@ public class ParseUser extends ParseObject {
 				jsonResponse.remove(ParseConstants.FIELD_CREATED_AT);
 				jsonResponse.remove(ParseConstants.FIELD_UPDATED_AT);
 				jsonResponse.remove(ParseConstants.FIELD_SESSION_TOKEN);
-				parseUser.setData(jsonResponse);
+				parseUser.setData(jsonResponse,true);
 				return parseUser;
 				
 			}catch (JSONException e) {
