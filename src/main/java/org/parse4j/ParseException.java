@@ -43,6 +43,7 @@ public class ParseException extends Exception {
 	public static final int LINKED_ID_MISSING = 250;
 	public static final int INVALID_LINKED_SESSION = 251;
 	public static final int UNSUPPORTED_SERVICE = 252;
+	public static final int TOO_MANY_COMMANDS_IN_BATCH_REQUEST = 154;
 
 	private int code;
 

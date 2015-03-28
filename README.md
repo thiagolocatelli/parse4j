@@ -146,6 +146,51 @@ gameScore.deleteInBackground(new DeleteCallback() {
 	});
 ```
 
+#### Batch operations
+To reduce the amount of time spent on network round trips, you can create, update, or delete up to 50 objects in one call. The response from batch will be a list with the same number of elements as the input list. Each item in the list with be a dictionary with either the success or error field set. 
+```
+//insert objects
+ParseBatch batcher = new ParseBatch();
+final ParseObject gameScore = new ParseObject("GameScore");
+final ParseObject anotherGameScore = new ParseObject("GameScore");
+batcher.createObject(gameScore);
+batcher.createObject(anotherGameScore);
+//execute batch request!
+JSONArray batch = batcher.batch();
+//in this way you will save two objects with one http request
+
+//update objects
+ParseBatch batcher = new ParseBatch();
+ParseObject gameScore = ParseObject.createWithoutData("GameScore", objectId);
+//execute batch request!
+JSONArray batch = batcher.batch();
+
+//delete objects
+ParseBatch batcher = new ParseBatch();
+ParseObject gameScore = ParseObject.createWithoutData("GameScore", objectId);
+batcher.deleteObject(gameScore);
+//execute batch request!
+JSONArray batch = batcher.batch();
+```
+Format of the JSONArray is:
+ 
+```[{"success":{"objectId":"xxxxxxxx","createdAt":"2015-03-28T10:34:55.564Z"}}]```
+
+You can easily iterate over returned JSONArray to check if batch operation for every
+object is executed successfully or not : 
+```
+	for(int i=0;i<batch.length();i++){
+			JSONObject current = batch.getJSONObject(i);
+			if(current.get("success")!=null){
+				JSONObject obj = current.getJSONObject("success");
+				LOGGER.info("status is success ");
+			}else{
+				LOGGER.info("status is error ");
+			}
+		}
+
+```
+Of course you can mix add, update and delete batch operations.
 #### Counters
 
 You can also increment and decrement values from Number (int, long, double...) attributes.
