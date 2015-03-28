@@ -8,7 +8,11 @@ import org.parse4j.command.ParseCommand;
 import org.parse4j.command.ParseResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
+/**
+ * Main class used for sending batch requests
+ * @author Nikolay Rusev
+ *
+ */
 public class ParseBatch {
 	private static final String path = "/" + ParseConstants.API_VERSION + "/"+ "classes" + "/";
 	private JSONArray data = new JSONArray();

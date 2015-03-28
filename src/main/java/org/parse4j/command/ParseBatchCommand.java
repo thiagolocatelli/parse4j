@@ -8,12 +8,15 @@ import org.apache.http.entity.StringEntity;
 import org.parse4j.ParseConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
+/**
+ * Generate parse batch requesy body and construct the url 
+ * @author Nikolay Rusev
+ *
+ */
 public class ParseBatchCommand extends ParseCommand{
 
 	private static Logger LOGGER = LoggerFactory.getLogger(ParseBatchCommand.class);
 
-	//TODO refactor to use stringbuilder
 	public String getUrl(){
 		String base = ParseConstants.API_ENDPOINT;
 		String version = ParseConstants.API_VERSION;
