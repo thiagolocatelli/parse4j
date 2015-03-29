@@ -174,12 +174,14 @@ JSONArray batch = batcher.batch();
 ```
 Format of the JSONArray is:
  
-```[{"success":{"objectId":"xxxxxxxx","createdAt":"2015-03-28T10:34:55.564Z"}}]```
+```Json
+[{"success":{"objectId":"xxxxxxxx","createdAt":"2015-03-28T10:34:55.564Z"}}]
+```
 
 You can easily iterate over returned JSONArray to check if batch operation for every
 object is executed successfully or not : 
-```
-	for(int i=0;i<batch.length();i++){
+```Java
+		for(int i=0;i<batch.length();i++){
 			JSONObject current = batch.getJSONObject(i);
 			if(current.get("success")!=null){
 				JSONObject obj = current.getJSONObject("success");
