@@ -5,14 +5,12 @@ import org.json.JSONObject;
 import org.parse4j.callback.LoginCallback;
 import org.parse4j.callback.RequestPasswordResetCallback;
 import org.parse4j.callback.SignUpCallback;
-import org.parse4j.command.ParseGetCommand;
-import org.parse4j.command.ParsePostCommand;
-import org.parse4j.command.ParseResponse;
+import org.parse4j.command.*;
 import org.parse4j.util.ParseRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@ParseClassName("_User")
+@ParseClassName("users")
 public class ParseUser extends ParseObject {
 	
 	private static Logger LOGGER = LoggerFactory.getLogger(ParseUser.class);
@@ -22,7 +20,7 @@ public class ParseUser extends ParseObject {
 
 	public ParseUser() {
 		super(ParseRegistry.getClassName(ParseUser.class));
-		setEndPoint("_User");
+		setEndPoint("users");
 	}
 
 	public void remove(String key) {
@@ -170,7 +168,7 @@ public class ParseUser extends ParseObject {
 				jsonResponse.remove(ParseConstants.FIELD_CREATED_AT);
 				jsonResponse.remove(ParseConstants.FIELD_UPDATED_AT);
 				jsonResponse.remove(ParseConstants.FIELD_SESSION_TOKEN);
-				parseUser.setData(jsonResponse,true);
+				parseUser.setData(jsonResponse, true);
 				return parseUser;
 				
 			}catch (JSONException e) {
@@ -208,7 +206,24 @@ public class ParseUser extends ParseObject {
 
 	}
 
-	
+	@Override
+	public void delete() throws ParseException {
+		if(getObjectId() == null) return;
+
+		ParseCommand command = new ParseDeleteCommand(getEndPoint(), getObjectId());
+		command.put(ParseConstants.FIELD_SESSION_TOKEN, getSessionToken());
+
+		ParseResponse response = command.perform();
+		if(response.isFailed()) {
+			throw response.getException();
+		}
+
+		setUpdatedAt(null);
+		setCreatedAt(null);
+		setObjectId(null);
+		this.isDirty = false;
+	}
+
 	public void logout() throws ParseException {
 
 		if(!isAuthenticated()) {
