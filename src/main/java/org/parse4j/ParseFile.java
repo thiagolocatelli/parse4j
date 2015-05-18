@@ -147,11 +147,11 @@ public class ParseFile {
 		ParseResponse response = command.perform();
 		if(!response.isFailed()) {
 			JSONObject jsonResponse = response.getJsonObject();
-			System.out.println(jsonResponse);
 			if (jsonResponse == null) {
 				LOGGER.error("Empty response.");
 				throw response.getException();
 			}
+			LOGGER.info(jsonResponse.toString());
 			
 			this.name = jsonResponse.getString("name");
 			this.url = jsonResponse.getString("url");
