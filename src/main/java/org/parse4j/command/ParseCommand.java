@@ -11,6 +11,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.parse4j.Parse;
 import org.parse4j.ParseException;
+import org.parse4j.ParseUser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,34 +35,35 @@ public abstract class ParseCommand {
 
 	public ParseResponse perform() throws ParseException {
 
-		if(LOGGER.isDebugEnabled()) {
+		if (LOGGER.isDebugEnabled()) {
 			LOGGER.debug("Data to be sent: {}", data);
 		}
 
 		try {
 			long commandStart = System.currentTimeMillis();
 			HttpClient httpclient = createSingleClient();
-			//ResponseHandler<String> responseHandler=new BasicResponseHandler();
+			// ResponseHandler<String> responseHandler=new
+			// BasicResponseHandler();
 			HttpResponse httpResponse = httpclient.execute(getRequest());
-			//String resp = httpclient.execute(getRequest(), responseHandler);
+			// String resp = httpclient.execute(getRequest(), responseHandler);
 			ParseResponse response = new ParseResponse(httpResponse);
 
 			long commandReceived = System.currentTimeMillis();
-			if(LOGGER.isDebugEnabled()) {
-				LOGGER.debug("ParseCommand took " + (commandReceived - commandStart) + " milliseconds\n");
+			if (LOGGER.isDebugEnabled()) {
+				LOGGER.debug("ParseCommand took "
+						+ (commandReceived - commandStart) + " milliseconds\n");
 			}
 			return response;
-		}
-		catch (ClientProtocolException e) {
+		} catch (ClientProtocolException e) {
 			throw ParseResponse.getConnectionFailedException(e.getMessage());
-		}
-		catch (IOException e) {
+		} catch (IOException e) {
 			throw ParseResponse.getConnectionFailedException(e.getMessage());
 		}
 	}
 
 	protected HttpClient createSingleClient() {
-		HttpClientBuilder client = HttpClients.custom().setDefaultRequestConfig(config);
+		HttpClientBuilder client = HttpClients.custom()
+				.setDefaultRequestConfig(config);
 
 		return client.build();
 	}
@@ -69,12 +71,17 @@ public abstract class ParseCommand {
 	protected void setupHeaders(HttpRequestBase requestBase, boolean addJson) {
 		requestBase.addHeader(HEADER_APPLICATION_ID, Parse.getApplicationId());
 		requestBase.addHeader(HEADER_REST_API_KEY, Parse.getRestAPIKey());
-		if(addJson) {
+		if (addJson) {
 			requestBase.addHeader(HEADER_CONTENT_TYPE, CONTENT_TYPE_JSON);
 		}
 
-		if(data.has(FIELD_SESSION_TOKEN)) {
-			requestBase.addHeader(HEADER_SESSION_TOKEN, data.getString(FIELD_SESSION_TOKEN));
+		if (data.has(FIELD_SESSION_TOKEN)) {
+			requestBase.addHeader(HEADER_SESSION_TOKEN,
+					data.getString(FIELD_SESSION_TOKEN));
+		} else if (ParseUser.currentUser != null) {
+			// if we are logged in, pass the session token
+			requestBase.addHeader(HEADER_SESSION_TOKEN,
+					ParseUser.currentUser.getSessionToken());
 		}
 	}
 
