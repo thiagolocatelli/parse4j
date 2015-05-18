@@ -13,6 +13,8 @@ import org.slf4j.LoggerFactory;
 @ParseClassName("users")
 public class ParseUser extends ParseObject {
 	
+	public static ParseUser currentUser;
+	
 	private static Logger LOGGER = LoggerFactory.getLogger(ParseUser.class);
 
 	private String password;
@@ -145,6 +147,7 @@ public class ParseUser extends ParseObject {
 	
 	public static ParseUser login(String username, String password) throws ParseException {
 		
+		currentUser = null;
 		ParseGetCommand command = new ParseGetCommand("login");
 		command.addJson(false);
 		command.put("username", username);
@@ -160,6 +163,7 @@ public class ParseUser extends ParseObject {
 				ParseUser parseUser = new ParseUser();
 				parseUser.setObjectId(jsonResponse.getString(ParseConstants.FIELD_OBJECT_ID));
 				parseUser.setSessionToken(jsonResponse.getString(ParseConstants.FIELD_SESSION_TOKEN));
+				currentUser = parseUser;
 				String createdAt = jsonResponse.getString(ParseConstants.FIELD_CREATED_AT);
 				String updatedAt = jsonResponse.getString(ParseConstants.FIELD_UPDATED_AT);
 				parseUser.setCreatedAt(Parse.parseDate(createdAt));
