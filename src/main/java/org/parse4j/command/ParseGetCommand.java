@@ -39,7 +39,7 @@ public class ParseGetCommand extends ParseCommand {
 				String userPart = "username=" + URLEncoder.encode(data.getString("username"), "UTF-8");
 				String passPart = "password=" + URLEncoder.encode(data.getString("password"), "UTF-8");
 				url += "?" + userPart + "&" + passPart;
-				System.out.println(url);
+				LOGGER.info(url);
 			}
 			catch(UnsupportedEncodingException e) {
 				LOGGER.error("Error while building request url", e);
