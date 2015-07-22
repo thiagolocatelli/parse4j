@@ -70,7 +70,13 @@ public abstract class ParseCommand {
 
 	protected void setupHeaders(HttpRequestBase requestBase, boolean addJson) {
 		requestBase.addHeader(HEADER_APPLICATION_ID, Parse.getApplicationId());
-		requestBase.addHeader(HEADER_REST_API_KEY, Parse.getRestAPIKey());
+
+		if (Parse.isIsRootMode()) {
+			requestBase.addHeader(HEADER_MASTER_KEY, Parse.getMasterKey());
+		} else {
+			requestBase.addHeader(HEADER_REST_API_KEY, Parse.getRestAPIKey());
+		}
+
 		if (addJson) {
 			requestBase.addHeader(HEADER_CONTENT_TYPE, CONTENT_TYPE_JSON);
 		}
