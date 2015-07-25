@@ -552,7 +552,7 @@ public class ParseQuery<T extends ParseObject> {
 				
 				results = new ArrayList<T>();
 				for(int i = 0; i < objs.length(); i++) {
-					results.add(createPojo((JSONObject) objs.get(0)));
+					results.add(createPojo((JSONObject) objs.get(i)));
 				}
 
 				return results;
