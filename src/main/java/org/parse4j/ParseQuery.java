@@ -9,6 +9,7 @@ import org.parse4j.callback.FindCallback;
 import org.parse4j.callback.GetCallback;
 import org.parse4j.command.ParseGetCommand;
 import org.parse4j.command.ParsePostCommand;
+import org.parse4j.command.ParsePutCommand;
 import org.parse4j.command.ParseResponse;
 import org.parse4j.encode.ParseObjectEncodingStrategy;
 import org.parse4j.encode.PointerEncodingStrategy;
@@ -522,6 +523,19 @@ public class ParseQuery<T extends ParseObject> {
 			throw response.getException();
 		}
 	}
+
+	public void update (String objectId, JSONObject data) throws ParseException {
+		final String endPoint = retrieveEndpoint();
+		final ParsePutCommand command = new ParsePutCommand(endPoint + "/" + objectId);
+		command.setData(data);
+		final ParseResponse response = command.perform();
+
+		if(response.isFailed()) {
+			LOGGER.debug("Request failed.");
+			throw response.getException();
+		}
+	}
+
 
 	@SuppressWarnings("unchecked")
 	public List<T> find(JSONObject query) throws ParseException {
