@@ -1,19 +1,15 @@
 package org.parse4j;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.regex.Pattern;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.json.JSONTokener;
 import org.parse4j.callback.CountCallback;
 import org.parse4j.callback.FindCallback;
 import org.parse4j.callback.GetCallback;
 import org.parse4j.command.ParseGetCommand;
+import org.parse4j.command.ParsePostCommand;
+import org.parse4j.command.ParsePutCommand;
 import org.parse4j.command.ParseResponse;
 import org.parse4j.encode.ParseObjectEncodingStrategy;
 import org.parse4j.encode.PointerEncodingStrategy;
@@ -21,6 +17,9 @@ import org.parse4j.util.ParseEncoder;
 import org.parse4j.util.ParseRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.*;
+import java.util.regex.Pattern;
 
 public class ParseQuery<T extends ParseObject> {
 	
@@ -482,18 +481,65 @@ public class ParseQuery<T extends ParseObject> {
 		return find(new JSONObject(json));
 		
 	}
-		
+
+	/**
+	 * Creates and saves new instance from JSON string.
+	 *
+	 * @param json object data in JSON format.
+	 * @return created object with objectId.
+	 * @throws ParseException
+	 */
+	public T createObject (String json) throws ParseException {
+		return createObject(new JSONObject(new JSONTokener(json)));
+	}
+
+	/**
+	 * Creates and saves new instance from JSON object.
+	 *
+	 * @param json object data in JSON format.
+	 * @return created object with objectId.
+	 * @throws ParseException
+	 */
+	public T createObject (JSONObject json) throws ParseException {
+		final String endPoint = retrieveEndpoint();
+
+		final ParsePostCommand command = new ParsePostCommand(endPoint);
+		command.setData(json);
+		final ParseResponse response = command.perform();
+
+		if(!response.isFailed()) {
+			final JSONObject resp = response.getJsonObject();
+			json.put("objectId", resp.get("objectId"));
+			json.put("createdAt", resp.get("createdAt"));
+			try {
+				return createPojo(json);
+			} catch (InstantiationException e) {
+				throw new ParseException(e);
+			} catch (IllegalAccessException e) {
+				throw new ParseException(e);
+			}
+		} else {
+			LOGGER.debug("Request failed.");
+			throw response.getException();
+		}
+	}
+
+	public void update (String objectId, JSONObject data) throws ParseException {
+		final String endPoint = retrieveEndpoint();
+		final ParsePutCommand command = new ParsePutCommand(endPoint + "/" + objectId);
+		command.setData(data);
+		final ParseResponse response = command.perform();
+
+		if(response.isFailed()) {
+			LOGGER.debug("Request failed.");
+			throw response.getException();
+		}
+	}
+
+
 	@SuppressWarnings("unchecked")
 	public List<T> find(JSONObject query) throws ParseException {
-		
-		String endPoint;
-		if(!"users".equals(getClassName()) && !"roles".equals(getClassName())) {
-			endPoint = "classes/" + getClassName();
-		}
-		else {
-			endPoint = getClassName();
-		}
-
+		final String endPoint = retrieveEndpoint();
 		ParseGetCommand command = new ParseGetCommand(endPoint);
 		query.remove("className");
 		command.setData(query);
@@ -520,26 +566,7 @@ public class ParseQuery<T extends ParseObject> {
 				
 				results = new ArrayList<T>();
 				for(int i = 0; i < objs.length(); i++) {
-					Class<?> clazz = ParseRegistry.getParseClass(getClassName());
-					if(clazz != null) {
-						T po = (T) clazz.newInstance();
-						JSONObject obj = (JSONObject) objs.get(i);
-						 
-						/*
-						We disable some checks while setting data in objects during fetch because
-						those checks are useful only when setting data from client
-						code. The "true" argument disables such checks.
-						*/
-						po.setData(obj, true);
-						results.add((T) po);
-					}
-					else {
-						ParseObject po = new ParseObject(getClassName());
-						JSONObject obj = (JSONObject) objs.get(i);
-						// see above for the "true" argument
-						po.setData(obj, true);
-						results.add((T) po);
-					}
+					results.add(createPojo((JSONObject) objs.get(i)));
 				}
 
 				return results;
@@ -599,15 +626,7 @@ public class ParseQuery<T extends ParseObject> {
 	}
 
 	public int count() throws ParseException {
-		
-		String endPoint;
-		if(!"users".equals(getClassName()) && !"roles".equals(getClassName())) {
-			endPoint = "classes/" + getClassName();
-		}
-		else {
-			endPoint = getClassName();
-		}
-
+		final String endPoint = retrieveEndpoint();
 		ParseGetCommand command = new ParseGetCommand(endPoint);
 		JSONObject query = toREST();
 		query.put("count", 1);
@@ -712,4 +731,32 @@ public class ParseQuery<T extends ParseObject> {
 		}
 	}
 
+	private T createPojo (JSONObject obj) throws IllegalAccessException, InstantiationException {
+		Class<?> clazz = ParseRegistry.getParseClass(getClassName());
+		if(clazz != null) {
+			T po = (T) clazz.newInstance();
+			/*
+			We disable some checks while setting data in objects during fetch because
+			those checks are useful only when setting data from client
+			code. The "true" argument disables such checks.
+			*/
+			po.setData(obj, true);
+			return po;
+		}
+		else {
+			ParseObject po = new ParseObject(getClassName());
+			// see above for the "true" argument
+			po.setData(obj, true);
+			return (T) po;
+		}
+	}
+
+	private String retrieveEndpoint () {
+		if(!"users".equals(getClassName()) && !"roles".equals(getClassName())) {
+			return "classes/" + getClassName();
+		}
+		else {
+			return getClassName();
+		}
+	}
 }

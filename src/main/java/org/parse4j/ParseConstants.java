@@ -8,6 +8,7 @@ public class ParseConstants {
 	public static final String HEADER_CONTENT_TYPE = "Content-Type";
 	public static final String HEADER_APPLICATION_ID = "X-Parse-Application-Id";
 	public static final String HEADER_REST_API_KEY = "X-Parse-REST-API-Key";
+	public static final String HEADER_MASTER_KEY = "X-Parse-Master-Key";
 	public static final String HEADER_SESSION_TOKEN = "X-Parse-Session-Token";
 
 	public static final String CONTENT_TYPE_JSON = "application/json";

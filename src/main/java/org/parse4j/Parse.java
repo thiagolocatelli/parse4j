@@ -1,25 +1,22 @@
 package org.parse4j;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Collection;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.SimpleTimeZone;
-
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.parse4j.operation.ParseFieldOperations;
 import org.parse4j.util.ParseRegistry;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
+
 public class Parse {
 
 	private static String mApplicationId;
 	private static String mRestAPIKey;
+	private static String mMasterKey;
 	private static final DateFormat dateFormat;
+	private static boolean isRootMode;
 
 	static {
 		DateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
@@ -32,6 +29,20 @@ public class Parse {
 	static public void initialize(String applicationId, String restAPIKey) {
 		mApplicationId = applicationId;
 		mRestAPIKey = restAPIKey;
+		isRootMode = false;
+	}
+
+	/**
+	 * Don't use it in client app! Use it only if know what you are doing.
+	 * If someone get your master key he can bypass all of your app's security!
+	 *
+	 * @param applicationId your app id
+	 * @param masterKey your master key
+	 */
+	static public void initializeAsRoot (String applicationId, String masterKey) {
+		mApplicationId = applicationId;
+		mMasterKey = masterKey;
+		isRootMode = true;
 	}
 
 	static public String getApplicationId() {
@@ -40,6 +51,10 @@ public class Parse {
 
 	static public String getRestAPIKey() {
 		return mRestAPIKey;
+	}
+
+	public static boolean isIsRootMode() {
+		return isRootMode;
 	}
 
 	static public String getParseAPIUrl(String context) {
@@ -59,6 +74,10 @@ public class Parse {
 		}
 	}
 
+	public static String getMasterKey() {
+		return mMasterKey;
+	}
+
 	public static boolean isInvalidKey(String key) {
 		return "objectId".equals(key) || "createdAt".equals(key)
 				|| "updatedAt".equals(key);
@@ -76,12 +95,12 @@ public class Parse {
 				|| ((value instanceof ParseFile))
 				|| ((value instanceof ParseRelation))
 				|| ((value instanceof ParseGeoPoint))
-				|| ((value instanceof Date)) 
+				|| ((value instanceof Date))
 				|| ((value instanceof byte[]))
-				|| ((value instanceof List)) 
+				|| ((value instanceof List))
 				|| ((value instanceof Map));
 	}
-	
+
 	@SuppressWarnings("rawtypes")
 	public static String join(Collection<String> items, String delimiter) {
 		StringBuffer buffer = new StringBuffer();
