@@ -1,5 +1,7 @@
 package org.parse4j.util;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -72,6 +74,10 @@ public class ParseDecoder {
 			return new ParseRelation(jsonObject);
 		}
 		
+		if (typeString.equals("Object")) {
+			return convertJSONObjectToParseObject(jsonObject);
+		}
+		
 		String opString = jsonObject.optString("__op", null);
 	    if (opString != null) {
 	      try {
@@ -85,6 +91,59 @@ public class ParseDecoder {
 		
 	}
 	
+	private static ParseObject convertJSONObjectToParseObject(JSONObject jsonObject) {
+		if (jsonObject == null) return null; 
+		ParseObject parseObject = ParseObject.createWithoutData(jsonObject.optString("className"),
+				jsonObject.optString("objectId"));
+		String[] keys = JSONObject.getNames(jsonObject);
+		if (keys != null && keys.length > 0) {
+			Map<String, Object> changeSet = new HashMap<String, Object>();
+			for (String key : keys) {
+				Object value = decode(jsonObject.opt(key));
+				if (isReservedDateType(key)) {
+					value = Parse.parseDate((String)value);
+					setMetadataThroughReflection(parseObject, key, value);
+				} else {
+					if (Parse.isValidType(value)) {
+						changeSet.put(key, value);
+					}
+				}
+				
+			}
+			if (changeSet != null && !changeSet.isEmpty()) {
+				applyChangesThroughReflection(parseObject, changeSet);
+			}
+		}
+		return parseObject;
+	}
+
+	private static void applyChangesThroughReflection(ParseObject parseObject, Map<String, Object> changeSet) {
+		if (parseObject != null && changeSet != null) {
+			try {
+				Method method = parseObject.getClass().getDeclaredMethod("addData", Map.class);
+				method.setAccessible(true);
+				method.invoke(parseObject, changeSet);
+				method.setAccessible(false);
+			} catch (Exception e) {
+			} 
+		}
+	}
+
+	private static boolean isReservedDateType(String key) {
+		return "createdAt".equals(key) || "updatedAt".equals(key);
+	}
+
+	private static void setMetadataThroughReflection(ParseObject parseObject, String key, Object value) {
+		if (parseObject == null || key == null) return;
+		try {
+			Field field = parseObject.getClass().getDeclaredField(key);
+			field.setAccessible(true);
+			field.set(parseObject, value);
+			field.setAccessible(false);
+		} catch (Exception e) {
+		} 
+	}
+
 	private static ParseObject decodePointer(String className, String objectId) {
 	    return ParseObject.createWithoutData(className, objectId);
 	  }	
