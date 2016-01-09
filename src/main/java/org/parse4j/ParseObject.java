@@ -406,6 +406,21 @@ public class ParseObject {
 		
 	}
 	
+	protected void addData(Map<String, Object> changeSet) {
+		if(changeSet == null || changeSet.isEmpty()) return;
+		for (Map.Entry<String, Object> change : changeSet.entrySet()) {
+			String key = change.getKey();
+			Object value = change.getValue();
+			if(has(key)) {
+				data.remove(key);
+			}
+			if (value != null) {
+				data.put(key, value);
+			}
+		}
+		
+	}
+	
 	public void remove(String key) {
 		
 		if(has(key)) {
