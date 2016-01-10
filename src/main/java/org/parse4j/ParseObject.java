@@ -32,7 +32,6 @@ import org.parse4j.operation.ParseFieldOperation;
 import org.parse4j.operation.RelationOperation;
 import org.parse4j.operation.RemoveFieldOperation;
 import org.parse4j.operation.SetFieldOperation;
-import org.parse4j.util.ParseDecoder;
 import org.parse4j.util.ParseRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -403,6 +402,21 @@ public class ParseObject {
 		operations.put(key, operation);
 		dirtyKeys.add(key);
 		isDirty = true;
+		
+	}
+	
+	protected void addData(Map<String, Object> changeSet) {
+		if(changeSet == null || changeSet.isEmpty()) return;
+		for (Map.Entry<String, Object> change : changeSet.entrySet()) {
+			String key = change.getKey();
+			Object value = change.getValue();
+			if(has(key)) {
+				data.remove(key);
+			}
+			if (value != null) {
+				data.put(key, value);
+			}
+		}
 		
 	}
 	

@@ -1,4 +1,4 @@
-package org.parse4j.util;
+package org.parse4j;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -10,11 +10,6 @@ import org.apache.commons.codec.binary.Base64;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.parse4j.Parse;
-import org.parse4j.ParseFile;
-import org.parse4j.ParseGeoPoint;
-import org.parse4j.ParseObject;
-import org.parse4j.ParseRelation;
 import org.parse4j.operation.ParseFieldOperations;
 
 public class ParseDecoder {
@@ -72,6 +67,10 @@ public class ParseDecoder {
 			return new ParseRelation(jsonObject);
 		}
 		
+		if (typeString.equals("Object")) {
+			return convertJSONObjectToParseObject(jsonObject);
+		}
+		
 		String opString = jsonObject.optString("__op", null);
 	    if (opString != null) {
 	      try {
@@ -85,6 +84,14 @@ public class ParseDecoder {
 		
 	}
 	
+	private static ParseObject convertJSONObjectToParseObject(JSONObject jsonObject) {
+		if (jsonObject == null) return null; 
+		ParseObject parseObject = ParseObject.createWithoutData(jsonObject.optString("className"),
+				jsonObject.optString("objectId"));
+		parseObject.setData(jsonObject, true);
+		return parseObject;
+	}
+
 	private static ParseObject decodePointer(String className, String objectId) {
 	    return ParseObject.createWithoutData(className, objectId);
 	  }	
