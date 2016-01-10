@@ -9,7 +9,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.parse4j.encode.ParseObjectEncodingStrategy;
 import org.parse4j.operation.RelationOperation;
-import org.parse4j.util.ParseDecoder;
 
 public class ParseRelation<T extends ParseObject> {
 
