@@ -234,7 +234,8 @@ public class ParseObject {
 		return returnValue;
 	}
 	
-	public ParseObject getParseObject(String key) {
+    @SuppressWarnings("unchecked")
+    public <T extends ParseObject> T getParseObject(String key) {
 		if (!this.data.containsKey(key)) {
 			return null;
 		}
@@ -243,7 +244,7 @@ public class ParseObject {
 			LOGGER.error("Called getParseObject(\"{}\") but the value is a {}", key, value.getClass());
 			return null;
 		}
-		return (ParseObject) value;
+        return (T) value;
 	}
 	
 	public Object get(String key) {
