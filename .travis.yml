@@ -1,0 +1,6 @@
+language: java
+jdk:
+  - oraclejdk8
+  - openjdk6
+script:
+  - mvn test -Dmaven.test.skip=false

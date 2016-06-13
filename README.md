@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/thiagolocatelli/parse4j.svg?branch=master)](https://travis-ci.org/thiagolocatelli/parse4j)
+
 Parse4J - Java Library for [Parse](https://parse.com)
 ====================================
 
