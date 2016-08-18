@@ -626,9 +626,13 @@ public class ParseQuery<T extends ParseObject> {
 	}
 
 	public int count() throws ParseException {
+		JSONObject query = toREST();
+		return count(query);
+	}
+
+	public int count(JSONObject query) throws ParseException {
 		final String endPoint = retrieveEndpoint();
 		ParseGetCommand command = new ParseGetCommand(endPoint);
-		JSONObject query = toREST();
 		query.put("count", 1);
 		query.put("limit", 0);
 		query.remove("className");
@@ -658,7 +662,7 @@ public class ParseQuery<T extends ParseObject> {
 			LOGGER.debug("Request failed.");
 			throw response.getException();
 		}
-		
+
 	}
 
 	public void countInBackground(CountCallback countCallback) {
