@@ -678,61 +678,23 @@ public class ParseObject {
 		
 	}
 	
+    @SuppressWarnings("unchecked")
 	private <T extends ParseObject> T parseData(JSONObject jsonObject) {
-		
-		@SuppressWarnings("unchecked")
-		T po = (T) new ParseObject();
-		
-		Iterator<?> keys = jsonObject.keys();
-		while( keys.hasNext() ){
-            String key = (String) keys.next();
-            Object obj = jsonObject.get(key);
-            
-            if( obj instanceof JSONObject ){
-            	JSONObject o = (JSONObject) obj;
-            	String type = o.getString("__type");
-            	
-            	if("Date".equals(type)) {
-            		Date date = Parse.parseDate(o.getString("iso"));
-            		po.put(key, date);
-            	}
-            	
-            	if("Bytes".equals(type)) {
-            		String base64 = o.getString("base64");
-            		po.put(key, base64);
-            	}
-            	
-            	if("GeoPoint".equals(type)) {
-            		ParseGeoPoint gp = new ParseGeoPoint(o.getDouble("latitude"), 
-            				o.getDouble("longitude"));
-            		po.put(key, gp);
-            	}
-            	
-            	if("File".equals(type)) {
-					ParseFile file = new ParseFile(o.getString("name"),
-							o.getString("url"));
-            		po.put(key, file);
-            	}
-            	
-            	if("Pointer".equals(type)) {
-            		
-            	}
-            	
+        Class<?> clazz = ParseRegistry.getParseClass(getClassName());
+        if (clazz != null) {
+            try {
+                T po = (T) clazz.newInstance();
+                po.setData(jsonObject, true);
+                return (T) po;
+            } catch (InstantiationException | IllegalAccessException e) {
+                e.printStackTrace();
+                return (T) new ParseObject(getClassName());
             }
-            else {
-    			if(Parse.isInvalidKey(key)) {
-    				setReservedKey(key, obj);
-    			}
-    			else {
-    				put(key, ParseDecoder.decode(obj));
-    			}
-            }
-            
+        } else {
+            ParseObject po = new ParseObject(getClassName());
+            po.setData(jsonObject, true);
+            return (T) po;
         }
-		
-		po.isDirty = false;
-		return po;
-		
 	}
 	
 	protected void setData(JSONObject jsonObject) {
