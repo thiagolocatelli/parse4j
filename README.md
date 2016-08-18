@@ -22,6 +22,15 @@ On Parse, you create an App for each of your applications. Each App has its own 
 	Parse.initialize(APP_ID, APP_REST_API_ID);
 ```
 
+Since Parse.com servers are shutting down in January 2017, an alternate initialization method is needed for custom server URIs.
+
+```Java
+	Parse.initialize(APP_ID, APP_REST_API_ID, CUSTOM_SERVER_PATH);
+```
+
+You can learn how to migrate your existing applications at [Parse migration](https://parse.com/migration). To learn how to setup  your own Parse Server and Parse Dashboard, check out [Parse github](https://github.com/ParsePlatform). 
+
+
 Getting Started
 ---------------
 
