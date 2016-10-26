@@ -37,6 +37,7 @@ public class ParseQuery<T extends ParseObject> {
 	private boolean trace;
 	private boolean caseSensitive = true;
 	private String strTrace;
+    	private String sessionToken = null;
 
 	public ParseQuery(Class<T> subclass) {
 		this(ParseRegistry.getClassName(subclass));
@@ -395,6 +396,9 @@ public class ParseQuery<T extends ParseObject> {
 		JSONObject query = whereEqualTo("objectId", objectId).toREST();
 		query.remove("className");
 		command.setData(query);
+        if (sessionToken != null)
+            command.addHeader(ParseConstants.HEADER_SESSION_TOKEN, sessionToken);
+
 		ParseResponse response = command.perform();
 		if(!response.isFailed()) {
 			if(response.getJsonObject() == null) {
@@ -505,6 +509,9 @@ public class ParseQuery<T extends ParseObject> {
 
 		final ParsePostCommand command = new ParsePostCommand(endPoint);
 		command.setData(json);
+        if (sessionToken != null)
+            command.addHeader(ParseConstants.HEADER_SESSION_TOKEN, sessionToken);
+
 		final ParseResponse response = command.perform();
 
 		if(!response.isFailed()) {
@@ -528,6 +535,9 @@ public class ParseQuery<T extends ParseObject> {
 		final String endPoint = retrieveEndpoint();
 		final ParsePutCommand command = new ParsePutCommand(endPoint + "/" + objectId);
 		command.setData(data);
+        if (sessionToken != null)
+            command.addHeader(ParseConstants.HEADER_SESSION_TOKEN, sessionToken);
+
 		final ParseResponse response = command.perform();
 
 		if(response.isFailed()) {
@@ -543,6 +553,9 @@ public class ParseQuery<T extends ParseObject> {
 		ParseGetCommand command = new ParseGetCommand(endPoint);
 		query.remove("className");
 		command.setData(query);
+        if (sessionToken != null)
+            command.addHeader(ParseConstants.HEADER_SESSION_TOKEN, sessionToken);
+
 		ParseResponse response = command.perform();
 		List<T> results = null;
 		if(!response.isFailed()) {
@@ -637,6 +650,9 @@ public class ParseQuery<T extends ParseObject> {
 		query.put("limit", 0);
 		query.remove("className");
 		command.setData(query);
+        if (sessionToken != null)
+            command.addHeader(ParseConstants.HEADER_SESSION_TOKEN, sessionToken);
+
 		ParseResponse response = command.perform();
 		if(!response.isFailed()) {
 			if(response.getJsonObject() == null) {
@@ -763,4 +779,20 @@ public class ParseQuery<T extends ParseObject> {
 			return getClassName();
 		}
 	}
+	
+	/**
+     * Add the current user sesseonToken to the request headers
+     */
+    public void addSessionToken() {
+        addSessionToken(ParseUser.getCurrent().getSessionToken());
+    }
+
+    /**
+     * Add sesseonToken to the request headers.
+     *
+     * @param sessionToken a session token.
+     */
+    public void addSessionToken(String sessionToken) {
+        this.sessionToken = sessionToken;
+    }
 }
